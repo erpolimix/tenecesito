@@ -2,8 +2,8 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 
 export const metadata = {
-  title: 'Perspectiva',
-  description: 'Un espacio seguro para recibir perspectivas externas.',
+  title: 'TeNecesito',
+  description: 'Un espacio seguro para recibir ayuda y perspectivas externas.',
 };
 
 export default function RootLayout({

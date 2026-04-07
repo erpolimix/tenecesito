@@ -27,7 +27,7 @@ export default async function Navbar() {
         <nav className="w-full bg-white border-b-4 border-black z-40 sticky top-0">
             <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                 <Link href="/" className="text-3xl font-black tracking-tighter hover:scale-105 transition-transform">
-                    PERSPECTIVA
+                    TENECESITO
                 </Link>
                 <div className="flex items-center gap-4">
                     {user ? (
