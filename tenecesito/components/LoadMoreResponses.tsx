@@ -4,13 +4,13 @@ import React, { useState } from 'react';
 import { fetchPostResponses } from '@/app/post/[id]/actions';
 import { Loader2, Plus } from 'lucide-react';
 
-export default function LoadMoreResponses({ 
-    postId, 
-    initialResponses, 
-    totalCount 
-}: { 
-    postId: string; 
-    initialResponses: any[]; 
+export default function LoadMoreResponses({
+    postId,
+    initialResponses,
+    totalCount
+}: {
+    postId: string;
+    initialResponses: any[];
     totalCount: number;
 }) {
     const [responses, setResponses] = useState(initialResponses);
@@ -21,7 +21,7 @@ export default function LoadMoreResponses({
     const handleLoadMore = async () => {
         setLoading(true);
         const nextResponses = await fetchPostResponses(postId, 10, offset);
-        
+
         if (nextResponses.length === 0) {
             setHasMore(false);
         } else {
@@ -42,17 +42,17 @@ export default function LoadMoreResponses({
 
             <div className="space-y-6">
                 {responses.map((response) => (
-                    <div 
-                        key={response.id} 
+                    <div
+                        key={response.id}
                         className="bg-white border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all"
                     >
                         <p className="text-xl leading-relaxed font-medium">{response.content}</p>
                         <div className="mt-4 pt-4 border-t-2 border-black flex items-center justify-between">
                             <span className="text-xs font-black uppercase text-neutral-400">
-                                {new Date(response.created_at).toLocaleDateString('es-ES', { 
-                                    year: 'numeric', 
-                                    month: 'long', 
-                                    day: 'numeric' 
+                                {new Date(response.created_at).toLocaleDateString('es-ES', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
                                 })}
                             </span>
                         </div>
@@ -72,7 +72,7 @@ export default function LoadMoreResponses({
                         ) : (
                             <>
                                 <Plus size={24} strokeWidth={3} />
-                                Cargar más perspectivas
+                                Cargar más elementos..
                             </>
                         )}
                     </button>
