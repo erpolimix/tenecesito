@@ -81,7 +81,7 @@ export default function InfinitePostList({
                         </h3>
 
                         <div className="mt-4 pt-4 border-t-4 border-black flex items-center justify-between text-sm font-bold uppercase">
-                            <span className="text-neutral-500">Alguien necesita perspectiva</span>
+                            <span className="text-neutral-500">Alguien necesita ayuda</span>
                             {isAuthor && (
                                 <span className="flex items-center gap-1 bg-[#FFD93D] px-2 py-1 border-2 border-black">
                                     <MessageSquare size={14} /> {responseCount}
