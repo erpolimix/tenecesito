@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { CATEGORIES } from '@/lib/constants';
+import { createPost } from './actions';
 
 export default function CreatePage() {
     const router = useRouter();
@@ -11,11 +12,13 @@ export default function CreatePage() {
     const [content, setContent] = useState('');
     const [category, setCategory] = useState(CATEGORIES[0].id);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Aquí irá la Server Action de Supabase más adelante.
-        alert('MVP: Datos listos para guardar en DB');
-        router.push(`/feed?category=${category}`);
+    const handleSubmit = async (formData: FormData) => {
+        formData.append('categoryId', category);
+        try {
+            await createPost(formData);
+        } catch (error: any) {
+            alert(error.message);
+        }
     };
 
     return (
@@ -27,7 +30,7 @@ export default function CreatePage() {
             <div className="bg-white border-4 border-black p-8 md:p-12 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
                 <h2 className="text-4xl font-black uppercase tracking-tighter mb-8 break-words">Nueva Necesidad</h2>
 
-                <form onSubmit={handleSubmit} className="space-y-8">
+                <form action={handleSubmit} className="space-y-8">
                     <div>
                         <label className="block text-sm font-black uppercase mb-3">Área</label>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -54,6 +57,7 @@ export default function CreatePage() {
                         </label>
                         <input
                             type="text"
+                            name="title"
                             maxLength={120}
                             required
                             placeholder="Resume tu situación en una frase"
@@ -66,6 +70,7 @@ export default function CreatePage() {
                     <div>
                         <label className="block text-sm font-black uppercase mb-3">Contexto Completo</label>
                         <textarea
+                            name="content"
                             required
                             minLength={20}
                             placeholder="Explica los detalles. Todo es 100% anónimo."
