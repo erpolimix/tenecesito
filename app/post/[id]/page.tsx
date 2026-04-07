@@ -84,10 +84,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
             {/* ZONA INFERIOR */}
             {isAuthor && (
-                <LoadMoreResponses 
-                    postId={postId} 
-                    initialResponses={initialResponses} 
-                    totalCount={totalResponsesCount} 
+                <LoadMoreResponses
+                    postId={postId}
+                    initialResponses={initialResponses}
+                    totalCount={totalResponsesCount}
                 />
             )}
 
@@ -111,7 +111,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                                 type="submit"
                                 className="px-8 py-4 bg-[#6BCB77] border-4 border-black text-black text-lg font-black uppercase hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] disabled:opacity-50 transition-all"
                             >
-                                Enviar Perspectiva
+                                Enviar Respuesta
                             </button>
                         </div>
                     </form>
