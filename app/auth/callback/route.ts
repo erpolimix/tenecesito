@@ -19,17 +19,9 @@ export async function GET(request: Request) {
             await supabase.from('profiles').insert({ id: authData.user.id });
         }
 
-        const forwardedHost = request.headers.get('x-forwarded-host')
-        const isLocalNode = process.env.NODE_ENV === 'development'
-
-        if (isLocalNode) {
-            // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
-            return NextResponse.redirect(`${origin}${next}`)
-        } else if (forwardedHost) {
-            return NextResponse.redirect(`https://${forwardedHost}${next}`)
-        } else {
-            return NextResponse.redirect(`${origin}${next}`)
-        }
+        // En Vercel, el origen de la solicitud (request.url) ya refleja el dominio
+        // que el usuario está usando (incluyendo alias como tenecesito-six.vercel.app).
+        return NextResponse.redirect(`${origin}${next}`)
     }
   }
 
