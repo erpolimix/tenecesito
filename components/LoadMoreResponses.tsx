@@ -10,6 +10,8 @@ type ResponseItem = {
     created_at: string;
     is_read: boolean;
     author_id: string;
+    author_name?: string | null;
+    author_avatar_url?: string | null;
 }
 
 function formatResponseDate(dateInput: string) {
@@ -68,11 +70,19 @@ export default function LoadMoreResponses({
                     >
                         <div className="flex justify-between items-start mb-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold">
-                                    {(response.author_id?.[0] || 'A').toUpperCase()}
-                                </div>
+                                {response.author_avatar_url ? (
+                                    <img
+                                        src={response.author_avatar_url}
+                                        alt={`Avatar de ${response.author_name || 'usuario'}`}
+                                        className="w-10 h-10 rounded-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-10 h-10 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold">
+                                        {(response.author_name?.[0] || response.author_id?.[0] || 'A').toUpperCase()}
+                                    </div>
+                                )}
                                 <div>
-                                    <h4 className="font-bold text-[var(--tn-text)]">Voz de la comunidad</h4>
+                                    <h4 className="font-bold text-[var(--tn-text)]">{response.author_name || 'Voz de la comunidad'}</h4>
                                     <p className="text-xs text-[var(--tn-muted)]">Perspectiva compartida</p>
                                 </div>
                             </div>

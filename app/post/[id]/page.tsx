@@ -72,7 +72,32 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
             .eq('post_id', postId)
             .order('created_at', { ascending: false })
             .limit(10);
-        initialResponses = resps || [];
+        const safeResponses = resps || [];
+        const authorIds = Array.from(new Set(safeResponses.map((r) => r.author_id).filter(Boolean)));
+
+        if (authorIds.length > 0) {
+            const { data: profiles, error: profilesError } = await supabase
+                .from('profiles')
+                .select('id, display_name, avatar_url')
+                .in('id', authorIds);
+
+            if (profilesError) {
+                console.error('Error fetching initial response authors', profilesError);
+                initialResponses = safeResponses;
+            } else {
+                const profilesById = new Map((profiles || []).map((p) => [p.id, p]));
+                initialResponses = safeResponses.map((response) => {
+                    const profile = profilesById.get(response.author_id);
+                    return {
+                        ...response,
+                        author_name: profile?.display_name || null,
+                        author_avatar_url: profile?.avatar_url || null,
+                    };
+                });
+            }
+        } else {
+            initialResponses = safeResponses;
+        }
     }
 
     let hasResponded = false;

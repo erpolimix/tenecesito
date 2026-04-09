@@ -138,5 +138,27 @@ export async function fetchPostResponses(postId: string, limit: number, offset: 
         return [];
     }
 
-    return responses || [];
+    const safeResponses = responses || [];
+    if (safeResponses.length === 0) return [];
+
+    const authorIds = Array.from(new Set(safeResponses.map((r) => r.author_id).filter(Boolean)));
+    const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, display_name, avatar_url')
+        .in('id', authorIds);
+
+    if (profilesError) {
+        console.error('Error fetching response authors', profilesError);
+        return safeResponses;
+    }
+
+    const profilesById = new Map((profiles || []).map((p) => [p.id, p]));
+    return safeResponses.map((response) => {
+        const profile = profilesById.get(response.author_id);
+        return {
+            ...response,
+            author_name: profile?.display_name || null,
+            author_avatar_url: profile?.avatar_url || null,
+        };
+    });
 }
