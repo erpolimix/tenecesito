@@ -118,24 +118,24 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 </div>
             )}
 
-            {!user && !isAuthor && (
+            {!isAuthor && post.is_closed && (
+                <div className="bg-[var(--tn-surface)] border border-[var(--tn-outline)]/35 rounded-3xl p-12 text-center">
+                    <h4 className="font-editorial text-4xl tracking-tight mb-4 text-[var(--tn-primary)]">Cerrada</h4>
+                    <p className="text-lg text-[var(--tn-muted)]">El autor ha decidido no recibir más perspectivas.</p>
+                </div>
+            )}
+
+            {!user && !isAuthor && !post.is_closed && (
                 <div className="bg-white/75 border border-[var(--tn-outline)]/35 rounded-3xl p-12 text-center">
                     <h4 className="font-editorial text-4xl text-[var(--tn-primary)] tracking-tight mb-4">Inicia Sesión</h4>
                     <p className="text-lg text-[var(--tn-muted)]">Debes iniciar sesión para dar tu perspectiva.</p>
                 </div>
             )}
 
-            {!isAuthor && hasResponded && (
+            {!isAuthor && hasResponded && !post.is_closed && (
                 <div className="bg-[#d7e8ff] border border-[#bfd5f8] rounded-3xl p-12 text-center">
                     <h4 className="font-editorial text-4xl tracking-tight mb-4 text-[#2a4f87]">Gracias</h4>
                     <p className="text-lg text-[#375783]">Ya has aportado tu perspectiva a esta necesidad.</p>
-                </div>
-            )}
-
-            {!isAuthor && !hasResponded && post.is_closed && (
-                <div className="bg-[var(--tn-surface)] border border-[var(--tn-outline)]/35 rounded-3xl p-12 text-center">
-                    <h4 className="font-editorial text-4xl tracking-tight mb-4 text-[var(--tn-primary)]">Cerrada</h4>
-                    <p className="text-lg text-[var(--tn-muted)]">El autor ha decidido no recibir más perspectivas.</p>
                 </div>
             )}
         </div>

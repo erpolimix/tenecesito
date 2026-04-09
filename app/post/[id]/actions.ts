@@ -5,11 +5,30 @@ import { revalidatePath } from 'next/cache'
 
 export async function respondToPost(formData: FormData) {
     const supabase = await createClient();
-    const content = formData.get('content') as string;
+    const content = (formData.get('content') as string)?.trim();
     const postId = formData.get('postId') as string;
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Debes iniciar sesión');
+
+    const { data: post, error: postError } = await supabase
+        .from('posts')
+        .select('author_id, is_closed')
+        .eq('id', postId)
+        .single();
+
+    if (postError || !post) throw new Error('La publicación no existe');
+    if (post.is_closed) throw new Error('Esta necesidad ya está cerrada');
+    if (post.author_id === user.id) throw new Error('No puedes responder tu propia necesidad');
+
+    const { data: existingResponse } = await supabase
+        .from('responses')
+        .select('id')
+        .eq('post_id', postId)
+        .eq('author_id', user.id)
+        .maybeSingle();
+
+    if (existingResponse) throw new Error('Ya has aportado tu perspectiva a esta necesidad');
 
     const { error } = await supabase.from('responses').insert({
         post_id: postId,
@@ -20,6 +39,7 @@ export async function respondToPost(formData: FormData) {
     if (error) throw new Error(error.message);
 
     revalidatePath(`/post/${postId}`);
+    revalidatePath('/feed');
 }
 
 export async function closePost(formData: FormData) {
