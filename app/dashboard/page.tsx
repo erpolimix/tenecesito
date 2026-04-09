@@ -52,7 +52,7 @@ export default async function DashboardPage() {
                 </div>
                 <div className="bg-[var(--tn-surface)] rounded-3xl border border-[var(--tn-outline)]/25 p-7 md:p-8">
                     <p className="text-[11px] uppercase tracking-[0.2em] text-[var(--tn-muted)] font-semibold mb-2">Respuestas nuevas</p>
-                    <h2 className="font-editorial text-6xl leading-none text-[var(--tn-primary)]">{String(totalUnread).padStart(2, '0')}</h2>
+                    <h2 className="font-editorial text-6xl leading-none text-[var(--tn-primary)]">{String(totalUnread).padStart(1, '0')}</h2>
                     <p className="text-sm text-[var(--tn-muted)] mt-3">Pendientes de revisión en tus publicaciones.</p>
                 </div>
             </section>
