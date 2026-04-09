@@ -86,7 +86,7 @@ export default async function DashboardPage({
                         <MessageCircleMore size={128} strokeWidth={1.6} />
                     </div>
                     <p className="text-[#58665c] font-medium tracking-wide text-xs uppercase mb-2">Respuestas nuevas</p>
-                    <h2 className="font-editorial text-5xl font-bold text-[#58665c]">{String(totalUnread).padStart(2, '0')}</h2>
+                    <h2 className="font-editorial text-5xl font-bold text-[#58665c]">{String(totalUnread).padStart(1, '0')}</h2>
                     <div className="mt-4 flex items-center gap-2">
                         <span className="w-2 h-2 bg-[#91462e] rounded-full animate-pulse" />
                         <p className="text-[#58665c] text-sm font-medium">Pendientes de revisión</p>

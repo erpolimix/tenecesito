@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 
 export async function respondToPost(formData: FormData) {
     const supabase = await createClient();
@@ -54,6 +55,49 @@ export async function closePost(formData: FormData) {
     if (error) throw new Error(error.message);
 
     revalidatePath(`/post/${postId}`);
+}
+
+export async function updatePost(formData: FormData) {
+    const supabase = await createClient();
+    const postId = formData.get('postId') as string;
+    const title = (formData.get('title') as string)?.trim();
+    const content = (formData.get('content') as string)?.trim();
+    const categoryId = formData.get('categoryId') as string;
+
+    if (!postId) throw new Error('Publicación inválida');
+    if (!title || title.length < 8) throw new Error('El título debe tener al menos 8 caracteres');
+    if (!content || content.length < 20) throw new Error('El contenido debe tener al menos 20 caracteres');
+    if (!categoryId) throw new Error('Debes seleccionar una categoría');
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Debes iniciar sesión');
+
+    const { data: post, error: postError } = await supabase
+        .from('posts')
+        .select('author_id, is_closed')
+        .eq('id', postId)
+        .single();
+
+    if (postError || !post) throw new Error('La publicación no existe');
+    if (post.author_id !== user.id) throw new Error('No tienes permiso para editar esta publicación');
+    if (post.is_closed) throw new Error('No puedes editar una publicación cerrada');
+
+    const { error } = await supabase
+        .from('posts')
+        .update({
+            title,
+            content,
+            category_id: categoryId,
+        })
+        .eq('id', postId)
+        .eq('author_id', user.id);
+
+    if (error) throw new Error(error.message);
+
+    revalidatePath(`/post/${postId}`);
+    revalidatePath('/dashboard');
+    revalidatePath('/feed');
+    redirect(`/post/${postId}`);
 }
 
 export async function fetchPostResponses(postId: string, limit: number, offset: number) {
