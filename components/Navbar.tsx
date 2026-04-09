@@ -30,7 +30,7 @@ export default async function Navbar() {
                     TENECESITO
                 </Link>
 
-                <div className="flex items-center gap-2 sm:gap-3 overflow-hidden">
+                <div className="flex items-center gap-2 sm:gap-3 overflow-visible">
                     {user ? (
                         <>
                             <Link
