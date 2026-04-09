@@ -29,40 +29,44 @@ export default async function DashboardPage() {
     , 0)
 
     return (
-        <div className="max-w-5xl mx-auto px-6 py-12 animate-in fade-in duration-300">
-            <div className="flex items-center justify-between mb-8">
-                <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold uppercase hover:underline">
-                    <ArrowLeft size={16} strokeWidth={3} /> Volver al Inicio
+        <div className="max-w-5xl mx-auto px-5 md:px-6 py-10 md:py-12 animate-in fade-in duration-300">
+            <div className="flex items-center justify-between mb-8 gap-3">
+                <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--tn-muted)] hover:text-[var(--tn-primary)] transition-colors">
+                    <ArrowLeft size={16} strokeWidth={2.5} /> Volver al inicio
                 </Link>
                 
                 {totalUnread > 0 && (
                     <form action={markAllAsRead}>
-                        <button className="text-xs border-2 border-black bg-white px-4 py-2 font-black uppercase hover:bg-[#FFD93D] transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                        <button className="text-xs border border-[var(--tn-outline)]/35 bg-white px-4 py-2 rounded-full font-semibold uppercase hover:bg-[var(--tn-surface)] transition-colors">
                             Marcar todo como leído
                         </button>
                     </form>
                 )}
             </div>
 
-            <div className="mb-12">
-                <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-tight mb-4 flex items-center gap-4">
-                    Mis Necesidades
-                </h1>
-                <p className="text-xl font-bold uppercase text-neutral-500">
-                    Aquí encontrarás todas tus publicaciones y las respuestas recibidas en un solo lugar.
-                </p>
-            </div>
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-12">
+                <div className="bg-white/85 rounded-3xl border border-[var(--tn-outline)]/35 p-7 md:p-8 shadow-[0_12px_34px_rgba(27,28,27,0.08)]">
+                    <p className="text-[11px] uppercase tracking-[0.2em] text-[var(--tn-muted)] font-semibold mb-2">Total de publicaciones</p>
+                    <h2 className="font-editorial text-6xl leading-none text-[var(--tn-primary)]">{myPosts.length}</h2>
+                    <p className="text-sm text-[var(--tn-muted)] mt-3">Has compartido tus necesidades con la comunidad.</p>
+                </div>
+                <div className="bg-[var(--tn-surface)] rounded-3xl border border-[var(--tn-outline)]/25 p-7 md:p-8">
+                    <p className="text-[11px] uppercase tracking-[0.2em] text-[var(--tn-muted)] font-semibold mb-2">Respuestas nuevas</p>
+                    <h2 className="font-editorial text-6xl leading-none text-[var(--tn-primary)]">{String(totalUnread).padStart(2, '0')}</h2>
+                    <p className="text-sm text-[var(--tn-muted)] mt-3">Pendientes de revisión en tus publicaciones.</p>
+                </div>
+            </section>
 
             {myPosts.length === 0 ? (
-                <div className="border-4 border-black border-dashed bg-neutral-50 p-12 text-center">
-                    <Inbox size={48} className="mx-auto mb-4 text-neutral-400" />
-                    <p className="text-2xl font-black uppercase text-neutral-400">No has publicado nada todavía.</p>
-                    <Link href="/create" className="inline-block mt-8 bg-[#FFD93D] border-4 border-black px-6 py-3 font-black uppercase shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all text-black">
+                <div className="border border-[var(--tn-outline)]/35 bg-white/70 rounded-3xl p-12 text-center">
+                    <Inbox size={42} className="mx-auto mb-4 text-[var(--tn-muted)]" />
+                    <p className="font-editorial text-4xl text-[var(--tn-primary)]">No has publicado nada todavía.</p>
+                    <Link href="/create" className="inline-block mt-8 bg-[var(--tn-primary)] text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transition-opacity">
                         Crear Necesidad
                     </Link>
                 </div>
             ) : (
-                <div className="space-y-16">
+                <div className="space-y-7">
                     {myPosts.map((post) => {
                         const unreadResponses = post.responses?.filter((r: any) => !r.is_read) || []
                         const allReadResponses = post.responses?.filter((r: any) => r.is_read) || []
@@ -71,22 +75,22 @@ export default async function DashboardPage() {
                         const cat = CATEGORIES.find(c => c.id === post.category_id)
                         
                         return (
-                            <div key={post.id} className="border-4 border-black p-6 md:p-10 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
+                            <div key={post.id} className="bg-white/80 rounded-3xl border border-[var(--tn-outline)]/35 p-6 md:p-8 shadow-[0_12px_30px_rgba(27,28,27,0.08)]">
                                 
-                                <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-4 border-b-4 border-black pb-6 mb-6">
+                                <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-4 border-b border-[var(--tn-outline)]/25 pb-6 mb-6">
                                    <div>
-                                    <span className={`inline-block text-xs font-black uppercase px-3 py-1 border-2 border-black mb-3 ${cat?.bg}`}>
+                                    <span className={`inline-block text-xs font-semibold uppercase tracking-[0.14em] px-3 py-1 rounded-full mb-3 border border-black/10 ${cat?.softBg || 'bg-[#ece7e2]'} ${cat?.softText || 'text-[#5c524d]'}`}>
                                         {cat?.name}
                                     </span>
-                                    <h2 className="text-3xl font-black uppercase tracking-tight">
-                                        <Link href={`/post/${post.id}`} className="hover:underline hover:text-[#4D96FF] transition-colors">{post.title}</Link>
+                                    <h2 className="font-editorial text-4xl font-bold tracking-tight leading-tight">
+                                        <Link href={`/post/${post.id}`} className="hover:text-[var(--tn-primary)] transition-colors">{post.title}</Link>
                                     </h2>
                                    </div>
                                    {unreadResponses.length > 0 && (
                                        <form action={markPostResponsesAsRead}>
                                            <input type="hidden" name="postId" value={post.id} />
-                                           <button className="bg-red-500 text-white border-2 border-black text-xs font-black uppercase px-4 py-2 hover:opacity-80 transition-opacity whitespace-nowrap flex items-center gap-2">
-                                                <Check size={14} strokeWidth={3} /> {unreadResponses.length} Nuevas, Marcar
+                                           <button className="bg-[var(--tn-primary)] text-white text-xs font-semibold uppercase tracking-[0.12em] px-4 py-2 rounded-full hover:opacity-90 transition-opacity whitespace-nowrap flex items-center gap-2">
+                                                <Check size={14} strokeWidth={2.8} /> {unreadResponses.length} nuevas, marcar
                                            </button>
                                        </form>
                                    )}
@@ -94,28 +98,28 @@ export default async function DashboardPage() {
 
                                 <div className="space-y-6">
                                     {(unreadResponses.length === 0 && readResponses.length === 0) && (
-                                        <div className="bg-neutral-100 p-6 border-2 border-dashed border-neutral-300 text-center">
-                                            <p className="font-bold uppercase text-neutral-500">Sin perspectivas aún</p>
+                                        <div className="bg-[var(--tn-surface)] p-6 border border-[var(--tn-outline)]/25 rounded-2xl text-center">
+                                            <p className="font-semibold text-[var(--tn-muted)]">Sin perspectivas aún</p>
                                         </div>
                                     )}
 
                                     {/* Unread Responses first */}
                                     {unreadResponses.map((r: any) => (
-                                        <div key={r.id} className="relative bg-[#FFD93D]/20 border-l-8 border-[#FFD93D] border-y-2 border-r-2 border-black p-6">
-                                            <span className="absolute -top-3 -right-2 bg-red-500 text-white text-[10px] uppercase font-black px-2 py-1 border-2 border-black rotate-3">Nuevo</span>
-                                            <p className="text-lg font-medium">{r.content}</p>
+                                        <div key={r.id} className="relative bg-[#fff4d6] border border-[#f2ddb3] rounded-2xl p-6">
+                                            <span className="absolute -top-3 -right-1 bg-[var(--tn-primary)] text-white text-[10px] uppercase font-semibold px-2 py-1 rounded-full">Nuevo</span>
+                                            <p className="text-base md:text-lg">{r.content}</p>
                                         </div>
                                     ))}
 
                                     {/* Read Responses */}
                                     {readResponses.map((r: any) => (
-                                        <div key={r.id} className="bg-neutral-50 border-2 border-black p-6">
-                                            <p className="text-lg font-medium text-neutral-700">{r.content}</p>
+                                        <div key={r.id} className="bg-white border border-[var(--tn-outline)]/25 rounded-2xl p-6">
+                                            <p className="text-base md:text-lg text-[#3f3f3f]">{r.content}</p>
                                         </div>
                                     ))}
                                     {hiddenCount > 0 && (
                                         <div className="text-center pt-2">
-                                            <Link href={`/post/${post.id}`} className="text-sm font-bold uppercase underline hover:text-[#4D96FF] transition-colors">
+                                            <Link href={`/post/${post.id}`} className="text-sm font-semibold underline hover:text-[var(--tn-primary)] transition-colors">
                                                 ...y {hiddenCount} perspectivas antiguas más. Ver todas.
                                             </Link>
                                         </div>

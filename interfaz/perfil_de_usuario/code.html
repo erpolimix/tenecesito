@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#bccabe",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#54433e",
+                    "surface-container-low": "#f5f3f1",
+                    "tertiary-container": "#76756f",
+                    "surface-bright": "#faf9f7",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#efeeec",
+                    "on-primary-fixed-variant": "#76321c",
+                    "primary-fixed-dim": "#ffb59e",
+                    "background": "#faf9f7",
+                    "surface": "#faf9f7",
+                    "on-tertiary-container": "#fdffdd",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed": "#1c1c18",
+                    "on-secondary-fixed": "#121e17",
+                    "on-secondary": "#ffffff",
+                    "surface-variant": "#e3e2e0",
+                    "primary": "#91462e",
+                    "on-primary-container": "#fffbff",
+                    "on-secondary-container": "#58665c",
+                    "surface-container-high": "#e9e8e6",
+                    "surface-container-highest": "#e3e2e0",
+                    "outline": "#87736d",
+                    "inverse-on-surface": "#f2f0ef",
+                    "on-primary-container": "#fffbff",
+                    "inverse-primary": "#ffb59e",
+                    "primary-fixed": "#ffdbd0",
+                    "secondary": "#546258",
+                    "on-tertiary-fixed-variant": "#474742",
+                    "tertiary-fixed-dim": "#c9c6c0",
+                    "secondary-container": "#d5e3d7",
+                    "on-primary-fixed": "#3a0b00",
+                    "on-secondary-fixed-variant": "#3d4a41",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#dac1ba",
+                    "inverse-surface": "#303130",
+                    "on-surface": "#1b1c1b",
+                    "tertiary": "#5d5c57",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "surface-tint": "#944930",
+                    "secondary-fixed": "#d8e6da",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#dbdad8",
+                    "primary-container": "#af5e44",
+                    "on-background": "#1b1c1b",
+                    "tertiary-fixed": "#e5e2db"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #faf9f7;
+            color: #1b1c1b;
+            line-height: 1.6;
+        }
+        .serif-text { font-family: 'Newsreader', serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-4 bg-[#faf9f7]/80 backdrop-blur-md rounded-b-3xl shadow-[0_12px_40px_rgba(27,28,27,0.06)]">
+<button class="hover:opacity-80 transition-opacity active:scale-95 duration-200 flex items-center">
+<span class="material-symbols-outlined text-[#91462e]" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Newsreader'] font-bold tracking-tight text-lg text-[#91462e]">Perfil</h1>
+<button class="hover:opacity-80 transition-opacity active:scale-95 duration-200 flex items-center">
+<span class="material-symbols-outlined text-[#91462e]" data-icon="settings">settings</span>
+</button>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Hero Profile Section -->
+<section class="flex flex-col items-center text-center mb-10 mt-4">
+<div class="relative mb-6">
+<div class="w-32 h-32 rounded-full overflow-hidden shadow-lg border-4 border-surface-container">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="close-up portrait of a woman with a gentle expression, soft natural window lighting, warm tones, looking thoughtfully into the camera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzvgOFMwkxAkdRzZbS2navGAYmY2kv1WbmQnjfTHBUfOAhR9iIZ6op8hfgyBWGYkvdDmWzswo1yjd43PXb5_wS699zxgybR9y953ef82bq0GDC8pWxsq81Gnzte2KkgwdVfL18TeQPZ04uMWu1XPJg-eGxeuH-7k8m9Cl7xVBv1UErd626uAC0Enoe-dpH5q7OCTh_9lXDs_BeT8N4plEMLdhNLI_mFMyaoGn2NX5gkamxDd7XRAzt8C_KR7fz10YPFiuSvj1uIw"/>
+</div>
+<div class="absolute bottom-1 right-1 bg-primary p-2 rounded-full shadow-md">
+<span class="material-symbols-outlined text-on-primary text-sm" data-icon="edit" data-weight="fill" style="font-variation-settings: 'FILL' 1;">edit</span>
+</div>
+</div>
+<h2 class="serif-text text-3xl font-bold tracking-tight text-on-surface mb-2">Elena Villalobos</h2>
+<p class="text-secondary max-w-xs leading-relaxed italic mb-8">
+                "Buscando sanar a través de la palabra compartida y el encuentro silencioso."
+            </p>
+<div class="flex gap-3 w-full justify-center">
+<button class="flex-1 max-w-[160px] py-3 px-6 rounded-xl border border-outline-variant bg-surface-container-low text-on-surface-variant font-semibold text-sm hover:bg-surface-variant transition-colors active:scale-95 duration-200">
+                    Editar perfil
+                </button>
+<button class="flex-1 max-w-[160px] py-3 px-6 rounded-xl border border-outline-variant bg-surface-container-low text-on-surface-variant font-semibold text-sm hover:bg-surface-variant transition-colors active:scale-95 duration-200">
+                    Ajustes
+                </button>
+</div>
+</section>
+<!-- Stats Grid (Bento Style) -->
+<section class="grid grid-cols-2 gap-4 mb-12">
+<div class="bg-surface-container-low p-6 rounded-lg flex flex-col justify-center items-center text-center">
+<span class="serif-text text-4xl font-bold text-primary mb-1">24</span>
+<span class="font-label text-[11px] uppercase tracking-widest font-bold text-secondary opacity-80">Perspectivas compartidas</span>
+</div>
+<div class="bg-secondary-container p-6 rounded-lg flex flex-col justify-center items-center text-center">
+<span class="serif-text text-4xl font-bold text-secondary mb-1">112</span>
+<span class="font-label text-[11px] uppercase tracking-widest font-bold text-secondary-fixed-dim text-on-secondary-container">Acompañamientos</span>
+</div>
+</section>
+<!-- Reflection Bar (Prompts) -->
+<section class="mb-12 overflow-hidden -mx-6">
+<h3 class="px-6 serif-text text-xl font-bold mb-4">Reflexiones de Hoy</h3>
+<div class="flex overflow-x-auto gap-4 px-6 no-scrollbar pb-4">
+<div class="min-w-[280px] bg-tertiary-container p-6 rounded-lg text-on-tertiary-container">
+<p class="text-sm font-medium mb-3 opacity-80">DIARIO DE GRATITUD</p>
+<p class="serif-text text-lg leading-snug italic">"Hoy encontré paz en el sonido de la lluvia contra el cristal..."</p>
+</div>
+<div class="min-w-[280px] bg-primary-container p-6 rounded-lg text-on-primary-container">
+<p class="text-sm font-medium mb-3 opacity-80">MEMORIA COMPARTIDA</p>
+<p class="serif-text text-lg leading-snug italic">"Recordando que cada paso pequeño es, en realidad, un gran avance."</p>
+</div>
+</div>
+</section>
+<!-- Recent Activity -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="serif-text text-2xl font-bold">Actividad Reciente</h3>
+<button class="text-primary font-bold text-sm hover:underline">Ver todo</button>
+</div>
+<div class="space-y-4">
+<!-- Activity Card 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-lg shadow-[0_4px_20px_rgba(27,28,27,0.04)] border border-outline-variant/10 group cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] uppercase tracking-widest font-bold text-secondary opacity-60">En Diarios • Comunidad</span>
+<span class="text-xs text-secondary opacity-60">Hace 3 días</span>
+</div>
+<h4 class="serif-text text-lg font-bold text-on-surface mb-2 group-hover:text-primary transition-colors">¿Cómo lidiar con la soledad en una ciudad nueva?</h4>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-4">Escribí sobre mi experiencia mudándome a Madrid y cómo las pequeñas rutinas me ayudaron a sentirme en casa...</p>
+<div class="flex items-center gap-4 text-secondary">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="favorite">favorite</span>
+<span class="text-xs font-semibold">12</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="chat_bubble">chat_bubble</span>
+<span class="text-xs font-semibold">4</span>
+</div>
+</div>
+</div>
+<!-- Activity Card 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-lg shadow-[0_4px_20px_rgba(27,28,27,0.04)] border border-outline-variant/10 group cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] uppercase tracking-widest font-bold text-secondary opacity-60">Acompañamiento • Respuesta</span>
+<span class="text-xs text-secondary opacity-60">Hace 5 días</span>
+</div>
+<h4 class="serif-text text-lg font-bold text-on-surface mb-2 group-hover:text-primary transition-colors">Respuesta a "Buscando esperanza"</h4>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-4">"No estás solo en esto. Yo pasé por algo muy similar el año pasado y te aseguro que la luz vuelve..."</p>
+<div class="flex items-center gap-4 text-secondary">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="thumb_up">thumb_up</span>
+<span class="text-xs font-semibold">8</span>
+</div>
+</div>
+</div>
+<!-- Activity Card 3 -->
+<div class="bg-surface-container-lowest p-5 rounded-lg shadow-[0_4px_20px_rgba(27,28,27,0.04)] border border-outline-variant/10 group cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] uppercase tracking-widest font-bold text-secondary opacity-60">Pensamiento • Reflexión</span>
+<span class="text-xs text-secondary opacity-60">Hace 1 semana</span>
+</div>
+<h4 class="serif-text text-lg font-bold text-on-surface mb-2 group-hover:text-primary transition-colors">El valor del silencio compartido</h4>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-4">A veces, no necesitamos palabras, solo saber que alguien está escuchando desde el otro lado de la pantalla.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-8 pb-8 pt-4 bg-[#faf9f7]/90 backdrop-blur-2xl rounded-t-[3rem] shadow-[0_-8px_30px_rgba(27,28,27,0.04)] bg-gradient-to-t from-[#f5f3f1] to-transparent">
+<a class="flex flex-col items-center justify-center text-[#546258] opacity-60 hover:text-[#91462e] transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] uppercase tracking-widest font-semibold mt-1">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#546258] opacity-60 hover:text-[#91462e] transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] uppercase tracking-widest font-semibold mt-1">Diarios</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#546258] opacity-60 hover:text-[#91462e] transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] uppercase tracking-widest font-semibold mt-1">Comunidad</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#91462e] scale-105 transition-transform active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="person" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] uppercase tracking-widest font-semibold mt-1">Perfil</span>
+</a>
+</nav>
+<!-- Decorative background element for the "Earthbound Journal" aesthetic -->
+<div class="fixed top-0 right-0 -z-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl opacity-50 translate-x-1/2 -translate-y-1/2"></div>
+<div class="fixed bottom-0 left-0 -z-10 w-80 h-80 bg-secondary/5 rounded-full blur-3xl opacity-30 -translate-x-1/3 translate-y-1/3"></div>
+</body></html>

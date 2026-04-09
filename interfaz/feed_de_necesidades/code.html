@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Feed de Necesidades - TENECESITO</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..800&amp;family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#76321c",
+                        "secondary-fixed-dim": "#bccabe",
+                        "surface-bright": "#faf9f7",
+                        "primary": "#91462e",
+                        "on-primary-fixed": "#3a0b00",
+                        "surface-container-low": "#f5f3f1",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#1c1c18",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e3e2e0",
+                        "on-tertiary-fixed-variant": "#474742",
+                        "tertiary-fixed": "#e5e2db",
+                        "surface-dim": "#dbdad8",
+                        "outline-variant": "#dac1ba",
+                        "outline": "#87736d",
+                        "primary-fixed-dim": "#ffb59e",
+                        "on-background": "#1b1c1b",
+                        "surface": "#faf9f7",
+                        "on-primary-container": "#fffbff",
+                        "inverse-primary": "#ffb59e",
+                        "tertiary-fixed-dim": "#c9c6c0",
+                        "secondary": "#546258",
+                        "surface-container": "#efeeec",
+                        "on-surface-variant": "#54433e",
+                        "surface-variant": "#e3e2e0",
+                        "tertiary": "#5d5c57",
+                        "on-tertiary-container": "#fdffdd",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#d8e6da",
+                        "inverse-surface": "#303130",
+                        "on-error": "#ffffff",
+                        "primary-container": "#af5e44",
+                        "on-secondary-fixed-variant": "#3d4a41",
+                        "tertiary-container": "#76756f",
+                        "surface-container-high": "#e9e8e6",
+                        "on-secondary-fixed": "#121e17",
+                        "secondary-container": "#d5e3d7",
+                        "surface-tint": "#944930",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#ffdbd0",
+                        "on-surface": "#1b1c1b",
+                        "on-secondary-container": "#58665c",
+                        "background": "#faf9f7",
+                        "inverse-on-surface": "#f2f0ef"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Newsreader"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #faf9f7;
+            line-height: 1.6;
+        }
+        .serif-text {
+            font-family: 'Newsreader', serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<nav class="bg-[#faf9f7] dark:bg-[#1b1c1b]/80 shadow-[0_12px_40px_rgba(27,28,27,0.06)] docked full-width top-0 sticky flex justify-between items-center px-6 py-4 backdrop-blur-xl z-50">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#91462e] dark:text-[#af5e44]" data-icon="menu">menu</span>
+<h1 class="font-['Newsreader'] tracking-tighter leading-[1.6x] text-2xl font-bold tracking-tight text-[#91462e] dark:text-[#af5e44]">TENECESITO</h1>
+</div>
+<div class="flex items-center gap-4">
+<h2 class="hidden md:block text-sm font-medium text-secondary">Feed de Necesidades</h2>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-outline-variant/15">
+<img alt="Perfil" class="w-full h-full object-cover" data-alt="close-up portrait of a thoughtful person with warm lighting and soft bokeh background, editorial photography style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV4FvEIO63IjuT-9pRfy-fS_momKVcP54Ctbq-EZpkh-jIg582nQrXAq8Zb-ejJR_Y-HFdOiS5myhNdl8VRIDkg8xgq6DMO1v8WJDv1wJyo3XaaDe8oN3tIiM02QIo0T-s95lMHuKy32usWdsWNdCV5nuKkqHaE6SVP3HVWdyh3QD-7Nt18skuCTAK013-FPz1q0NwWoZ-CGdONj1YCxG-jVLi591ONIcjwi6QDElRrA17aGkTqLwLpUo0Ae4wjT_YLzuNtpBwSw"/>
+</div>
+</div>
+</nav>
+<main class="max-w-4xl mx-auto px-6 pt-8 pb-32">
+<!-- Header & Category Filter -->
+<section class="mb-12">
+<div class="flex justify-between items-end mb-8">
+<div>
+<span class="text-primary font-medium tracking-wider text-xs uppercase">Explorar</span>
+<h2 class="serif-text text-4xl md:text-5xl font-bold text-on-surface mt-2">Feed de Necesidades</h2>
+</div>
+</div>
+<!-- Reflection Bar: Horizontal scroll of category chips -->
+<div class="flex overflow-x-auto pb-4 gap-3 no-scrollbar scroll-smooth">
+<button class="flex-none px-6 py-3 rounded-full bg-primary text-on-primary font-medium transition-all hover:opacity-90">
+                    Todos
+                </button>
+<button class="flex-none px-6 py-3 rounded-full bg-secondary-container text-on-secondary-container font-medium hover:bg-surface-container-highest transition-colors">
+                    Apoyo Emocional
+                </button>
+<button class="flex-none px-6 py-3 rounded-full bg-secondary-container text-on-secondary-container font-medium hover:bg-surface-container-highest transition-colors">
+                    Duelo y Pérdida
+                </button>
+<button class="flex-none px-6 py-3 rounded-full bg-secondary-container text-on-secondary-container font-medium hover:bg-surface-container-highest transition-colors">
+                    Crianza Consciente
+                </button>
+<button class="flex-none px-6 py-3 rounded-full bg-secondary-container text-on-secondary-container font-medium hover:bg-surface-container-highest transition-colors">
+                    Ansiedad
+                </button>
+<button class="flex-none px-6 py-3 rounded-full bg-secondary-container text-on-secondary-container font-medium hover:bg-surface-container-highest transition-colors">
+                    Relaciones
+                </button>
+</div>
+</section>
+<!-- Feed List (Asymmetric/Bento-ish Layout) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+<!-- Card 1 (Large/Primary) -->
+<article class="bg-surface-container-low rounded-lg p-8 shadow-[0_12px_40px_rgba(27,28,27,0.06)] md:col-span-2 group hover:translate-y-[-4px] transition-transform">
+<div class="flex justify-between items-start mb-6">
+<span class="px-3 py-1 bg-tertiary-container/10 text-tertiary font-semibold text-[10px] tracking-widest uppercase rounded-sm">Apoyo Emocional</span>
+<div class="px-4 py-1 bg-on-secondary-container/10 text-on-secondary-container rounded-full text-xs font-bold flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-on-secondary-container rounded-full"></span>
+                        Abierto
+                    </div>
+</div>
+<h3 class="serif-text text-3xl font-bold text-on-surface mb-4 leading-tight">¿Cómo encontrar calma cuando el ruido externo parece ensordecedor?</h3>
+<p class="text-secondary line-clamp-3 mb-8 text-lg font-light leading-relaxed">He pasado semanas intentando mantener mi rutina de meditación, pero últimamente siento que el entorno me sobrepasa. Busco perspectivas sobre cómo reconectar con el silencio interior...</p>
+<div class="flex justify-between items-center pt-6 border-t border-outline-variant/15">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-variant">
+<img alt="Autor" class="w-full h-full object-cover" data-alt="close-up of a person's hands holding a ceramic mug with soft natural light coming from a window" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDu-Ne7w6P1Gl8Hs5g-Tz2bX7wF_rAo28FPNkMgzNxAXEecfnVpkP6jLQMNoN6S2usR_qCa9BEi-n0wcngj2TqyXhEzfcdl6OnegYde9NJ7g4ZtbPEFUdLQYQAZjKeoYEMzBmhlj8Z_QQdmTZvWMQRs-xIrrI5eeaarCQb89tGYrk4zeKOEqGd1KeQvLTVdc2S_a9BRSVjcPuvUfxfZxd4FGcCRrRUa3ErwK2B9yK4Qly-H9r-GJG4h1LrMrh9Khd_ageuSMifs-g"/>
+</div>
+<span class="text-sm font-medium text-on-surface-variant">Publicado por Elena</span>
+</div>
+<div class="flex items-center gap-2 text-primary font-medium">
+<span class="material-symbols-outlined text-xl" data-icon="forum">forum</span>
+<span class="text-sm">12 perspectivas compartidas</span>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-surface-container-low rounded-lg p-8 shadow-[0_12px_40px_rgba(27,28,27,0.06)] hover:translate-y-[-4px] transition-transform">
+<div class="flex justify-between items-start mb-6">
+<span class="px-3 py-1 bg-tertiary-container/10 text-tertiary font-semibold text-[10px] tracking-widest uppercase rounded-sm">Duelo</span>
+<div class="px-4 py-1 bg-[#5C627D]/10 text-[#5C627D] rounded-full text-xs font-bold flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-[#5C627D] rounded-full"></span>
+                        Cerrado
+                    </div>
+</div>
+<h3 class="serif-text text-2xl font-bold text-on-surface mb-4 leading-tight">Honrando la ausencia: rituales de despedida</h3>
+<p class="text-secondary mb-8 text-base font-light">Buscaba formas de celebrar el primer aniversario de mi abuelo sin caer en la tristeza profunda. Gracias por todas sus sugerencias.</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-primary font-medium">
+<span class="material-symbols-outlined text-xl" data-icon="forum">forum</span>
+<span class="text-sm">8 perspectivas</span>
+</div>
+<span class="text-xs text-outline italic">Hace 2 días</span>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="bg-surface-container-low rounded-lg p-8 shadow-[0_12px_40px_rgba(27,28,27,0.06)] hover:translate-y-[-4px] transition-transform">
+<div class="flex justify-between items-start mb-6">
+<span class="px-3 py-1 bg-tertiary-container/10 text-tertiary font-semibold text-[10px] tracking-widest uppercase rounded-sm">Ansiedad</span>
+<div class="px-4 py-1 bg-on-secondary-container/10 text-on-secondary-container rounded-full text-xs font-bold flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-on-secondary-container rounded-full"></span>
+                        Abierto
+                    </div>
+</div>
+<h3 class="serif-text text-2xl font-bold text-on-surface mb-4 leading-tight">El miedo al futuro inmediato en el trabajo</h3>
+<p class="text-secondary mb-8 text-base font-light">Siento que cada vez que recibo un correo nuevo, mi corazón se acelera. ¿Alguien ha pasado por este tipo de ansiedad laboral?</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-primary font-medium">
+<span class="material-symbols-outlined text-xl" data-icon="forum">forum</span>
+<span class="text-sm">3 perspectivas</span>
+</div>
+<span class="text-xs text-outline italic">Hace 4 horas</span>
+</div>
+</article>
+<!-- Card 4 (Full Width Visual Break) -->
+<div class="md:col-span-2 relative h-48 rounded-lg overflow-hidden my-4">
+<img alt="Calma" class="w-full h-full object-cover" data-alt="serene landscape of a calm lake at dawn with mist rising and soft pastel sky colors, cinematic wide angle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxw74bBaH73MgnGNx2dSbcdRnIQ3fllfsHJ9wA2rQoTALl7QkFMISf0X8vmmLPXPs4dVYYOqHU74vg2X4UNWfOFry8SVGqzfBaqYYPRtkias0v54dGkGL6jErd9S7mVTvbLaUbGu9zdt3NUnknFY34z0B-cdLVHcgoqm8VO768qnBEHHntHD5ec-YyHPLZMhN7HooCxiLhUm4Ep0H_Asdy4qnq2crAT7LvNg34cNd_l5GiNUjPeXpXoI-Y5_QxcLEguyGP5ZLmSQ"/>
+<div class="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex items-center justify-center p-8">
+<blockquote class="serif-text text-white text-2xl italic text-center max-w-lg">
+                        "La vulnerabilidad es la cuna del amor, la pertenencia, la alegría y la empatía."
+                    </blockquote>
+</div>
+</div>
+<!-- Card 5 -->
+<article class="bg-surface-container-low rounded-lg p-8 shadow-[0_12px_40px_rgba(27,28,27,0.06)] hover:translate-y-[-4px] transition-transform">
+<div class="flex justify-between items-start mb-6">
+<span class="px-3 py-1 bg-tertiary-container/10 text-tertiary font-semibold text-[10px] tracking-widest uppercase rounded-sm">Relaciones</span>
+<div class="px-4 py-1 bg-on-secondary-container/10 text-on-secondary-container rounded-full text-xs font-bold flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-on-secondary-container rounded-full"></span>
+                        Abierto
+                    </div>
+</div>
+<h3 class="serif-text text-2xl font-bold text-on-surface mb-4 leading-tight">Poner límites sin sentir culpa</h3>
+<p class="text-secondary mb-8 text-base font-light">Me cuesta decir 'no' a mis amigos más cercanos. Siento que los traiciono si priorizo mi tiempo a solas...</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-primary font-medium">
+<span class="material-symbols-outlined text-xl" data-icon="forum">forum</span>
+<span class="text-sm">15 perspectivas</span>
+</div>
+<span class="text-xs text-outline italic">Hace 1 día</span>
+</div>
+</article>
+<!-- Card 6 -->
+<article class="bg-surface-container-low rounded-lg p-8 shadow-[0_12px_40px_rgba(27,28,27,0.06)] hover:translate-y-[-4px] transition-transform">
+<div class="flex justify-between items-start mb-6">
+<span class="px-3 py-1 bg-tertiary-container/10 text-tertiary font-semibold text-[10px] tracking-widest uppercase rounded-sm">Crianza</span>
+<div class="px-4 py-1 bg-on-secondary-container/10 text-on-secondary-container rounded-full text-xs font-bold flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-on-secondary-container rounded-full"></span>
+                        Abierto
+                    </div>
+</div>
+<h3 class="serif-text text-2xl font-bold text-on-surface mb-4 leading-tight">Adolescencia y comunicación</h3>
+<p class="text-secondary mb-8 text-base font-light">Mi hija ha dejado de hablarme sobre su día. Sé que es normal, pero me gustaría saber cómo mantener el puente abierto.</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-primary font-medium">
+<span class="material-symbols-outlined text-xl" data-icon="forum">forum</span>
+<span class="text-sm">6 perspectivas</span>
+</div>
+<span class="text-xs text-outline italic">Hace 3 horas</span>
+</div>
+</article>
+</div>
+<!-- Infinite Scroll Indicator -->
+<div class="mt-16 flex flex-col items-center gap-4">
+<div class="w-10 h-10 border-2 border-outline-variant/30 border-t-primary rounded-full animate-spin"></div>
+<span class="text-secondary text-sm font-medium tracking-wide">Cargando más reflexiones...</span>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 backdrop-blur-2xl bg-[#faf9f7]/80 dark:bg-[#1b1c1b]/90 shadow-[0_-12px_40px_rgba(27,28,27,0.06)] rounded-t-[3rem]">
+<!-- Inicio (Active) -->
+<a class="flex flex-col items-center justify-center bg-[#f5f3f1] dark:bg-[#252625] text-[#91462e] rounded-full px-5 py-2 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Inicio</span>
+</a>
+<!-- Crear -->
+<a class="flex flex-col items-center justify-center text-[#546258] dark:text-[#d5e3d7] hover:opacity-80 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Crear</span>
+</a>
+<!-- Notificaciones -->
+<a class="flex flex-col items-center justify-center text-[#546258] dark:text-[#d5e3d7] hover:opacity-80 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Notificaciones</span>
+</a>
+<!-- Perfil -->
+<a class="flex flex-col items-center justify-center text-[#546258] dark:text-[#d5e3d7] hover:opacity-80 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Perfil</span>
+</a>
+</nav>
+<!-- Floating Action Button (Supressed as per logic for Feed but manually added if user needed it, here we keep clean layout) -->
+</body></html>

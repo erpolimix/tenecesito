@@ -2,10 +2,35 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { Lock, MessageSquare, Loader2 } from 'lucide-react';
+import { MessageSquare, Loader2 } from 'lucide-react';
 import { CATEGORIES } from '@/lib/constants';
 import { useInView } from 'react-intersection-observer';
 import { fetchFeedPosts } from '@/app/feed/actions';
+
+function getTimeAgoEs(dateString?: string) {
+    if (!dateString) return 'Hace un momento';
+
+    const created = new Date(dateString).getTime();
+    const now = Date.now();
+    const diffMs = Math.max(0, now - created);
+    const minutes = Math.floor(diffMs / (1000 * 60));
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (minutes < 1) return 'Hace un momento';
+    if (minutes < 60) return `Hace ${minutes} min`;
+    if (hours < 24) return `Hace ${hours} ${hours === 1 ? 'hora' : 'horas'}`;
+    if (days < 30) return `Hace ${days} ${days === 1 ? 'día' : 'días'}`;
+
+    const months = Math.floor(days / 30);
+    return `Hace ${months} ${months === 1 ? 'mes' : 'meses'}`;
+}
+
+function getExcerpt(content?: string, max = 150) {
+    if (!content) return '';
+    if (content.length <= max) return content;
+    return `${content.slice(0, max).trim()}...`;
+}
 
 export default function InfinitePostList({ 
     initialPosts, 
@@ -20,6 +45,13 @@ export default function InfinitePostList({
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(initialPosts.length >= 9);
     const [ref, inView] = useInView();
+
+    useEffect(() => {
+        // When category changes, reset infinite-scroll state to server-provided posts.
+        setPosts(initialPosts);
+        setPage(1);
+        setHasMore(initialPosts.length >= 9);
+    }, [initialPosts, categoryId]);
 
     const loadMore = useCallback(async () => {
         if (!hasMore) return;
@@ -46,8 +78,8 @@ export default function InfinitePostList({
 
     if (posts.length === 0) {
         return (
-            <div className="col-span-full text-center py-20 border-4 border-black border-dashed bg-neutral-50">
-                <p className="text-2xl font-bold uppercase text-neutral-400">Aún no hay publicaciones aquí.</p>
+            <div className="col-span-full text-center py-20 rounded-3xl border border-[var(--tn-outline)]/35 bg-white/70">
+                <p className="font-editorial text-4xl text-[var(--tn-primary)]">Aún no hay publicaciones aquí.</p>
             </div>
         );
     }
@@ -56,37 +88,47 @@ export default function InfinitePostList({
         <>
             {posts.map(post => {
                 const cat = CATEGORIES.find(c => c.id === post.category_id);
-                const isAuthor = currentUserId && post.author_id === currentUserId;
                 const responseCount = post.responses?.[0]?.count || 0;
+                const tone = {
+                    bg: cat?.softBg || 'bg-[#ece7e2]',
+                    text: cat?.softText || 'text-[#5c524d]'
+                };
+                const statusClasses = post.is_closed
+                    ? 'bg-[#e7e6eb] text-[#5f627a]'
+                    : 'bg-[#e7ece8] text-[#4f6353]';
+                const statusLabel = post.is_closed ? 'Cerrado' : 'Abierto';
+                const timeAgo = getTimeAgoEs(post.created_at);
 
                 return (
                     <Link
                         href={`/post/${post.id}`}
                         key={post.id}
-                        className="bg-white border-4 border-black p-6 cursor-pointer hover:-translate-y-2 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all flex flex-col h-full"
+                        className="bg-white/85 border border-[var(--tn-outline)]/35 rounded-3xl p-6 md:p-7 cursor-pointer hover:-translate-y-1 hover:shadow-[0_16px_35px_rgba(27,28,27,0.12)] transition-all flex flex-col h-full"
                     >
                         <div className="flex items-start justify-between mb-4">
-                            <span className={`text-xs font-black uppercase px-3 py-1 border-2 border-black ${cat?.bg}`}>
+                            <span className={`text-xs font-semibold uppercase tracking-[0.14em] px-3 py-1 rounded-sm ${tone.bg} ${tone.text}`}>
                                 {cat?.name}
                             </span>
-                            {post.is_closed && (
-                                <span className="flex items-center gap-1 text-xs font-bold uppercase bg-black text-white px-2 py-1">
-                                    <Lock size={12} /> Cerrada
-                                </span>
-                            )}
+                            <span className={`flex items-center gap-2 text-xs font-semibold rounded-full px-3 py-1 ${statusClasses}`}>
+                                <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
+                                {statusLabel}
+                            </span>
                         </div>
 
-                        <h3 className="text-2xl font-black leading-tight mb-4 flex-grow break-words">
+                        <h3 className="font-editorial text-3xl font-bold leading-tight mb-4 flex-grow break-words text-[var(--tn-text)]">
                             {post.title}
                         </h3>
 
-                        <div className="mt-4 pt-4 border-t-4 border-black flex items-center justify-between text-sm font-bold uppercase">
-                            <span className="text-neutral-500">Alguien necesita ayuda</span>
-                            {isAuthor && (
-                                <span className="flex items-center gap-1 bg-[#FFD93D] px-2 py-1 border-2 border-black">
-                                    <MessageSquare size={14} /> {responseCount}
-                                </span>
-                            )}
+                        <p className="text-[#67706c] text-[1.1rem] leading-relaxed mb-6">
+                            {getExcerpt(post.content)}
+                        </p>
+
+                        <div className="mt-4 pt-4 border-t border-[var(--tn-outline)]/25 flex items-center justify-between text-sm">
+                            <span className="flex items-center gap-2 text-[var(--tn-primary)] font-semibold">
+                                <MessageSquare size={14} />
+                                {responseCount} perspectiva{responseCount === 1 ? '' : 's'} compartida{responseCount === 1 ? '' : 's'}
+                            </span>
+                            <span className="text-[#91857f] italic">{timeAgo}</span>
                         </div>
                     </Link>
                 );
@@ -94,13 +136,13 @@ export default function InfinitePostList({
             
             {hasMore && (
                 <div ref={ref} className="col-span-full py-10 flex justify-center items-center">
-                    <Loader2 className="animate-spin text-neutral-400" size={32} />
+                    <Loader2 className="animate-spin text-[var(--tn-primary)]" size={30} />
                 </div>
             )}
             
             {!hasMore && posts.length > 0 && (
                 <div className="col-span-full text-center py-10">
-                    <p className="text-sm font-bold uppercase text-neutral-400">Has llegado al final</p>
+                    <p className="text-sm text-[var(--tn-muted)]">Has llegado al final</p>
                 </div>
             )}
         </>

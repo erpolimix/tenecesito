@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#76321c",
+                    "secondary-fixed-dim": "#bccabe",
+                    "surface-bright": "#faf9f7",
+                    "primary": "#91462e",
+                    "on-primary-fixed": "#3a0b00",
+                    "surface-container-low": "#f5f3f1",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#1c1c18",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "surface-container-highest": "#e3e2e0",
+                    "on-tertiary-fixed-variant": "#474742",
+                    "tertiary-fixed": "#e5e2db",
+                    "surface-dim": "#dbdad8",
+                    "outline-variant": "#dac1ba",
+                    "outline": "#87736d",
+                    "primary-fixed-dim": "#ffb59e",
+                    "on-background": "#1b1c1b",
+                    "surface": "#faf9f7",
+                    "on-primary-container": "#fffbff",
+                    "inverse-primary": "#ffb59e",
+                    "tertiary-fixed-dim": "#c9c6c0",
+                    "secondary": "#546258",
+                    "surface-container": "#efeeec",
+                    "on-surface-variant": "#54433e",
+                    "surface-variant": "#e3e2e0",
+                    "tertiary": "#5d5c57",
+                    "on-tertiary-container": "#fdffdd",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#d8e6da",
+                    "inverse-surface": "#303130",
+                    "on-error": "#ffffff",
+                    "primary-container": "#af5e44",
+                    "on-secondary-fixed-variant": "#3d4a41",
+                    "tertiary-container": "#76756f",
+                    "surface-container-high": "#e9e8e6",
+                    "on-secondary-fixed": "#121e17",
+                    "secondary-container": "#d5e3d7",
+                    "surface-tint": "#944930",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#ffdbd0",
+                    "on-surface": "#1b1c1b",
+                    "on-secondary-container": "#58665c",
+                    "background": "#faf9f7",
+                    "inverse-on-surface": "#f2f0ef"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1, h2, h3 { font-family: 'Newsreader', serif; }
+        .line-height-editorial { line-height: 1.6; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed">
+<!-- TopAppBar -->
+<header class="bg-[#faf9f7] dark:bg-[#1b1c1b]/80 shadow-[0_12px_40px_rgba(27,28,27,0.06)] docked full-width top-0 sticky z-50 flex justify-between items-center px-6 py-4 backdrop-blur-xl">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#91462e] dark:text-[#af5e44] hover:bg-[#e3e2e0]/50 transition-colors p-2 rounded-full cursor-pointer">menu</span>
+<h1 class="text-2xl font-bold tracking-tight text-[#91462e] dark:text-[#af5e44] font-['Newsreader'] tracking-tighter leading-[1.6x]">Mi Actividad</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-8 items-center font-['Newsreader'] tracking-tighter">
+<span class="text-[#546258] dark:text-[#d5e3d7] cursor-pointer hover:bg-[#e3e2e0]/50 transition-colors px-2 py-1 rounded">Inicio</span>
+<span class="text-[#546258] dark:text-[#d5e3d7] cursor-pointer hover:bg-[#e3e2e0]/50 transition-colors px-2 py-1 rounded">Crear</span>
+<span class="text-[#546258] dark:text-[#d5e3d7] cursor-pointer hover:bg-[#e3e2e0]/50 transition-colors px-2 py-1 rounded">Notificaciones</span>
+<span class="text-[#91462e] font-bold cursor-pointer transition-colors px-2 py-1 rounded">Perfil</span>
+</nav>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-outline-variant/15">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a person with a warm smile in soft natural lighting with a clean neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCopYma-KwmxqVE2KvlMF44Jz2Gren-FDboLjPXYWuNUd4EwRRICvA_ZVu37eBZs0mHPlloKXVhtXst1Dtv2K4oQFotaISBk6oMl_Ec4eI5AK7GlerbJCf4GcfwR69-k6tm0Cu_8sc0aXGeUJnOnRRhtoO52V_2HzEutnvKAV_kLhjowKcvkdHPFH1swmWdtGwP8GXBr0VOGqIYeJu5j042VPSx_e4MN8NFLuZtCzJxDY-kJvl9VdIxOUNPBKNMgjkEXz-a4sM_tA"/>
+</div>
+</div>
+</header>
+<main class="max-w-4xl mx-auto px-6 pt-10 pb-32">
+<!-- Summary Cards Section -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+<div class="bg-surface-container-low p-8 rounded-lg relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 opacity-5 group-hover:scale-110 transition-transform duration-700">
+<span class="material-symbols-outlined text-[8rem]">article</span>
+</div>
+<p class="text-secondary font-medium tracking-wide text-xs uppercase mb-2">Total de publicaciones</p>
+<h2 class="text-5xl font-headline font-bold text-primary">12</h2>
+<p class="text-on-surface-variant text-sm mt-4 font-body leading-relaxed">Has compartido 12 necesidades con la comunidad.</p>
+</div>
+<div class="bg-secondary-container p-8 rounded-lg relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 opacity-5 group-hover:scale-110 transition-transform duration-700">
+<span class="material-symbols-outlined text-[8rem]">chat_bubble_outline</span>
+</div>
+<p class="text-on-secondary-container font-medium tracking-wide text-xs uppercase mb-2">Respuestas nuevas</p>
+<h2 class="text-5xl font-headline font-bold text-on-secondary-container">03</h2>
+<div class="mt-4 flex items-center gap-2">
+<span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+<p class="text-on-secondary-container text-sm font-medium font-body">Pendientes de revisión</p>
+</div>
+</div>
+</section>
+<!-- Tabs Section -->
+<div class="flex gap-4 mb-8">
+<button class="bg-secondary text-on-secondary px-8 py-3 rounded-full text-sm font-bold tracking-tight shadow-sm transition-transform active:scale-95">Activas</button>
+<button class="bg-surface-container-highest text-on-surface-variant px-8 py-3 rounded-full text-sm font-medium hover:bg-surface-variant transition-colors">Cerradas</button>
+</div>
+<!-- Content Area: List or Empty State -->
+<div class="space-y-6">
+<!-- Active Post Item -->
+<div class="bg-surface-container-low p-6 md:p-8 rounded-lg hover:bg-surface-container transition-all duration-300 group cursor-pointer">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+<div class="space-y-3">
+<div class="flex items-center gap-3 text-sm text-secondary font-medium">
+<span>Hace 2 días</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="text-primary-container">Salud Mental</span>
+</div>
+<h3 class="text-2xl font-headline leading-tight text-on-surface">Buscando un espacio seguro para conversar sobre el duelo</h3>
+<p class="text-on-surface-variant line-height-editorial max-w-2xl font-body">Hola comunidad, estoy pasando por un momento difícil y me gustaría saber si alguien conoce grupos de apoyo...</p>
+</div>
+<div class="flex flex-col items-start md:items-end gap-3">
+<div class="bg-primary-fixed px-4 py-2 rounded-full flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="text-on-primary-fixed-variant font-bold text-sm">3 respuestas nuevas</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors mt-2">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Second Post Item -->
+<div class="bg-surface-container-low p-6 md:p-8 rounded-lg hover:bg-surface-container transition-all duration-300 group cursor-pointer opacity-80">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+<div class="space-y-3">
+<div class="flex items-center gap-3 text-sm text-secondary font-medium">
+<span>Hace 1 semana</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="text-primary-container">Ayuda Técnica</span>
+</div>
+<h3 class="text-2xl font-headline leading-tight text-on-surface">Necesito ayuda configurando un equipo médico en casa</h3>
+<p class="text-on-surface-variant line-height-editorial max-w-2xl font-body">Recién adquirimos un concentrador de oxígeno y tenemos dudas sobre el mantenimiento preventivo...</p>
+</div>
+<div class="flex flex-col items-start md:items-end gap-3">
+<div class="text-outline font-medium text-sm px-4 py-2">Sin respuestas nuevas</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors mt-2">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Empty State Simulation (Hidden for demo, but available) -->
+<div class="hidden flex-col items-center justify-center py-24 text-center px-6">
+<div class="w-24 h-24 bg-surface-container-highest rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-4xl">edit_note</span>
+</div>
+<h3 class="text-3xl font-headline text-on-surface mb-4">Aún no has compartido ninguna necesidad.</h3>
+<p class="text-on-surface-variant max-w-md line-height-editorial font-body italic mb-10">"El primer paso es el más valiente."</p>
+<button class="bg-primary text-on-primary px-10 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-opacity">Crear mi primera entrada</button>
+</div>
+</div>
+</main>
+<!-- FAB for Create (Contextual) -->
+<button class="fixed bottom-24 right-6 md:right-12 bg-primary text-on-primary w-16 h-16 rounded-full shadow-2xl flex items-center justify-center z-[60] active:scale-90 transition-transform group">
+<span class="material-symbols-outlined text-3xl group-hover:rotate-90 transition-transform duration-300">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#faf9f7]/80 dark:bg-[#1b1c1b]/90 backdrop-blur-2xl rounded-t-[3rem] shadow-[0_-12px_40px_rgba(27,28,27,0.06)]">
+<div class="flex flex-col items-center justify-center text-[#546258] dark:text-[#d5e3d7] hover:opacity-80 active:scale-90 transition-transform cursor-pointer">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Inicio</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#546258] dark:text-[#d5e3d7] hover:opacity-80 active:scale-90 transition-transform cursor-pointer">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Crear</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#546258] dark:text-[#d5e3d7] hover:opacity-80 active:scale-90 transition-transform cursor-pointer">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Notificaciones</span>
+</div>
+<!-- Active Tab: Perfil -->
+<div class="flex flex-col items-center justify-center bg-[#f5f3f1] dark:bg-[#252625] text-[#91462e] rounded-full px-5 py-2 active:scale-90 transition-transform cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Perfil</span>
+</div>
+</nav>
+</body></html>

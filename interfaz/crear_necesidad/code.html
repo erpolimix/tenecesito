@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TENECESITO - Crear Situación</title>
+<!-- Google Fonts: Newsreader & Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600;6..72,700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#76321c",
+                    "secondary-fixed-dim": "#bccabe",
+                    "surface-bright": "#faf9f7",
+                    "primary": "#91462e",
+                    "on-primary-fixed": "#3a0b00",
+                    "surface-container-low": "#f5f3f1",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#1c1c18",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "surface-container-highest": "#e3e2e0",
+                    "on-tertiary-fixed-variant": "#474742",
+                    "tertiary-fixed": "#e5e2db",
+                    "surface-dim": "#dbdad8",
+                    "outline-variant": "#dac1ba",
+                    "outline": "#87736d",
+                    "primary-fixed-dim": "#ffb59e",
+                    "on-background": "#1b1c1b",
+                    "surface": "#faf9f7",
+                    "on-primary-container": "#fffbff",
+                    "inverse-primary": "#ffb59e",
+                    "tertiary-fixed-dim": "#c9c6c0",
+                    "secondary": "#546258",
+                    "surface-container": "#efeeec",
+                    "on-surface-variant": "#54433e",
+                    "surface-variant": "#e3e2e0",
+                    "tertiary": "#5d5c57",
+                    "on-tertiary-container": "#fdffdd",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#d8e6da",
+                    "inverse-surface": "#303130",
+                    "on-error": "#ffffff",
+                    "primary-container": "#af5e44",
+                    "on-secondary-fixed-variant": "#3d4a41",
+                    "tertiary-container": "#76756f",
+                    "surface-container-high": "#e9e8e6",
+                    "on-secondary-fixed": "#121e17",
+                    "secondary-container": "#d5e3d7",
+                    "surface-tint": "#944930",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#ffdbd0",
+                    "on-surface": "#1b1c1b",
+                    "on-secondary-container": "#58665c",
+                    "background": "#faf9f7",
+                    "inverse-on-surface": "#f2f0ef"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #faf9f7;
+            color: #1b1c1b;
+            line-height: 1.6;
+        }
+        .serif-headline {
+            font-family: 'Newsreader', serif;
+        }
+        .glass-nav {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-[#faf9f7] dark:bg-[#1b1c1b]/80 shadow-[0_12px_40px_rgba(27,28,27,0.06)] sticky top-0 z-50 flex justify-between items-center px-6 py-4 backdrop-blur-xl">
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-[#e3e2e0]/50 transition-colors rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[#91462e]">arrow_back</span>
+</button>
+<h1 class="text-2xl font-bold tracking-tight text-[#91462e] dark:text-[#af5e44] font-['Newsreader'] tracking-tighter leading-[1.6x]">
+                TENECESITO
+            </h1>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/15">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Professional portrait of a woman with a kind expression, soft natural indoor lighting, neutral warm background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnAD7MHk-9BmtWqVvGrEVkwg5GOEtoP3SSfYuwr-Vmetktn9s6Pbe6jn_2N5zyeRGKH7kP8Bl80wbFys2c8qJHSvodAPt0M8obbuoQUDLhaHcsBEPhuAYIuA8YIdHShIw_xSVTH9u918Fw_tDzS1ZJ3e3wY76lX_uxbx8ypvikIkr-pzGPHZBrvVB4m7cf5U0Ck27LuOYqJV0_ndlscVYvuRE2xGDChSntHEH59YtYYoWiAsUCB5v8oY1Xu306GDR0SeBl3kFc6Q"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow container mx-auto max-w-2xl px-6 pt-8 pb-32">
+<!-- Header Section (Asymmetric Editorial Style) -->
+<section class="mb-12">
+<span class="inline-block px-4 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold mb-4 tracking-widest uppercase">Nuevo Registro</span>
+<h2 class="serif-headline text-5xl font-bold text-on-surface -tracking-widest leading-tight mb-4">
+                Comparte lo que <br/><span class="text-primary italic">estás sintiendo.</span>
+</h2>
+<p class="text-secondary max-w-md text-lg leading-relaxed">
+                Este es un espacio para la vulnerabilidad radical. Cada palabra que escribes es un paso hacia la sanación colectiva.
+            </p>
+</section>
+<!-- Creation Form -->
+<form class="space-y-8">
+<!-- Category Selector -->
+<div class="space-y-3">
+<label class="block text-sm font-semibold tracking-wide text-on-surface-variant px-1">Seleccionar Categoría</label>
+<div class="relative group">
+<select class="w-full appearance-none bg-surface-container-highest border-none rounded-lg py-4 px-5 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer">
+<option>Apoyo emocional</option>
+<option>Duelo y pérdida</option>
+<option>Crisis existencial</option>
+<option>Logros personales</option>
+<option>Solo quiero ser escuchado</option>
+</select>
+<div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Title Input -->
+<div class="space-y-3">
+<label class="block text-sm font-semibold tracking-wide text-on-surface-variant px-1">Título de tu situación</label>
+<input class="w-full bg-surface-container-highest border-none rounded-lg py-4 px-5 text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Dale un nombre a este momento..." type="text"/>
+</div>
+<!-- Detailed Textarea -->
+<div class="space-y-3">
+<label class="block text-sm font-semibold tracking-wide text-on-surface-variant px-1">Cuéntanos con detalle</label>
+<textarea class="w-full bg-surface-container-highest border-none rounded-lg py-4 px-5 text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 transition-all resize-none" placeholder="Este es un espacio seguro. No hay juicios aquí, solo escucha y empatía profunda..." rows="8"></textarea>
+</div>
+<!-- Helper & Safety Text -->
+<div class="flex gap-4 p-6 bg-surface-container-low rounded-lg border border-outline-variant/15">
+<span class="material-symbols-outlined text-primary shrink-0">shield_person</span>
+<div class="space-y-1">
+<p class="text-sm font-bold text-on-surface">Privacidad y Seguridad</p>
+<p class="text-xs text-secondary leading-relaxed">
+                        Tu publicación puede ser anónima. Moderamos cada entrada para asegurar que este siga siendo un refugio seguro para todos. Nunca compartiremos tus datos con terceros.
+                    </p>
+</div>
+</div>
+<!-- Submit Button -->
+<div class="pt-4 pb-8">
+<button class="w-full bg-primary text-on-primary font-bold py-5 rounded-xl shadow-[0_12px_40px_rgba(145,70,46,0.15)] hover:opacity-90 active:scale-[0.98] transition-all flex justify-center items-center gap-2" type="submit">
+<span>Compartir mi situación</span>
+<span class="material-symbols-outlined text-lg">send</span>
+</button>
+</div>
+</form>
+<!-- Mood Visual Decoration (Bento Style Sub-section) -->
+<div class="grid grid-cols-2 gap-4 mt-8">
+<div class="bg-tertiary-container/10 p-6 rounded-lg flex flex-col justify-between aspect-square">
+<span class="material-symbols-outlined text-primary text-3xl">lightbulb</span>
+<p class="text-sm font-medium text-on-surface-variant">¿No sabes por dónde empezar? Intenta describir cómo se siente tu cuerpo hoy.</p>
+</div>
+<div class="relative rounded-lg overflow-hidden aspect-square">
+<img alt="Inspiration" class="w-full h-full object-cover" data-alt="Dreamy close-up of delicate white flowers with soft sunlight filtering through petals, creating a sense of peace and hope" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD11XN4wM_g4KoYqZJaGjwAlzWrXUXjn9vXa3YkRKNEio0rdiU_Af4lEmffTpxnK4rHo8WKe0SbGeqZGlrGG10YzHQ1rgW1ZaOuMUBD_aB9Jjd9N4niajURW2x6v5bkjTU-QHvy7IUVSw8EmkWHGQBFLcJbpBNFUr9GvCrjrR_rDuDiW_wtFrTwRY0G9HrencJzrHVg5j6-kIT7wUBaMqAcBualLZqJLlmLV-4V80MxHlxEKsPt_njge37zlFZ1yloO9ujTArUyTQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 backdrop-blur-2xl bg-[#faf9f7]/80 dark:bg-[#1b1c1b]/90 shadow-[0_-12px_40px_rgba(27,28,27,0.06)] rounded-t-[3rem]">
+<!-- Inicio -->
+<a class="flex flex-col items-center justify-center text-[#546258] dark:text-[#d5e3d7] hover:opacity-80 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Inicio</span>
+</a>
+<!-- Crear (ACTIVE) -->
+<a class="flex flex-col items-center justify-center bg-[#f5f3f1] dark:bg-[#252625] text-[#91462e] rounded-full px-5 py-2 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-bold mt-1">Crear</span>
+</a>
+<!-- Notificaciones -->
+<a class="flex flex-col items-center justify-center text-[#546258] dark:text-[#d5e3d7] hover:opacity-80 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Notificaciones</span>
+</a>
+<!-- Perfil -->
+<a class="flex flex-col items-center justify-center text-[#546258] dark:text-[#d5e3d7] hover:opacity-80 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Perfil</span>
+</a>
+</nav>
+</body></html>

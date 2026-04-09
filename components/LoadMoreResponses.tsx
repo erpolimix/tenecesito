@@ -36,7 +36,7 @@ export default function LoadMoreResponses({
 
     return (
         <div className="space-y-6 mt-12">
-            <h2 className="text-3xl font-black uppercase tracking-tight mb-8">
+            <h2 className="font-editorial text-4xl md:text-5xl font-bold tracking-tight mb-8 text-[var(--tn-primary)]">
                 {totalCount} Perspectivas
             </h2>
 
@@ -44,11 +44,11 @@ export default function LoadMoreResponses({
                 {responses.map((response) => (
                     <div
                         key={response.id}
-                        className="bg-white border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all"
+                        className="bg-white border border-[var(--tn-outline)]/30 rounded-2xl p-6 hover:-translate-y-1 hover:shadow-[0_12px_26px_rgba(27,28,27,0.1)] transition-all"
                     >
-                        <p className="text-xl leading-relaxed font-medium">{response.content}</p>
-                        <div className="mt-4 pt-4 border-t-2 border-black flex items-center justify-between">
-                            <span className="text-xs font-black uppercase text-neutral-400">
+                        <p className="text-lg leading-relaxed">{response.content}</p>
+                        <div className="mt-4 pt-4 border-t border-[var(--tn-outline)]/25 flex items-center justify-between">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[var(--tn-muted)]">
                                 {new Date(response.created_at).toLocaleDateString('es-ES', {
                                     year: 'numeric',
                                     month: 'long',
@@ -65,18 +65,18 @@ export default function LoadMoreResponses({
                     <button
                         onClick={handleLoadMore}
                         disabled={loading}
-                        className="bg-white border-4 border-black px-8 py-3 font-black uppercase shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:bg-[#FFD93D] transition-all flex items-center gap-2 mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="bg-white border border-[var(--tn-outline)]/35 px-8 py-3 font-semibold uppercase rounded-full hover:bg-[var(--tn-surface)] transition-colors flex items-center gap-2 mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {loading ? (
-                            <Loader2 size={24} className="animate-spin text-black" />
+                            <Loader2 size={22} className="animate-spin text-[var(--tn-primary)]" />
                         ) : (
                             <>
-                                <Plus size={24} strokeWidth={3} />
-                                Cargar más elementos..
+                                <Plus size={22} strokeWidth={2.5} />
+                                Cargar más elementos
                             </>
                         )}
                     </button>
-                    <p className="mt-4 text-xs font-bold uppercase text-neutral-400">
+                    <p className="mt-4 text-xs text-[var(--tn-muted)]">
                         Mostrando {responses.length} de {totalCount} recibidas
                     </p>
                 </div>

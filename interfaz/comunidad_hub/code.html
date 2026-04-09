@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#f2f0ef",
+                    "secondary-fixed": "#d8e6da",
+                    "background": "#faf9f7",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#58665c",
+                    "on-primary-container": "#fffbff",
+                    "surface-dim": "#dbdad8",
+                    "primary-container": "#af5e44",
+                    "tertiary-fixed": "#e5e2db",
+                    "tertiary": "#5d5c57",
+                    "error": "#ba1a1a",
+                    "surface-container": "#efeeec",
+                    "primary": "#91462e",
+                    "outline": "#87736d",
+                    "surface-container-highest": "#e3e2e0",
+                    "surface-bright": "#faf9f7",
+                    "secondary-container": "#d5e3d7",
+                    "surface-container-low": "#f5f3f1",
+                    "on-tertiary-fixed-variant": "#474742",
+                    "surface-tint": "#944930",
+                    "surface": "#faf9f7",
+                    "secondary-fixed-dim": "#bccabe",
+                    "on-secondary-fixed": "#121e17",
+                    "inverse-primary": "#ffb59e",
+                    "primary-fixed-dim": "#ffb59e",
+                    "surface-variant": "#e3e2e0",
+                    "outline-variant": "#dac1ba",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed": "#3a0b00",
+                    "inverse-surface": "#303130",
+                    "on-background": "#1b1c1b",
+                    "tertiary-fixed-dim": "#c9c6c0",
+                    "tertiary-container": "#76756f",
+                    "on-primary": "#ffffff",
+                    "surface-container-high": "#e9e8e6",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#1c1c18",
+                    "on-tertiary-container": "#fdffdd",
+                    "on-surface-variant": "#54433e",
+                    "on-secondary-fixed-variant": "#3d4a41",
+                    "error-container": "#ffdad6",
+                    "secondary": "#546258",
+                    "primary-fixed": "#ffdbd0",
+                    "on-surface": "#1b1c1b",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed-variant": "#76321c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
+        }
+        .serif-text {
+            font-family: 'Newsreader', serif;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="bg-[#faf9f7] dark:bg-stone-950 sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-bold font-['Newsreader'] text-[#91462e] dark:text-[#c26d52] tracking-tighter leading-[1.6x]">
+                TeNecesito
+            </div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-[#e3e2e0]/50 transition-colors duration-200">
+<span class="material-symbols-outlined text-stone-500" data-icon="search">search</span>
+</button>
+<button class="p-2 rounded-full hover:bg-[#e3e2e0]/50 transition-colors duration-200">
+<span class="material-symbols-outlined text-stone-500" data-icon="notifications">notifications</span>
+</button>
+<img alt="User profile avatar" class="w-8 h-8 rounded-full object-cover border border-outline-variant/15" data-alt="Close-up portrait of a woman with a gentle expression and soft natural lighting in a garden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKA4JAk2lRS7E3-5-zwBmhU9vvIF1wr-lBwhaaP1DvgB8plYqg6DOB_AUdPHsJVcyeZkz2vwCAsL055iOp2LaAxU9b5ZjzDY_FZp1aksnOiZsOtIwTZyQR1_zr5Qe8aGvH3N7jsDjircnzLHibyyvLHmChSb2rXL59bz6Kz6vZuaCH7QBoYWVa-HRQu8-00ptT2BiZtvI-uwh12zhEynDwHYXKcYsoJTAkH_xZT-zggTd9S85iCNjkdOJG41qLaEq-cWOhXZjDDQ"/>
+</div>
+</div>
+</header>
+<main class="max-w-screen-xl mx-auto px-6 pt-8 space-y-16">
+<!-- Header Section -->
+<section class="max-w-3xl">
+<h1 class="serif-text text-5xl md:text-7xl font-light text-primary tracking-tight mb-6">Nuestra Comunidad</h1>
+<p class="text-lg md:text-xl text-on-surface-variant font-light leading-relaxed">
+                Creemos en el poder transformador de las historias compartidas. Aquí, cada perspectiva es un puente y cada necesidad una oportunidad para tejer vínculos de empatía genuina.
+            </p>
+</section>
+<!-- Impacto Comunitario (Bento Style) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="md:col-span-2 bg-surface-container-low rounded-lg p-10 flex flex-col justify-between">
+<div>
+<h2 class="serif-text text-3xl text-primary mb-2">Impacto Comunitario</h2>
+<p class="text-stone-500 italic">El eco de nuestra presencia compartida.</p>
+</div>
+<div class="grid grid-cols-2 gap-8 mt-12">
+<div>
+<span class="block serif-text text-5xl text-primary">12,480</span>
+<span class="text-sm font-medium uppercase tracking-widest text-stone-400">perspectivas compartidas</span>
+</div>
+<div>
+<span class="block serif-text text-5xl text-primary">8,102</span>
+<span class="text-sm font-medium uppercase tracking-widest text-stone-400">necesidades atendidas</span>
+</div>
+</div>
+</div>
+<div class="relative bg-secondary-container rounded-lg overflow-hidden p-8 aspect-square md:aspect-auto">
+<div class="relative z-10">
+<span class="material-symbols-outlined text-4xl text-on-secondary-container mb-4" data-icon="favorite">favorite</span>
+<h3 class="serif-text text-2xl text-on-secondary-container">Un espacio seguro para el alma.</h3>
+</div>
+<img class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-multiply" data-alt="Soft focused hands holding a warm ceramic cup of tea with soft afternoon sunlight streaming in" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoJqvS7c5xO-R7-iMQ17llmg1jaj5WEqgTSrT3VEWQly3_DeVFdeCXi3vopmmTcD37GOKkhBeb4LPn8qg-OI5DpYETqaM7ou4euyvfI-uTUmceDMADV-bzawuT7xQQ4AqfkTzDj9tzNMKG0hD26EpaAhy908UGYD1gIsbaZOp-axtSqeoyLQG8LBRbFpA8tnpe0fvfHhvDIXc9-FJwY22oF8IqKMKtOw4Ax8fz1Aw6kCwgCM_vA2VXeFziajgjDRcU0jl8bNalqQ"/>
+</div>
+</section>
+<!-- Voces Destacadas -->
+<section>
+<div class="flex items-end justify-between mb-10">
+<h2 class="serif-text text-4xl text-on-surface">Voces Destacadas</h2>
+<a class="text-primary font-medium hover:underline flex items-center gap-2" href="#">
+                    Ver todos los guías <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Contributor 1 -->
+<div class="bg-surface-container-low p-8 rounded-lg flex flex-col items-center text-center">
+<img class="w-24 h-24 rounded-full mb-6 object-cover shadow-sm" data-alt="Portrait of a mature man with graying hair and kind eyes wearing a linen shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIJ_C-Y_rNz8D_aeTMCpG0kxeIO_fF9M74zo5Ytj92B4vA4rxAufqnGTqv6tIWBex6dC0Ann3a9VVuXHEQQoIqNa8MP21oTnCxjsPcde86TLUL4PAmQH3dR2rpTrNcP_Puh_IOBOfCvckEEFLHiRbqhv-qzZ_FR_DwtPHEmoUx9fJ3n3uAR7E_Tjg1w6TOtinNHhxG-iJkCy_jV5MKAvNye3_Mx6E9DRI-To-JwkDZb1719N4Gr2afV8APJzid-BfAB9BQyrxL8A"/>
+<h3 class="serif-text text-xl font-medium">Elena Rivas</h3>
+<p class="text-stone-500 text-sm mb-4 italic leading-relaxed">"Escuchar es el primer paso para sanar juntos."</p>
+<div class="flex flex-wrap justify-center gap-2">
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-xs rounded-sm">#Duelo</span>
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-xs rounded-sm">#Paternidad</span>
+</div>
+</div>
+<!-- Contributor 2 -->
+<div class="bg-surface-container-low p-8 rounded-lg flex flex-col items-center text-center">
+<img class="w-24 h-24 rounded-full mb-6 object-cover shadow-sm" data-alt="Portrait of a young man with a peaceful expression in a sunlit library" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr1xdyPLBTioNjH6wyx3B0kekQ8HYqpFGK_dJGBxbzanrlOBTRfVmp1hgstEZrgPZp85D5GDTqbtS43K_68sIc3y2oXgJyeBs45bW7UiDN9Q5A899K5yZIOBTYO6Nif4Ua59qjfbIpYmPTgKpqmQKd9cd98Z_6XrgZfoaUUnsuhnZ4zCEOwIEXczEdY4va0DVuD93dOHURUczFSXIq_orq2-w4uoNs3IPtO3UYX_zlytELMMxAS-QNLjkCJB7c8qb7rmspMRxsYQ"/>
+<h3 class="serif-text text-xl font-medium">Julián Soto</h3>
+<p class="text-stone-500 text-sm mb-4 italic leading-relaxed">"Tu carrera es un viaje, no una carrera contra el tiempo."</p>
+<div class="flex flex-wrap justify-center gap-2">
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-xs rounded-sm">#Carrera</span>
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-xs rounded-sm">#Propósito</span>
+</div>
+</div>
+<!-- Contributor 3 -->
+<div class="bg-surface-container-low p-8 rounded-lg flex flex-col items-center text-center">
+<img class="w-24 h-24 rounded-full mb-6 object-cover shadow-sm" data-alt="Portrait of a woman smiling warmly with natural curls against a soft beige wall" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkIu6LSdNiP-5mSpuNy7GVPZVZyyK9BmhXa4qKMDeK4kO_a5mTJTIa_tFPEoflK1AXtpZlk7c2aAl7ej39lt1YRiroDH7iu_nl9U9o7sn17ODQo5NUCHYpeVSsL5tVHZz_HaFq4wFi3rJz4S7-T3EJy3_MEIXvFnJwJnl9ad0MgNdu75OumppltoRLPnpXBHo0tFguj9loPlPRjj5wSvQFpbcBwPAOIXvcEOBd5Wxdy39QFnbjli6trXZaXWihmKj8Atry2-DWbA"/>
+<h3 class="serif-text text-xl font-medium">Marta López</h3>
+<p class="text-stone-500 text-sm mb-4 italic leading-relaxed">"Encontremos luz en los momentos de mayor sombra."</p>
+<div class="flex flex-wrap justify-center gap-2">
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-xs rounded-sm">#Ansiedad</span>
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-xs rounded-sm">#Bienestar</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Historias de Luz -->
+<section class="bg-surface-container-highest/30 rounded-lg p-12 overflow-hidden relative">
+<h2 class="serif-text text-4xl text-on-surface mb-12 relative z-10">Historias de Luz</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
+<div class="space-y-6">
+<div class="bg-white/60 backdrop-blur-sm p-8 rounded-lg shadow-sm border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-xs font-bold tracking-widest text-primary uppercase">Cerrado con gratitud</span>
+</div>
+<p class="serif-text text-xl italic text-on-surface mb-4">"No sabía cómo empezar de nuevo tras mi mudanza. Julián me escuchó y me dio la perspectiva que necesitaba para ver esto como un renacer."</p>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-fixed rounded-full flex items-center justify-center text-primary font-bold">A</div>
+<div>
+<p class="text-sm font-semibold">Andrea M.</p>
+<p class="text-xs text-stone-500">Bogotá, Colombia</p>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-6 md:mt-12">
+<div class="bg-white/60 backdrop-blur-sm p-8 rounded-lg shadow-sm border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-xs font-bold tracking-widest text-primary uppercase">Cerrado con gratitud</span>
+</div>
+<p class="serif-text text-xl italic text-on-surface mb-4">"Elena me acompañó en mi duelo por meses. Su guía fue el ancla que evitó que me hundiera. Hoy vuelvo a sonreír."</p>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-fixed rounded-full flex items-center justify-center text-primary font-bold">R</div>
+<div>
+<p class="text-sm font-semibold">Ricardo P.</p>
+<p class="text-xs text-stone-500">Madrid, España</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Decorative organic shape -->
+<div class="absolute -bottom-24 -right-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+</section>
+<!-- Círculos de Apoyo -->
+<section>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+<div>
+<h2 class="serif-text text-4xl text-on-surface">Círculos de Apoyo</h2>
+<p class="text-on-surface-variant">Sesiones grupales mensuales para compartir y crecer.</p>
+</div>
+<button class="bg-primary text-on-primary px-8 py-3 rounded-xl font-medium hover:opacity-90 transition-opacity">
+                    Inscribirse ahora
+                </button>
+</div>
+<div class="flex gap-6 overflow-x-auto pb-8 scrollbar-hide">
+<div class="flex-shrink-0 w-80 bg-tertiary-container text-on-tertiary-container p-8 rounded-lg">
+<span class="text-xs font-bold tracking-widest uppercase mb-4 block">15 de Octubre</span>
+<h3 class="serif-text text-2xl mb-4">Resiliencia en el entorno laboral</h3>
+<p class="text-sm opacity-80 mb-6">Un taller para gestionar el estrés y encontrar equilibrio.</p>
+<div class="flex -space-x-3">
+<img class="w-8 h-8 rounded-full border-2 border-tertiary-container object-cover" data-alt="Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7-PupyU11RKlAcYJWRXz_1OLTG_rmTLTSf5tzC9bVRCb9gPoeOo7Wpyobfb_ZEamsrBC-wMOo0pgl7i-4jA5-1OJpNEbd1rA2b12BQZluivZWAMcb7dBR2_E8eLuOYBZjYTDpAv8d0voqIl4xvZ8gGOYcSG_C7lOcpkGzcyAfxGfZuQ537wGuwY1rlroICwqNOtKvoc5gKGSz3c-iu6GJWfJdKVCWN8epcr7JvtyZ8U6IV03ucaT_hxqK8yxEqp9Dhnb13ihxYg"/>
+<img class="w-8 h-8 rounded-full border-2 border-tertiary-container object-cover" data-alt="Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCptxOK1Whb11dBQOks8LCS4h_-D8RoLCYb6tlBAP3cLd_j2QiJeGag0p59ifDAkRNKWp-kuNzmFR7j1HDqphJIOQm6TTk1YsWt_vB7kuBUTcfTL8ovkVxYVwX1qXQXqd0pt2c4LTKuQblbUgHX0OO5ZeewqIf3UFXDcPBZN_8fNYGUCX_XJIuK08fMD9eMNRu_NXnoQYtb-zpI6umYG_lsgectSn9ddOZRkwqvY8TOJYOyKn2XukfE4ktfNxYV9_XWjO96oSM_ZA"/>
+<img class="w-8 h-8 rounded-full border-2 border-tertiary-container object-cover" data-alt="Avatar" src=""/>
+<div class="w-8 h-8 rounded-full bg-surface/20 flex items-center justify-center text-[10px] font-bold">+12</div>
+</div>
+</div>
+<div class="flex-shrink-0 w-80 bg-secondary-container text-on-secondary-container p-8 rounded-lg">
+<span class="text-xs font-bold tracking-widest uppercase mb-4 block">22 de Octubre</span>
+<h3 class="serif-text text-2xl mb-4">Nuevos comienzos: El arte de soltar</h3>
+<p class="text-sm opacity-80 mb-6">Herramientas emocionales para transiciones de vida.</p>
+<div class="flex -space-x-3">
+<img class="w-8 h-8 rounded-full border-2 border-secondary-container object-cover" data-alt="Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtJfl8BsRL6OlJLQIlJiSxJpXzCWpUMdqTNlIrKEfCT7L3OCG5YGrzPHjSoXA_comSdd8tUH5yKOQ8sYGiPaV1ESyuO1EWPNZERCt7BI3BWhjMNp_5mN5PzEqEPnQ4sDRi8glZKAwbtpvi-mFtKsk_m-hWCnRmgjWcTxjSMWWisu7zPjlHTFCRoLlC7C1nbTuG4vio8XHP_uxMNmJ4tyVAitcAc3bRgdO6aOgVeGUcRK1PWP4ArdfaCCwA3awIP2mXGengvkYj4Q"/>
+<img class="w-8 h-8 rounded-full border-2 border-secondary-container object-cover" data-alt="Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDH5_U5H2eQFwhsQa5uo0dJLTtAGGWq-6RoMdSwCOg0-eYJURprHk4HcpLAKyohhV1ibVabYt4FEkqAqMQu4F2Fz05dJnGuVYHIyTAJX_F6t3y47Fm-alMnqw5oTBX8i33Q9kCII_Q7f3f0mN5fv2EAQ895_uI2nByPmVvKaiLvS3bXO7rH1J3k4CX8E13ruzC-dUP0rViMx_Mfjl6_Gwh4xaNWARtVik9dhqvnnMGVmxcKRjfjtshd4VyFGVfxulSQ_3WGlk54uw"/>
+<div class="w-8 h-8 rounded-full bg-surface/20 flex items-center justify-center text-[10px] font-bold">+8</div>
+</div>
+</div>
+<div class="flex-shrink-0 w-80 bg-surface-container-low border border-outline-variant/15 p-8 rounded-lg flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-4xl text-primary mb-4" data-icon="add_circle">add_circle</span>
+<h3 class="serif-text text-xl">¿Tienes una idea?</h3>
+<p class="text-sm text-stone-500">Propón un nuevo círculo de apoyo para la comunidad.</p>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="py-20 text-center">
+<h2 class="serif-text text-5xl text-primary mb-6">Únete a la conversación</h2>
+<p class="text-on-surface-variant max-w-xl mx-auto mb-10 text-lg">Tu historia puede ser la luz que alguien más está buscando hoy. Comienza compartiendo tu primera perspectiva.</p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+<button class="w-full sm:w-auto bg-primary text-on-primary px-10 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all">
+                    Explora el feed
+                </button>
+<button class="w-full sm:w-auto px-10 py-4 rounded-xl font-semibold text-primary hover:bg-surface-container transition-colors">
+                    Cómo funciona
+                </button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#faf9f7]/80 dark:bg-stone-950/80 backdrop-blur-xl shadow-[0_-12px_40px_rgba(27,28,27,0.06)] rounded-t-[3rem]">
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-5 py-2 hover:text-[#91462e] transition-colors scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#af5e44] text-white rounded-full px-5 py-2 scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="group" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium">Comunidad</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-5 py-2 hover:text-[#91462e] transition-colors scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium">Historias</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-5 py-2 hover:text-[#91462e] transition-colors scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium">Perfil</span>
+</a>
+</nav>
+</body></html>

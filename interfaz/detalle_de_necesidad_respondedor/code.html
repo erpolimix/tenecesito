@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#76321c",
+                    "secondary-fixed-dim": "#bccabe",
+                    "surface-bright": "#faf9f7",
+                    "primary": "#91462e",
+                    "on-primary-fixed": "#3a0b00",
+                    "surface-container-low": "#f5f3f1",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#1c1c18",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "surface-container-highest": "#e3e2e0",
+                    "on-tertiary-fixed-variant": "#474742",
+                    "tertiary-fixed": "#e5e2db",
+                    "surface-dim": "#dbdad8",
+                    "outline-variant": "#dac1ba",
+                    "outline": "#87736d",
+                    "primary-fixed-dim": "#ffb59e",
+                    "on-background": "#1b1c1b",
+                    "surface": "#faf9f7",
+                    "on-primary-container": "#fffbff",
+                    "inverse-primary": "#ffb59e",
+                    "tertiary-fixed-dim": "#c9c6c0",
+                    "secondary": "#546258",
+                    "surface-container": "#efeeec",
+                    "on-surface-variant": "#54433e",
+                    "surface-variant": "#e3e2e0",
+                    "tertiary": "#5d5c57",
+                    "on-tertiary-container": "#fdffdd",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#d8e6da",
+                    "inverse-surface": "#303130",
+                    "on-error": "#ffffff",
+                    "primary-container": "#af5e44",
+                    "on-secondary-fixed-variant": "#3d4a41",
+                    "tertiary-container": "#76756f",
+                    "surface-container-high": "#e9e8e6",
+                    "on-secondary-fixed": "#121e17",
+                    "secondary-container": "#d5e3d7",
+                    "surface-tint": "#944930",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#ffdbd0",
+                    "on-surface": "#1b1c1b",
+                    "on-secondary-container": "#58665c",
+                    "background": "#faf9f7",
+                    "inverse-on-surface": "#f2f0ef"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
+        }
+        .serif-editorial {
+            font-family: 'Newsreader', serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface selection:bg-primary/20">
+<!-- TopAppBar -->
+<header class="bg-[#faf9f7] dark:bg-[#1b1c1b]/80 shadow-[0_12px_40px_rgba(27,28,27,0.06)] flex justify-between items-center px-6 py-4 backdrop-blur-xl docked full-width top-0 sticky z-50">
+<div class="flex items-center gap-4">
+<button class="hover:bg-[#e3e2e0]/50 transition-colors p-2 rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[#91462e] dark:text-[#af5e44]">arrow_back</span>
+</button>
+<h1 class="font-['Newsreader'] tracking-tighter leading-[1.6x] text-2xl font-bold tracking-tight text-[#91462e] dark:text-[#af5e44]">TENECESITO</h1>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="close-up portrait of a thoughtful person in soft natural morning light, editorial aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxlHvBacpBckFnq7jNnzfWMXRdYFK-bcUzpWq-4kBY6dr5YYOocDNUyr1aFHKaDV-JU2161XQlswBznkBvSsAgxTz6H0TvfBMtJPvqAoac9BCKZ4hT1_RiwR0Iy6L4Bxj4X25u1fza-0TTKiH87s7PW8bG4iDhgZAVc76xFqzj09TglyzPZJ80nfGP4udHwB8TwSotYv1sqGu0encG4616aRwAzethbItre4LbB_E5BBQoOPJjKuT1Ej_Q5Wp2wHZNlh-pXKq9YQ"/>
+</div>
+</div>
+</header>
+<main class="max-w-3xl mx-auto px-6 py-8 pb-32">
+<!-- Post Context Section -->
+<article class="relative">
+<!-- Asymmetric Layout Decoration -->
+<div class="absolute -left-12 top-0 hidden lg:block">
+<span class="text-6xl text-outline-variant/20 serif-editorial italic opacity-40">“</span>
+</div>
+<div class="flex items-center gap-4 mb-6">
+<span class="px-4 py-1.5 rounded-full bg-secondary-container text-on-secondary-container font-medium text-sm">Necesito perspectiva</span>
+<span class="text-sm text-secondary font-medium italic opacity-70">Publicado hace 2 horas</span>
+</div>
+<h2 class="serif-editorial text-4xl font-semibold tracking-tight text-on-surface mb-8 leading-tight">
+                ¿Cómo soltar la expectativa de perfección en un nuevo proyecto creativo?
+            </h2>
+<div class="space-y-6 text-lg text-on-surface-variant mb-12">
+<p>
+                    Llevo meses postergando el inicio de mi diario visual. Cada vez que abro la primera página en blanco, siento una presión inmensa por que cada trazo sea "digno" de ser compartido o guardado para siempre. 
+                </p>
+<p>
+                    Me encuentro atrapado en el análisis, buscando la paleta de colores perfecta y el estilo ideal, en lugar de simplemente permitirme sentir el proceso. ¿Alguien más ha pasado por este bloqueo? ¿Cómo transitaron del miedo al error hacia la libertad de la expresión?
+                </p>
+</div>
+<!-- Reflection Bar / Moods -->
+<div class="flex gap-4 overflow-x-auto pb-4 mb-12 no-scrollbar">
+<div class="flex-shrink-0 px-6 py-4 rounded-lg bg-tertiary-container/10 border border-outline-variant/15 flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary">exposure</span>
+<span class="text-sm font-medium text-tertiary">Sentimiento: Vulnerable</span>
+</div>
+<div class="flex-shrink-0 px-6 py-4 rounded-lg bg-secondary-container/20 border border-outline-variant/15 flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">brush</span>
+<span class="text-sm font-medium text-secondary">Tema: Creatividad</span>
+</div>
+</div>
+</article>
+<!-- Response Area (Dynamic Logic) -->
+<section class="mt-16 pt-12 border-t border-outline-variant/15">
+<!-- STATE 1: Open & Not Responded (Primary Task) -->
+<div class="space-y-6">
+<div class="flex flex-col gap-2 mb-4">
+<h3 class="serif-editorial text-2xl font-medium text-primary">Tu perspectiva</h3>
+<p class="text-on-surface-variant text-sm">Comparte una reflexión honesta y empática. Recuerda que este es un espacio de acompañamiento.</p>
+</div>
+<div class="bg-surface-container-low rounded-xl p-1 shadow-sm transition-focus-within ring-1 ring-outline-variant/10 focus-within:ring-primary/40">
+<textarea class="w-full bg-transparent border-none focus:ring-0 placeholder:text-outline p-6 text-lg resize-none" placeholder="Escribe aquí tu perspectiva..." rows="6"></textarea>
+</div>
+<div class="flex justify-end pt-4">
+<button class="bg-primary text-on-primary px-10 py-4 rounded-xl font-semibold shadow-[0_8px_24px_rgba(145,70,46,0.15)] hover:opacity-90 active:scale-95 transition-all flex items-center gap-3">
+<span>Ofrecer perspectiva</span>
+<span class="material-symbols-outlined text-xl">send</span>
+</button>
+</div>
+</div>
+<!-- STATE 2: Already Responded (Hidden by default, used for demonstration) -->
+<div class="mt-16 hidden">
+<div class="bg-secondary-container/30 rounded-lg p-8 text-center border border-secondary/10">
+<span class="material-symbols-outlined text-4xl text-secondary mb-3" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<h4 class="text-xl font-bold text-on-secondary-container mb-2">Ya has compartido tu perspectiva. Gracias.</h4>
+<p class="text-on-secondary-container/80 text-sm">Tu aporte está ayudando a construir este archivo sentimental.</p>
+</div>
+</div>
+<!-- STATE 3: Closed (Hidden by default, used for demonstration) -->
+<div class="mt-16 hidden">
+<div class="bg-surface-container-highest rounded-lg p-8 text-center grayscale border border-outline-variant/20">
+<span class="material-symbols-outlined text-4xl text-tertiary mb-3">lock</span>
+<h4 class="text-xl font-bold text-[#5C627D] mb-2 font-['Newsreader']">Esta publicación está cerrada.</h4>
+<p class="text-[#5C627D]/70 text-sm">Ya no admite nuevas respuestas, pero puedes leer las reflexiones existentes.</p>
+</div>
+</div>
+</section>
+<!-- Contextual Card: Supporting Image -->
+<aside class="mt-20">
+<div class="rounded-lg overflow-hidden bg-surface-container-low p-3 shadow-sm rotate-1 aspect-video relative group">
+<img alt="Creative workspace" class="w-full h-full object-cover rounded-md opacity-90 group-hover:opacity-100 transition-opacity" data-alt="overhead view of a minimalist wooden desk with an open blank journal, a ceramic cup of coffee, and soft window light shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUGzXbUr2AVf-lGlgRUT0rmf8ZExXBYhNjvmj9JeyTAt1DWOsOqvrS9MlBR7y71KsRqW3KpgOjuGg-D_RGXht53tQSIGPJ7pedn5fj_94_XBe7dUVmFP5Hg8qvXt1ANeAWvhRwBuQhSxuJLWhld5IQm63CfJB06z-uWsKfN4aWXRRVPaW7S-va_qlGtG2NW5Diiu4KesiQxw_aGFuIVBtCqDSwfQV-6pUNfddWLyl8vwf-4_Fhzt9QzDqdGW2kfgkt9WEVQPNa0Q"/>
+<div class="absolute bottom-6 left-6 right-6">
+<p class="text-white text-xs font-medium uppercase tracking-widest drop-shadow-md">Inspiración del día</p>
+</div>
+</div>
+</aside>
+</main>
+<!-- BottomNavBar (Shared Component) -->
+<nav class="bg-[#faf9f7]/80 dark:bg-[#1b1c1b]/90 fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 backdrop-blur-2xl shadow-[0_-12px_40px_rgba(27,28,27,0.06)] rounded-t-[3rem] no-line-rule tonal-transition">
+<!-- Inicio -->
+<a class="flex flex-col items-center justify-center text-[#546258] dark:text-[#d5e3d7] hover:opacity-80 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Inicio</span>
+</a>
+<!-- Crear -->
+<a class="flex flex-col items-center justify-center text-[#546258] dark:text-[#d5e3d7] hover:opacity-80 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Crear</span>
+</a>
+<!-- Notificaciones (Active for Detail view intent usually relates to interaction) -->
+<a class="flex flex-col items-center justify-center text-[#546258] dark:text-[#d5e3d7] hover:opacity-80 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Notificaciones</span>
+</a>
+<!-- Perfil (Selected if we consider user journey focused on their response) -->
+<!-- Logic: Defaulting to first item 'Inicio' as general nav, but 'Crear' is often the activity. Mapping to 'Inicio' for global context. -->
+<a class="flex flex-col items-center justify-center text-[#546258] dark:text-[#d5e3d7] hover:opacity-80 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-medium mt-1">Perfil</span>
+</a>
+</nav>
+<!-- Floating Shadow Correction/Depth Overlay -->
+<div class="fixed inset-0 pointer-events-none z-40 bg-gradient-to-t from-surface/20 to-transparent h-32 bottom-0"></div>
+</body></html>

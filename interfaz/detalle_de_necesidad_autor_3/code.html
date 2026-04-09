@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TENECESITO - Gestión de Publicación</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed-variant": "#76321c",
+                      "secondary-fixed-dim": "#bccabe",
+                      "surface-bright": "#faf9f7",
+                      "primary": "#91462e",
+                      "on-primary-fixed": "#3a0b00",
+                      "surface-container-low": "#f5f3f1",
+                      "error": "#ba1a1a",
+                      "on-tertiary-fixed": "#1c1c18",
+                      "error-container": "#ffdad6",
+                      "on-error-container": "#93000a",
+                      "surface-container-highest": "#e3e2e0",
+                      "on-tertiary-fixed-variant": "#474742",
+                      "tertiary-fixed": "#e5e2db",
+                      "surface-dim": "#dbdad8",
+                      "outline-variant": "#dac1ba",
+                      "outline": "#87736d",
+                      "primary-fixed-dim": "#ffb59e",
+                      "on-background": "#1b1c1b",
+                      "surface": "#faf9f7",
+                      "on-primary-container": "#fffbff",
+                      "inverse-primary": "#ffb59e",
+                      "tertiary-fixed-dim": "#c9c6c0",
+                      "secondary": "#546258",
+                      "surface-container": "#efeeec",
+                      "on-surface-variant": "#54433e",
+                      "surface-variant": "#e3e2e0",
+                      "tertiary": "#5d5c57",
+                      "on-tertiary-container": "#fdffdd",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed": "#d8e6da",
+                      "inverse-surface": "#303130",
+                      "on-error": "#ffffff",
+                      "primary-container": "#af5e44",
+                      "on-secondary-fixed-variant": "#3d4a41",
+                      "tertiary-container": "#76756f",
+                      "surface-container-high": "#e9e8e6",
+                      "on-secondary-fixed": "#121e17",
+                      "secondary-container": "#d5e3d7",
+                      "surface-tint": "#944930",
+                      "on-primary": "#ffffff",
+                      "primary-fixed": "#ffdbd0",
+                      "on-surface": "#1b1c1b",
+                      "on-secondary-container": "#58665c",
+                      "background": "#faf9f7",
+                      "inverse-on-surface": "#f2f0ef"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Newsreader"],
+                      "body": ["Plus Jakarta Sans"],
+                      "label": ["Plus Jakarta Sans"]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1, h2, h3 { font-family: 'Newsreader', serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<nav class="bg-[#faf9f7] dark:bg-[#1b1c1b]/80 shadow-[0_12px_40px_rgba(27,28,27,0.06)] flex justify-between items-center px-6 py-4 backdrop-blur-xl sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-[#e3e2e0]/50 transition-colors rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[#91462e] dark:text-[#af5e44]">arrow_back</span>
+</button>
+<h1 class="text-2xl font-bold tracking-tight text-[#91462e] dark:text-[#af5e44] font-['Newsreader'] tracking-tighter leading-[1.6x]">TENECESITO</h1>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full border border-outline-variant/15 hover:bg-[#e3e2e0]/50 transition-colors text-[#546258] font-medium text-sm">
+<span class="material-symbols-outlined text-sm">share</span>
+<span>Compartir</span>
+</button>
+<img alt="Profile" class="w-10 h-10 rounded-full object-cover" data-alt="Close-up portrait of a thoughtful woman with natural lighting and soft editorial aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGSxTKFdlgaCnocrnG9hGkkZ9SolPi9m_vj52c-RToTDmFKDRlOMma4XU8iGGshgBhxMQwQPHS3UJO-GByof11ek165mE5nOOCyNhEJJvJoHp0v_OUS9hyMpplgw58xDKdZqwfQwmtNnBYFACMRaIxXYNael4F5Bd5tuE4AH5zbH4kF-zZjUoltSgJidumLKxp25qIaBBu8CMJVESFUTgMCDKD6PP_e9P1hKp5SBOELG4SpxAHwlHsml8YLncCflJOurU2DR5BBg"/>
+</div>
+</nav>
+<main class="max-w-4xl mx-auto px-6 py-8 pb-32">
+<!-- Post Header & Body -->
+<section class="space-y-6">
+<div class="flex items-center gap-3">
+<span class="bg-secondary-container text-on-secondary-container px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                    Abierto
+                </span>
+<span class="text-on-surface-variant text-sm font-medium">Publicado hace 2 días</span>
+</div>
+<div class="bg-surface-container-low rounded-xl p-8 md:p-12 relative overflow-hidden">
+<!-- Warm Editorial Card -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+<div class="relative z-10">
+<h2 class="text-4xl md:text-5xl font-bold text-on-surface leading-[1.1] tracking-tight mb-8">
+                        Busco consejo para transitar un duelo laboral después de 10 años.
+                    </h2>
+<p class="text-lg md:text-xl text-on-surface-variant leading-[1.6] max-w-2xl font-body">
+                        Siento que he perdido una parte de mi identidad. El lugar donde crecí profesionalmente ya no existe para mí, y me cuesta imaginar el siguiente paso sin sentir una profunda nostalgia. ¿Alguien ha pasado por esto?
+                    </p>
+<div class="mt-10 flex flex-wrap gap-2">
+<span class="bg-surface-container-highest px-4 py-2 rounded-lg text-sm text-on-surface-variant font-medium">#Carrera</span>
+<span class="bg-surface-container-highest px-4 py-2 rounded-lg text-sm text-on-surface-variant font-medium">#SaludMental</span>
+<span class="bg-surface-container-highest px-4 py-2 rounded-lg text-sm text-on-surface-variant font-medium">#Transiciones</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Responses Section -->
+<section class="mt-16">
+<div class="flex items-end justify-between mb-10">
+<div>
+<h3 class="text-3xl font-bold text-on-surface leading-tight">4 perspectivas recibidas</h3>
+<p class="text-on-surface-variant mt-2 font-body">Tómate tu tiempo para procesar cada mirada.</p>
+</div>
+</div>
+<div class="space-y-6">
+<!-- Response Card (New) -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-[0_12px_40px_rgba(27,28,27,0.06)] border-l-4 border-primary transition-all hover:translate-x-1">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<img alt="User avatar" class="w-10 h-10 rounded-full object-cover" data-alt="Portrait of an older man with glasses, looking calm and empathetic, warm studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBV1T7ujBQmEv13DtNqwhHWF7Y0unEXr3l9FNjvdMi18YFKUkxfZ9Dr5TM-9d7GmGxy8ohl_jr-MAAj4PjKY4V-Ji05MP23jwlpncppEsB7Zp9esCffr5Ybb9erCdyJ2FTXfdQmKb_BStRM_eRW1JEMTK4BfYkDuC2n47KoJseJn4xn-6k2YiXUEeBuBmn1ycOe6SYWiB89XND1UegEW_mkgS908VWyNRISWMh_5QQZ5rmzfsbokOlj5cBdnNhgNylDUpdApr1waQ"/>
+<div>
+<h4 class="font-bold text-on-surface">Mateo R.</h4>
+<p class="text-xs text-on-surface-variant">Especialista en psicología organizacional</p>
+</div>
+</div>
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest">Nueva</span>
+</div>
+<p class="text-on-surface-variant leading-[1.6] mb-6">
+                        Lo que sientes es un duelo legítimo. No solo perdiste un empleo, perdiste un ecosistema social y una rutina que te definía. Date permiso para estar triste antes de intentar "solucionar" tu futuro. La identidad es fluida, aunque hoy se sienta estancada.
+                    </p>
+<div class="flex justify-between items-center border-t border-outline-variant/10 pt-4 flex justify-end pt-2">
+<button class="flex items-center gap-2 text-on-surface-variant/60 hover:text-secondary transition-colors">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+<span class="text-sm font-medium">Marcar como leído</span>
+</button>
+</div>
+</div>
+<!-- Response Card (Read) -->
+<div class="bg-surface-container-low/50 rounded-lg p-6 opacity-80">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<img alt="User avatar" class="w-10 h-10 rounded-full object-cover" data-alt="Close-up of a smiling young woman with curly hair, natural outdoor lighting, soft focus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCShl-8c5W_xFpzcQ5qfHfCumzEVzRJ4yHeLWdKUPLQ1GdPTYiBuyTYFLC0g0ERcT_weapP7pKg7GSpAT78iiP8NWj_euV-runRZnL-dlyWmczY8FzUWWpfgaXBVJBli2JQxcK5zqH4GBbrcof6g2zvvD05PKaCayCIgaV2_6aqtb43w7c6eLJ_y-5iK6KbbZeu1_PX21NFQKO1kjGBUjhkQ0QTNQLT9CLAsLFApBVZx65OTvsp5SyxeASEB4ht095fv_U0tkn9Ig"/>
+<div>
+<h4 class="font-bold text-on-surface">Carla S.</h4>
+<p class="text-xs text-on-surface-variant">Sobreviviente de 'burnout'</p>
+</div>
+</div>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Leído</span>
+</div>
+</div>
+<p class="text-on-surface-variant leading-[1.6] mb-6 italic">
+                        "Entiendo perfectamente ese vacío. Yo estuve 12 años en una consultora y el día que me fui sentí que el suelo desaparecía. Mi consejo: busca una actividad manual que no tenga nada que ver con tu profesión."
+                    </p>
+</div>
+<!-- Response Card -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-[0_12px_40px_rgba(27,28,27,0.06)]">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed-dim flex items-center justify-center text-on-tertiary-fixed font-bold">L</div>
+<div>
+<h4 class="font-bold text-on-surface">Lucía Torres</h4>
+<p class="text-xs text-on-surface-variant">Exploradora de propósitos</p>
+</div>
+</div>
+<p class="text-on-surface-variant leading-[1.6] mb-6">
+                        El primer paso es desvincular tu valor personal de tus logros laborales. Eres mucho más que ese puesto que ocupabas. ¿Qué cosas te gustaba hacer antes de esos 10 años? Ahí hay pistas.
+                    </p>
+<div class="flex justify-between items-center border-t border-outline-variant/10 pt-4 flex justify-end pt-2">
+<button class="flex items-center gap-2 text-on-surface-variant/60 hover:text-secondary">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+<span class="text-sm font-medium">Marcar como leído</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Actions for Author -->
+<div class="fixed bottom-0 left-0 w-full p-6 flex justify-center pointer-events-none z-50">
+<div class="bg-surface/80 backdrop-blur-2xl px-6 py-4 rounded-full shadow-[0_-12px_40px_rgba(27,28,27,0.08)] flex items-center gap-4 pointer-events-auto border border-outline-variant/10">
+<button class="flex items-center gap-2 bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-all px-8 py-3 rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-bold text-sm tracking-tight">Cerrar publicación</span>
+</button>
+<div class="h-6 w-[1px] bg-outline-variant/30"></div>
+<button class="p-3 bg-surface-container-highest text-on-surface-variant rounded-full hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</div>
+</div>
+<!-- Hidden Navigation (for top-level destinations only, suppressed here as it's a detail/task focused screen) -->
+<!-- However, showing BottomNavBar as defined in JSON if contextually allowed. Per rules: Suppress if Task-Focused/Close/Back action. This screen has a back button. Suppressing Nav Shell to prioritize content canvas. -->
+</body></html>

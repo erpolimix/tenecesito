@@ -24,18 +24,22 @@ export default async function Navbar() {
     const initialName = user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || '?';
 
     return (
-        <nav className="w-full bg-white border-b-4 border-black z-40 sticky top-0">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-                <Link href="/" className="text-xl sm:text-3xl font-black tracking-tighter hover:scale-105 transition-transform flex-shrink-0">
+        <nav className="w-full sticky top-0 z-50 border-b border-[var(--tn-outline)]/35 bg-[var(--tn-bg)]/85 backdrop-blur-xl">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-3">
+                <Link href="/" className="font-editorial text-2xl sm:text-4xl font-bold tracking-tight text-[var(--tn-primary)] hover:opacity-80 transition-opacity leading-none">
                     TENECESITO
                 </Link>
-                <div className="flex items-center gap-2 sm:gap-4 overflow-hidden">
+
+                <div className="flex items-center gap-2 sm:gap-3 overflow-hidden">
                     {user ? (
                         <>
-                            <Link href="/dashboard" className="relative flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 border-2 border-black rounded-full hover:bg-neutral-100 transition-colors">
-                                <Bell size={20} strokeWidth={3} />
+                            <Link
+                                href="/dashboard"
+                                className="relative flex items-center justify-center w-10 h-10 rounded-full border border-[var(--tn-outline)]/40 bg-white/60 hover:bg-[var(--tn-surface-strong)] transition-colors"
+                            >
+                                <Bell size={18} strokeWidth={2.5} />
                                 {unreadCount > 0 && (
-                                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 border-2 border-black text-[10px] font-black text-white">
+                                    <span className="absolute -top-1 -right-1 flex h-5 min-w-5 px-1 items-center justify-center rounded-full bg-[var(--tn-primary)] text-[10px] font-bold text-white">
                                         {unreadCount}
                                     </span>
                                 )}
@@ -43,23 +47,24 @@ export default async function Navbar() {
 
                             <Link
                                 href="/create"
-                                className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm font-bold uppercase bg-[#FFD93D] border-2 border-black px-2 py-1.5 sm:px-4 sm:py-2 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all"
+                                className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold bg-[var(--tn-primary)] text-white px-3 py-2 rounded-full hover:opacity-90 transition-opacity"
                             >
-                                <Plus size={18} strokeWidth={3} /> <span className="hidden sm:inline">Publicar</span>
+                                <Plus size={16} strokeWidth={2.8} />
+                                <span className="hidden sm:inline">Publicar</span>
                             </Link>
 
-                            <div className="flex items-center gap-2 sm:gap-3 sm:border-l-2 border-black sm:pl-4">
+                            <div className="flex items-center gap-2 sm:pl-2">
                                 {avatarUrl ? (
-                                    <img src={avatarUrl} alt="Avatar" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-black object-cover" />
+                                    <img src={avatarUrl} alt="Avatar" className="w-10 h-10 rounded-full border border-[var(--tn-outline)]/50 object-cover" />
                                 ) : (
-                                    <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full border-2 border-black bg-[#4D96FF] text-white font-black uppercase text-lg sm:text-xl">
+                                    <div className="w-10 h-10 flex items-center justify-center rounded-full border border-[var(--tn-outline)]/50 bg-[var(--tn-surface)] text-[var(--tn-primary)] font-bold uppercase text-base">
                                         {initialName}
                                     </div>
                                 )}
 
                                 <form action={signout}>
-                                    <button title="Cerrar sesión" className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 bg-black text-white rounded-full hover:bg-red-600 transition-colors">
-                                        <LogOut size={16} strokeWidth={3} />
+                                    <button title="Cerrar sesión" className="flex items-center justify-center w-10 h-10 rounded-full bg-[#2f2f2f] text-white hover:bg-[var(--tn-primary)] transition-colors">
+                                        <LogOut size={16} strokeWidth={2.5} />
                                     </button>
                                 </form>
                             </div>
@@ -67,9 +72,10 @@ export default async function Navbar() {
                     ) : (
                         <Link
                             href="/login"
-                            className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm font-bold uppercase bg-[#FFD93D] border-2 border-black px-2 py-1.5 sm:px-4 sm:py-2 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all"
+                            className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold bg-[var(--tn-primary)] text-white px-3 py-2 rounded-full hover:opacity-90 transition-opacity"
                         >
-                            <span className="hidden sm:inline">Acceder</span> <User size={18} strokeWidth={3} />
+                            <span className="hidden sm:inline">Acceder</span>
+                            <User size={16} strokeWidth={2.5} />
                         </Link>
                     )}
                 </div>
