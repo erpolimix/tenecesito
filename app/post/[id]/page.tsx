@@ -20,6 +20,18 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
     const cat = CATEGORIES.find(c => c.id === post.category_id);
     const isAuthor = user && post.author_id === user.id;
 
+    if (isAuthor) {
+        const { error: markReadError } = await supabase
+            .from('responses')
+            .update({ is_read: true })
+            .eq('post_id', postId)
+            .eq('is_read', false);
+
+        if (markReadError) {
+            console.error('Error marking responses as read on post detail', markReadError);
+        }
+    }
+
     let initialResponses = [];
     let totalResponsesCount = 0;
     if (isAuthor) {

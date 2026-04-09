@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Inbox, MessageSquare, ArrowRight } from 'lucide-react'
+import { ArrowLeft, Inbox, MessageSquare, ArrowRight, FileText, MessageCircleMore } from 'lucide-react'
 import { markPostResponsesAsRead, markAllAsRead } from './actions'
 import { CATEGORIES } from '@/lib/constants'
 import PendingSubmitButton from '@/components/PendingSubmitButton'
@@ -89,29 +89,38 @@ export default async function DashboardPage({
                 )}
             </div>
 
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-12">
-                <div className="bg-[var(--tn-surface)] rounded-2xl border border-[var(--tn-outline)]/25 p-7 md:p-8 relative overflow-hidden">
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <div className="bg-[#f5f3f1] rounded-3xl border border-[var(--tn-outline)]/15 p-7 md:p-8 relative overflow-hidden">
+                    <div className="absolute -right-2 -top-2 opacity-10">
+                        <FileText size={120} strokeWidth={1.6} />
+                    </div>
                     <p className="text-[11px] uppercase tracking-[0.2em] text-[var(--tn-muted)] font-semibold mb-2">Total de publicaciones</p>
-                    <h2 className="font-editorial text-6xl leading-none text-[var(--tn-primary)]">{myPosts.length}</h2>
-                    <p className="text-sm text-[var(--tn-muted)] mt-3">Has compartido tus necesidades con la comunidad.</p>
+                    <h2 className="font-editorial text-6xl md:text-7xl leading-none text-[var(--tn-primary)]">{myPosts.length}</h2>
+                    <p className="text-sm text-[var(--tn-muted)] mt-4 leading-relaxed max-w-sm">Has compartido {myPosts.length} necesidades con la comunidad.</p>
                 </div>
-                <div className="bg-[#dff0e2] rounded-2xl border border-[#c7dfcc] p-7 md:p-8 relative overflow-hidden">
-                    <p className="text-[11px] uppercase tracking-[0.2em] text-[var(--tn-muted)] font-semibold mb-2">Respuestas nuevas</p>
-                    <h2 className="font-editorial text-6xl leading-none text-[var(--tn-primary)]">{String(totalUnread).padStart(2, '0')}</h2>
-                    <p className="text-sm text-[var(--tn-muted)] mt-3">Pendientes de revisión en tus publicaciones.</p>
+                <div className="bg-[#d5e3d7] rounded-3xl border border-[#c7dfcc] p-7 md:p-8 relative overflow-hidden">
+                    <div className="absolute -right-2 -top-2 opacity-10">
+                        <MessageCircleMore size={120} strokeWidth={1.6} />
+                    </div>
+                    <p className="text-[11px] uppercase tracking-[0.2em] text-[#516458] font-semibold mb-2">Respuestas nuevas</p>
+                    <h2 className="font-editorial text-6xl md:text-7xl leading-none text-[#415a4a]">{String(totalUnread).padStart(2, '0')}</h2>
+                    <div className="mt-4 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[var(--tn-primary)] animate-pulse" />
+                        <p className="text-sm text-[#516458] font-medium">Pendientes de revisión</p>
+                    </div>
                 </div>
             </section>
 
             <div className="flex gap-3 mb-8">
                 <Link
                     href="/dashboard?status=active"
-                    className={`px-6 py-3 rounded-full text-sm font-semibold transition-colors ${selectedStatus === 'active' ? 'bg-[var(--tn-muted)] text-white' : 'bg-[var(--tn-surface-strong)] text-[var(--tn-muted)] hover:bg-[var(--tn-surface)]'}`}
+                    className={`px-8 py-3 rounded-full text-sm font-bold transition-colors ${selectedStatus === 'active' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[var(--tn-muted)] hover:bg-[#dbdad8]'}`}
                 >
                     Activas
                 </Link>
                 <Link
                     href="/dashboard?status=closed"
-                    className={`px-6 py-3 rounded-full text-sm font-semibold transition-colors ${selectedStatus === 'closed' ? 'bg-[var(--tn-muted)] text-white' : 'bg-[var(--tn-surface-strong)] text-[var(--tn-muted)] hover:bg-[var(--tn-surface)]'}`}
+                    className={`px-8 py-3 rounded-full text-sm font-bold transition-colors ${selectedStatus === 'closed' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[var(--tn-muted)] hover:bg-[#dbdad8]'}`}
                 >
                     Cerradas
                 </Link>
@@ -137,20 +146,20 @@ export default async function DashboardPage({
                             : 'Sin respuestas nuevas'
                         
                         return (
-                            <div key={post.id} className="bg-[var(--tn-surface)] rounded-2xl border border-[var(--tn-outline)]/25 p-6 md:p-8 hover:bg-[var(--tn-surface-strong)] transition-colors group">
+                            <div key={post.id} className="bg-[#f5f3f1] rounded-3xl border border-[var(--tn-outline)]/12 p-6 md:p-8 hover:bg-[#efeeec] transition-colors group">
                                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                                     <div className="space-y-3">
                                         <div className="flex items-center gap-3 text-sm text-[var(--tn-muted)] font-medium">
                                             <span>{getTimeAgoEs(post.created_at)}</span>
                                             <span className="w-1 h-1 bg-[var(--tn-outline)]/60 rounded-full" />
-                                            <span className={`${cat?.softText || 'text-[var(--tn-primary)]'} font-semibold`}>{cat?.name}</span>
+                                            <span className="text-[var(--tn-primary-soft)] font-semibold">{cat?.name}</span>
                                         </div>
-                                        <h3 className="font-editorial text-3xl md:text-4xl leading-tight text-[var(--tn-text)]">
+                                        <h3 className="font-editorial text-[2.1rem] md:text-[2.3rem] leading-[1.05] text-[var(--tn-text)]">
                                             <Link href={`/post/${post.id}`} className="hover:text-[var(--tn-primary)] transition-colors">
                                                 {post.title}
                                             </Link>
                                         </h3>
-                                        <p className="text-[var(--tn-muted)] leading-[1.6] max-w-2xl">
+                                        <p className="text-[var(--tn-muted)] leading-[1.6] max-w-2xl text-[1.07rem]">
                                             {excerpt(post.content)}
                                         </p>
                                     </div>
@@ -161,20 +170,20 @@ export default async function DashboardPage({
                                                 <input type="hidden" name="postId" value={post.id} />
                                                 <PendingSubmitButton
                                                     pendingText="Marcando..."
-                                                    className="bg-[#ffe4dc] text-[#7a3a2a] px-4 py-2 rounded-full text-sm font-semibold inline-flex items-center gap-2"
+                                                    className="bg-[#ffdbd0] text-[#76321c] px-5 py-2 rounded-full text-sm font-bold inline-flex items-center gap-2"
                                                 >
                                                     <MessageSquare size={14} />
                                                     {responseCountLabel}
                                                 </PendingSubmitButton>
                                             </form>
                                         ) : (
-                                            <div className="text-[var(--tn-outline)] font-medium text-sm px-4 py-2">
+                                            <div className="text-[#9a8f89] font-medium text-sm px-4 py-2">
                                                 {responseCountLabel}
                                             </div>
                                         )}
 
-                                        <Link href={`/post/${post.id}`} className="text-[var(--tn-outline)] group-hover:text-[var(--tn-primary)] transition-colors mt-1">
-                                            <ArrowRight size={18} />
+                                        <Link href={`/post/${post.id}`} className="text-[#c8b6ae] group-hover:text-[var(--tn-primary)] transition-colors mt-1">
+                                            <ArrowRight size={20} />
                                         </Link>
                                     </div>
                                 </div>
