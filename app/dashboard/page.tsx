@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Inbox, MessageSquare, ArrowRight, FileText, MessageCircleMore } from 'lucide-react'
+import { Inbox, MessageSquare, ArrowRight, FileText, MessageCircleMore } from 'lucide-react'
 import { markPostResponsesAsRead, markAllAsRead } from './actions'
 import { CATEGORIES } from '@/lib/constants'
 import PendingSubmitButton from '@/components/PendingSubmitButton'
@@ -71,42 +71,25 @@ export default async function DashboardPage({
     , 0)
 
     return (
-        <div className="max-w-5xl mx-auto px-5 md:px-6 py-10 md:py-12 animate-in fade-in duration-300">
-            <div className="flex items-center justify-between mb-8 gap-3">
-                <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--tn-muted)] hover:text-[var(--tn-primary)] transition-colors">
-                    <ArrowLeft size={16} strokeWidth={2.5} /> Volver al inicio
-                </Link>
-                
-                {totalUnread > 0 && (
-                    <form action={markAllAsRead}>
-                        <PendingSubmitButton
-                            pendingText="Marcando..."
-                            className="text-xs border border-[var(--tn-outline)]/35 bg-white px-4 py-2 rounded-full font-semibold uppercase hover:bg-[var(--tn-surface)] transition-colors"
-                        >
-                            Marcar todo como leído
-                        </PendingSubmitButton>
-                    </form>
-                )}
-            </div>
-
+        <main className="max-w-4xl mx-auto px-6 pt-10 pb-32 animate-in fade-in duration-300">
             <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                <div className="bg-[#f5f3f1] rounded-3xl border border-[var(--tn-outline)]/15 p-7 md:p-8 relative overflow-hidden">
-                    <div className="absolute -right-2 -top-2 opacity-10">
-                        <FileText size={120} strokeWidth={1.6} />
+                <div className="bg-[#f5f3f1] p-8 rounded-lg relative overflow-hidden group">
+                    <div className="absolute -right-4 -top-4 opacity-5 group-hover:scale-110 transition-transform duration-700">
+                        <FileText size={128} strokeWidth={1.6} />
                     </div>
-                    <p className="text-[11px] uppercase tracking-[0.2em] text-[var(--tn-muted)] font-semibold mb-2">Total de publicaciones</p>
-                    <h2 className="font-editorial text-6xl md:text-7xl leading-none text-[var(--tn-primary)]">{myPosts.length}</h2>
-                    <p className="text-sm text-[var(--tn-muted)] mt-4 leading-relaxed max-w-sm">Has compartido {myPosts.length} necesidades con la comunidad.</p>
+                    <p className="text-[#546258] font-medium tracking-wide text-xs uppercase mb-2">Total de publicaciones</p>
+                    <h2 className="font-editorial text-5xl font-bold text-[#91462e]">{myPosts.length}</h2>
+                    <p className="text-[#54433e] text-sm mt-4 leading-relaxed">Has compartido {myPosts.length} necesidades con la comunidad.</p>
                 </div>
-                <div className="bg-[#d5e3d7] rounded-3xl border border-[#c7dfcc] p-7 md:p-8 relative overflow-hidden">
-                    <div className="absolute -right-2 -top-2 opacity-10">
-                        <MessageCircleMore size={120} strokeWidth={1.6} />
+                <div className="bg-[#d5e3d7] p-8 rounded-lg relative overflow-hidden group">
+                    <div className="absolute -right-4 -top-4 opacity-5 group-hover:scale-110 transition-transform duration-700">
+                        <MessageCircleMore size={128} strokeWidth={1.6} />
                     </div>
-                    <p className="text-[11px] uppercase tracking-[0.2em] text-[#516458] font-semibold mb-2">Respuestas nuevas</p>
-                    <h2 className="font-editorial text-6xl md:text-7xl leading-none text-[#415a4a]">{String(totalUnread).padStart(2, '0')}</h2>
+                    <p className="text-[#58665c] font-medium tracking-wide text-xs uppercase mb-2">Respuestas nuevas</p>
+                    <h2 className="font-editorial text-5xl font-bold text-[#58665c]">{String(totalUnread).padStart(2, '0')}</h2>
                     <div className="mt-4 flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-[var(--tn-primary)] animate-pulse" />
-                        <p className="text-sm text-[#516458] font-medium">Pendientes de revisión</p>
+                        <span className="w-2 h-2 bg-[#91462e] rounded-full animate-pulse" />
+                        <p className="text-[#58665c] text-sm font-medium">Pendientes de revisión</p>
                     </div>
                 </div>
             </section>
@@ -114,16 +97,27 @@ export default async function DashboardPage({
             <div className="flex gap-3 mb-8">
                 <Link
                     href="/dashboard?status=active"
-                    className={`px-8 py-3 rounded-full text-sm font-bold transition-colors ${selectedStatus === 'active' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[var(--tn-muted)] hover:bg-[#dbdad8]'}`}
+                    className={`px-8 py-3 rounded-full text-sm font-bold tracking-tight shadow-sm transition-transform active:scale-95 ${selectedStatus === 'active' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[#54433e] hover:bg-[#dbdad8]'}`}
                 >
                     Activas
                 </Link>
                 <Link
                     href="/dashboard?status=closed"
-                    className={`px-8 py-3 rounded-full text-sm font-bold transition-colors ${selectedStatus === 'closed' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[var(--tn-muted)] hover:bg-[#dbdad8]'}`}
+                    className={`px-8 py-3 rounded-full text-sm font-bold tracking-tight shadow-sm transition-transform active:scale-95 ${selectedStatus === 'closed' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[#54433e] hover:bg-[#dbdad8]'}`}
                 >
                     Cerradas
                 </Link>
+
+                {totalUnread > 0 && (
+                    <form action={markAllAsRead} className="ml-auto">
+                        <PendingSubmitButton
+                            pendingText="Marcando..."
+                            className="px-5 py-3 rounded-full text-xs font-semibold uppercase border border-[#dac1ba] text-[#54433e] bg-white hover:bg-[#efeeec] transition-colors"
+                        >
+                            Marcar todo como leído
+                        </PendingSubmitButton>
+                    </form>
+                )}
             </div>
 
             {visiblePosts.length === 0 ? (
@@ -146,20 +140,20 @@ export default async function DashboardPage({
                             : 'Sin respuestas nuevas'
                         
                         return (
-                            <div key={post.id} className="bg-[#f5f3f1] rounded-3xl border border-[var(--tn-outline)]/12 p-6 md:p-8 hover:bg-[#efeeec] transition-colors group">
+                            <div key={post.id} className={`bg-[#f5f3f1] p-6 md:p-8 rounded-lg hover:bg-[#efeeec] transition-all duration-300 group cursor-pointer ${unreadResponses.length === 0 ? 'opacity-80' : ''}`}>
                                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                                     <div className="space-y-3">
-                                        <div className="flex items-center gap-3 text-sm text-[var(--tn-muted)] font-medium">
+                                        <div className="flex items-center gap-3 text-sm text-[#546258] font-medium">
                                             <span>{getTimeAgoEs(post.created_at)}</span>
-                                            <span className="w-1 h-1 bg-[var(--tn-outline)]/60 rounded-full" />
-                                            <span className="text-[var(--tn-primary-soft)] font-semibold">{cat?.name}</span>
+                                            <span className="w-1 h-1 bg-[#dac1ba] rounded-full" />
+                                            <span className="text-[#af5e44] font-semibold">{cat?.name}</span>
                                         </div>
-                                        <h3 className="font-editorial text-[2.1rem] md:text-[2.3rem] leading-[1.05] text-[var(--tn-text)]">
+                                        <h3 className="font-editorial text-2xl md:text-[2rem] leading-tight text-[#1b1c1b]">
                                             <Link href={`/post/${post.id}`} className="hover:text-[var(--tn-primary)] transition-colors">
                                                 {post.title}
                                             </Link>
                                         </h3>
-                                        <p className="text-[var(--tn-muted)] leading-[1.6] max-w-2xl text-[1.07rem]">
+                                        <p className="text-[#54433e] leading-[1.6] max-w-2xl">
                                             {excerpt(post.content)}
                                         </p>
                                     </div>
@@ -170,19 +164,19 @@ export default async function DashboardPage({
                                                 <input type="hidden" name="postId" value={post.id} />
                                                 <PendingSubmitButton
                                                     pendingText="Marcando..."
-                                                    className="bg-[#ffdbd0] text-[#76321c] px-5 py-2 rounded-full text-sm font-bold inline-flex items-center gap-2"
+                                                    className="bg-[#ffdbd0] px-4 py-2 rounded-full flex items-center gap-2 shadow-sm"
                                                 >
-                                                    <MessageSquare size={14} />
-                                                    {responseCountLabel}
+                                                    <MessageSquare size={16} className="text-[#91462e]" />
+                                                    <span className="text-[#76321c] font-bold text-sm">{responseCountLabel}</span>
                                                 </PendingSubmitButton>
                                             </form>
                                         ) : (
-                                            <div className="text-[#9a8f89] font-medium text-sm px-4 py-2">
+                                            <div className="text-[#87736d] font-medium text-sm px-4 py-2">
                                                 {responseCountLabel}
                                             </div>
                                         )}
 
-                                        <Link href={`/post/${post.id}`} className="text-[#c8b6ae] group-hover:text-[var(--tn-primary)] transition-colors mt-1">
+                                        <Link href={`/post/${post.id}`} className="text-[#dac1ba] group-hover:text-[#91462e] transition-colors mt-1">
                                             <ArrowRight size={20} />
                                         </Link>
                                     </div>
@@ -192,6 +186,6 @@ export default async function DashboardPage({
                     })}
                 </div>
             )}
-        </div>
+        </main>
     )
 }
