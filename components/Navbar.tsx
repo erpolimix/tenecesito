@@ -30,6 +30,15 @@ export default async function Navbar() {
                     TENECESITO
                 </Link>
 
+                <div className="hidden lg:flex items-center gap-2">
+                    <Link
+                        href="/comunidad"
+                        className="px-4 py-2 rounded-full text-sm font-semibold bg-[#f0ece7] border border-[var(--tn-outline)]/35 text-[var(--tn-text)] hover:bg-[#e7e2dc] transition-colors"
+                    >
+                        Comunidad
+                    </Link>
+                </div>
+
                 <div className="flex items-center gap-2 sm:gap-3 overflow-visible">
                     {user ? (
                         <>

@@ -65,6 +65,14 @@ export default async function LandingPage() {
         <p className="mt-5 max-w-2xl text-[var(--tn-muted)] text-lg">
           Elige un espacio para publicar tu necesidad y recibir perspectivas de la comunidad.
         </p>
+        <div className="mt-6">
+          <Link
+            href="/comunidad"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#f0ece7] border border-[var(--tn-outline)]/30 text-sm font-semibold text-[var(--tn-text)] hover:bg-[#e7e2dc] transition-colors"
+          >
+            Ver panel de Comunidad
+          </Link>
+        </div>
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
