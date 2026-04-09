@@ -38,6 +38,15 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
     const cat = CATEGORIES.find(c => c.id === post.category_id);
     const isAuthor = user && post.author_id === user.id;
+    const realTags = Array.isArray(post.tags)
+        ? post.tags
+            .map((tag: unknown) => String(tag).trim().replace(/^#+/, '').replace(/\s+/g, ''))
+            .filter((tag: string) => tag.length > 0)
+            .slice(0, 8)
+        : [];
+    const tagsToDisplay = realTags.length > 0
+        ? realTags
+        : [cat?.name?.replace(/\s+/g, '') || 'comunidad'];
 
     if (isAuthor) {
         const { error: markReadError } = await supabase
@@ -100,9 +109,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                             {post.content}
                         </p>
                         <div className="mt-10 flex flex-wrap gap-2">
-                            <span className="bg-[#e3e2e0] px-4 py-2 rounded-lg text-sm text-[#54433e] font-medium">#{cat?.name?.replace(/\s+/g, '') || 'Comunidad'}</span>
-                            <span className="bg-[#e3e2e0] px-4 py-2 rounded-lg text-sm text-[#54433e] font-medium">#Necesidad</span>
-                            <span className="bg-[#e3e2e0] px-4 py-2 rounded-lg text-sm text-[#54433e] font-medium">#Comunidad</span>
+                            {tagsToDisplay.map((tag: string) => (
+                                <span key={tag} className="bg-[#e3e2e0] px-4 py-2 rounded-lg text-sm text-[#54433e] font-medium">#{tag}</span>
+                            ))}
                         </div>
                     </div>
                 </div>

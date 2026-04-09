@@ -12,6 +12,7 @@ export default function CreatePage() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [category, setCategory] = useState(CATEGORIES[0].id);
+    const [tags, setTags] = useState('');
 
     const handleSubmit = async (formData: FormData) => {
         formData.append('categoryId', category);
@@ -86,6 +87,22 @@ export default function CreatePage() {
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                         />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3 flex justify-between">
+                            <span>Tags</span>
+                            <span className="text-[var(--tn-outline)]">Hasta 8, separados por coma</span>
+                        </label>
+                        <input
+                            type="text"
+                            name="tags"
+                            placeholder="#duelo, #carrera, #transicion"
+                            className="w-full p-4 bg-white border border-[var(--tn-outline)]/35 rounded-2xl text-base focus:outline-none focus:border-[var(--tn-primary)] transition-colors"
+                            value={tags}
+                            onChange={(e) => setTags(e.target.value)}
+                        />
+                        <p className="mt-2 text-xs text-[var(--tn-muted)]">Puedes escribirlos con o sin #. Se limpiarán automáticamente al guardar.</p>
                     </div>
 
                     <div className="flex gap-3 p-5 rounded-2xl bg-[var(--tn-surface)] border border-[var(--tn-outline)]/20">

@@ -4,6 +4,26 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
+function parseTags(rawTags: string | undefined) {
+    if (!rawTags) return [] as string[]
+
+    const unique = new Set<string>()
+    for (const piece of rawTags.split(',')) {
+        const normalized = piece
+            .trim()
+            .replace(/^#+/, '')
+            .replace(/\s+/g, '')
+            .toLowerCase()
+
+        if (!normalized) continue
+        if (normalized.length < 2 || normalized.length > 24) continue
+        unique.add(normalized)
+        if (unique.size >= 8) break
+    }
+
+    return Array.from(unique)
+}
+
 export async function respondToPost(formData: FormData) {
     const supabase = await createClient();
     const content = (formData.get('content') as string)?.trim();
@@ -63,6 +83,8 @@ export async function updatePost(formData: FormData) {
     const title = (formData.get('title') as string)?.trim();
     const content = (formData.get('content') as string)?.trim();
     const categoryId = formData.get('categoryId') as string;
+    const tagsRaw = formData.get('tags') as string | null;
+    const tags = parseTags(tagsRaw || undefined);
 
     if (!postId) throw new Error('Publicación inválida');
     if (!title || title.length < 8) throw new Error('El título debe tener al menos 8 caracteres');
@@ -88,6 +110,7 @@ export async function updatePost(formData: FormData) {
             title,
             content,
             category_id: categoryId,
+            tags,
         })
         .eq('id', postId)
         .eq('author_id', user.id);

@@ -27,6 +27,10 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
         redirect(`/post/${postId}`)
     }
 
+    const tagsValue = Array.isArray(post.tags)
+        ? post.tags.join(', ')
+        : ''
+
     return (
         <main className="max-w-3xl mx-auto px-5 py-10 md:py-12 animate-in fade-in duration-300">
             <Link href={`/post/${postId}`} className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--tn-muted)] hover:text-[var(--tn-primary)] transition-colors mb-8">
@@ -80,6 +84,18 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
                                 minLength={20}
                                 className="w-full p-4 bg-white border border-[var(--tn-outline)]/35 rounded-2xl min-h-[220px] resize-y text-lg focus:outline-none focus:border-[var(--tn-primary)] transition-colors"
                             />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Tags</label>
+                            <input
+                                type="text"
+                                name="tags"
+                                defaultValue={tagsValue}
+                                placeholder="#duelo, #carrera, #transicion"
+                                className="w-full p-4 bg-white border border-[var(--tn-outline)]/35 rounded-2xl text-base focus:outline-none focus:border-[var(--tn-primary)] transition-colors"
+                            />
+                            <p className="mt-2 text-xs text-[var(--tn-muted)]">Hasta 8 tags separados por coma. Puedes incluir o no el símbolo #.</p>
                         </div>
 
                         <div className="pt-2 flex justify-end">
