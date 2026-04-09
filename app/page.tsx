@@ -1,7 +1,59 @@
 import Link from 'next/link';
 import { CATEGORIES } from '@/lib/constants';
+import { createClient } from '@/lib/supabase/server';
 
-export default function LandingPage() {
+type PostSummary = {
+  id: string;
+  category_id: string;
+  author_id: string;
+};
+
+export default async function LandingPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { data: openPosts, error: openPostsError } = await supabase
+    .from('posts')
+    .select('id, category_id, author_id')
+    .eq('is_closed', false);
+
+  if (openPostsError) {
+    console.error('Error fetching open posts summary for home', openPostsError);
+  }
+
+  const safeOpenPosts = (openPosts || []) as PostSummary[];
+  const totalByCategory = new Map<string, number>();
+
+  for (const post of safeOpenPosts) {
+    totalByCategory.set(post.category_id, (totalByCategory.get(post.category_id) || 0) + 1);
+  }
+
+  const pendingByCategory = new Map<string, number>();
+  if (user?.id) {
+    const { data: myResponses, error: myResponsesError } = await supabase
+      .from('responses')
+      .select('post_id')
+      .eq('author_id', user.id);
+
+    if (myResponsesError) {
+      console.error('Error fetching user interactions for home summary', myResponsesError);
+    }
+
+    const interactedPostIds = new Set<string>((myResponses || []).map((r) => r.post_id));
+
+    for (const post of safeOpenPosts) {
+      if (post.author_id === user.id) {
+        interactedPostIds.add(post.id);
+      }
+    }
+
+    for (const post of safeOpenPosts) {
+      if (!interactedPostIds.has(post.id)) {
+        pendingByCategory.set(post.category_id, (pendingByCategory.get(post.category_id) || 0) + 1);
+      }
+    }
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-5 py-10 md:py-14">
       <section className="mb-10 md:mb-12">
@@ -19,6 +71,8 @@ export default function LandingPage() {
         {CATEGORIES.map((cat, index) => {
           const Icon = cat.icon;
           const large = index === 0;
+          const openCount = totalByCategory.get(cat.id) || 0;
+          const pendingCount = user?.id ? (pendingByCategory.get(cat.id) || 0) : null;
 
           return (
             <Link
@@ -33,6 +87,19 @@ export default function LandingPage() {
                   <p className={`text-xs uppercase tracking-[0.18em] font-semibold ${cat.softText}`}>Categoría</p>
                   <h2 className="font-editorial text-4xl md:text-5xl font-bold leading-tight mt-3 text-[var(--tn-text)]">{cat.name}</h2>
                   <p className="mt-4 text-sm md:text-base font-medium text-[var(--tn-muted)]">{cat.desc}</p>
+
+                  <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div className="rounded-xl bg-white/55 border border-black/10 px-4 py-3">
+                      <p className="text-[10px] uppercase tracking-[0.15em] text-[var(--tn-muted)] font-semibold">Abiertas ahora</p>
+                      <p className="text-2xl font-editorial font-bold text-[var(--tn-text)] leading-none mt-2">{openCount}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/55 border border-black/10 px-4 py-3">
+                      <p className="text-[10px] uppercase tracking-[0.15em] text-[var(--tn-muted)] font-semibold">Sin tu interacción</p>
+                      <p className="text-2xl font-editorial font-bold text-[var(--tn-primary)] leading-none mt-2">
+                        {pendingCount !== null ? pendingCount : '—'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
                 <div className="w-14 h-14 rounded-full bg-white/45 border border-black/10 flex items-center justify-center shrink-0 group-hover:rotate-6 transition-transform">
                   <Icon size={26} strokeWidth={2} />
