@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function fetchFeedPosts(limit: number, offset: number, categoryId?: string) {
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
 
     // Using range for pagination: range(from, to) inclusive
     let query = supabase
@@ -11,6 +12,10 @@ export async function fetchFeedPosts(limit: number, offset: number, categoryId?:
         .select('*, responses(count)')
         .order('created_at', { ascending: false })
         .range(offset, offset + limit - 1)
+
+    if (user?.id) {
+        query = query.neq('author_id', user.id)
+    }
 
     if (categoryId) {
         query = query.eq('category_id', categoryId)

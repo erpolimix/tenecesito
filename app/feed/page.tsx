@@ -12,6 +12,9 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
     const categoryId = params.category;
 
     let query = supabase.from('posts').select('*, responses(count)').order('created_at', { ascending: false }).limit(9);
+    if (user?.id) {
+        query = query.neq('author_id', user.id);
+    }
     if (categoryId) {
         query = query.eq('category_id', categoryId);
     }
