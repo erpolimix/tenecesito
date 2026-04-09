@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { CATEGORIES } from '@/lib/constants';
 import { createPost } from './actions';
+import PendingSubmitButton from '@/components/PendingSubmitButton';
 
 export default function CreatePage() {
     const router = useRouter();
@@ -94,13 +95,13 @@ export default function CreatePage() {
                     </div>
 
                     <div className="pt-2 flex justify-end">
-                        <button
-                            type="submit"
+                        <PendingSubmitButton
+                            pendingText="Publicando..."
                             disabled={title.length === 0 || content.length < 20}
                             className="px-8 py-4 bg-[var(--tn-primary)] text-white text-base font-semibold rounded-full hover:opacity-90 disabled:opacity-50 transition-opacity"
                         >
                             Compartir mi situación
-                        </button>
+                        </PendingSubmitButton>
                     </div>
                 </form>
             </div>

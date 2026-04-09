@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowLeft, Lock } from 'lucide-react';
 import { respondToPost, closePost } from './actions';
 import LoadMoreResponses from '@/components/LoadMoreResponses';
+import PendingSubmitButton from '@/components/PendingSubmitButton';
 
 export default async function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const supabase = await createClient();
@@ -74,9 +75,12 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     <div className="mt-8 flex justify-end">
                         <form action={closePost}>
                             <input type="hidden" name="postId" value={postId} />
-                            <button className="bg-[var(--tn-primary)] text-white px-5 py-2.5 text-sm font-semibold uppercase rounded-full flex items-center gap-2 hover:opacity-90 transition-opacity">
+                            <PendingSubmitButton
+                                pendingText="Cerrando..."
+                                className="bg-[var(--tn-primary)] text-white px-5 py-2.5 text-sm font-semibold uppercase rounded-full inline-flex items-center gap-2 hover:opacity-90 transition-opacity"
+                            >
                                 <Lock size={16} /> Cerrar publicación
-                            </button>
+                            </PendingSubmitButton>
                         </form>
                     </div>
                 )}
@@ -107,12 +111,12 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                         />
 
                         <div className="flex justify-end">
-                            <button
-                                type="submit"
+                            <PendingSubmitButton
+                                pendingText="Enviando..."
                                 className="px-8 py-4 bg-[var(--tn-primary)] text-white text-base font-semibold rounded-full hover:opacity-90 disabled:opacity-50 transition-opacity"
                             >
                                 Enviar Respuesta
-                            </button>
+                            </PendingSubmitButton>
                         </div>
                     </form>
                 </div>

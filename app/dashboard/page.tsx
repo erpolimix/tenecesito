@@ -4,6 +4,13 @@ import Link from 'next/link'
 import { ArrowLeft, Check, Inbox } from 'lucide-react'
 import { markPostResponsesAsRead, markAllAsRead } from './actions'
 import { CATEGORIES } from '@/lib/constants'
+import PendingSubmitButton from '@/components/PendingSubmitButton'
+
+type DashboardResponse = {
+    id: string;
+    content: string;
+    is_read: boolean;
+};
 
 export default async function DashboardPage() {
     const supabase = await createClient()
@@ -25,7 +32,7 @@ export default async function DashboardPage() {
     const myPosts = posts || []
 
     const totalUnread = myPosts.reduce((acc, post) => 
-        acc + (post.responses?.filter((r: any) => !r.is_read).length || 0)
+        acc + (post.responses?.filter((r: DashboardResponse) => !r.is_read).length || 0)
     , 0)
 
     return (
@@ -37,9 +44,12 @@ export default async function DashboardPage() {
                 
                 {totalUnread > 0 && (
                     <form action={markAllAsRead}>
-                        <button className="text-xs border border-[var(--tn-outline)]/35 bg-white px-4 py-2 rounded-full font-semibold uppercase hover:bg-[var(--tn-surface)] transition-colors">
+                        <PendingSubmitButton
+                            pendingText="Marcando..."
+                            className="text-xs border border-[var(--tn-outline)]/35 bg-white px-4 py-2 rounded-full font-semibold uppercase hover:bg-[var(--tn-surface)] transition-colors"
+                        >
                             Marcar todo como leído
-                        </button>
+                        </PendingSubmitButton>
                     </form>
                 )}
             </div>
@@ -68,8 +78,8 @@ export default async function DashboardPage() {
             ) : (
                 <div className="space-y-7">
                     {myPosts.map((post) => {
-                        const unreadResponses = post.responses?.filter((r: any) => !r.is_read) || []
-                        const allReadResponses = post.responses?.filter((r: any) => r.is_read) || []
+                        const unreadResponses = post.responses?.filter((r: DashboardResponse) => !r.is_read) || []
+                        const allReadResponses = post.responses?.filter((r: DashboardResponse) => r.is_read) || []
                         const readResponses = allReadResponses.slice(0, 3)
                         const hiddenCount = allReadResponses.length - 3
                         const cat = CATEGORIES.find(c => c.id === post.category_id)
@@ -89,9 +99,12 @@ export default async function DashboardPage() {
                                    {unreadResponses.length > 0 && (
                                        <form action={markPostResponsesAsRead}>
                                            <input type="hidden" name="postId" value={post.id} />
-                                           <button className="bg-[var(--tn-primary)] text-white text-xs font-semibold uppercase tracking-[0.12em] px-4 py-2 rounded-full hover:opacity-90 transition-opacity whitespace-nowrap flex items-center gap-2">
+                                           <PendingSubmitButton
+                                                pendingText="Marcando..."
+                                                className="bg-[var(--tn-primary)] text-white text-xs font-semibold uppercase tracking-[0.12em] px-4 py-2 rounded-full hover:opacity-90 transition-opacity whitespace-nowrap inline-flex items-center gap-2"
+                                           >
                                                 <Check size={14} strokeWidth={2.8} /> {unreadResponses.length} nuevas, marcar
-                                           </button>
+                                           </PendingSubmitButton>
                                        </form>
                                    )}
                                 </div>
@@ -104,7 +117,7 @@ export default async function DashboardPage() {
                                     )}
 
                                     {/* Unread Responses first */}
-                                    {unreadResponses.map((r: any) => (
+                                    {unreadResponses.map((r: DashboardResponse) => (
                                         <div key={r.id} className="relative bg-[#fff4d6] border border-[#f2ddb3] rounded-2xl p-6">
                                             <span className="absolute -top-3 -right-1 bg-[var(--tn-primary)] text-white text-[10px] uppercase font-semibold px-2 py-1 rounded-full">Nuevo</span>
                                             <p className="text-base md:text-lg">{r.content}</p>
@@ -112,7 +125,7 @@ export default async function DashboardPage() {
                                     ))}
 
                                     {/* Read Responses */}
-                                    {readResponses.map((r: any) => (
+                                    {readResponses.map((r: DashboardResponse) => (
                                         <div key={r.id} className="bg-white border border-[var(--tn-outline)]/25 rounded-2xl p-6">
                                             <p className="text-base md:text-lg text-[#3f3f3f]">{r.content}</p>
                                         </div>
