@@ -23,7 +23,7 @@ export default function PendingSubmitButton({
       type="submit"
       disabled={disabled || pending}
       aria-busy={pending}
-      className={`${className} ${pending ? 'opacity-80 cursor-wait' : ''}`}
+      className={`${className} cursor-pointer disabled:cursor-not-allowed ${pending ? 'opacity-80 cursor-wait' : ''}`}
     >
       {pending ? (
         <span className="inline-flex items-center gap-2">

@@ -15,15 +15,17 @@ export default function CreatePage() {
     const [category, setCategory] = useState(CATEGORIES[0].id);
     const [tags, setTags] = useState('');
     const [priorityLevel, setPriorityLevel] = useState(NORMAL_PRIORITY);
+    const [submitError, setSubmitError] = useState('');
 
     const handleSubmit = async (formData: FormData) => {
+        setSubmitError('');
         formData.append('categoryId', category);
         formData.append('priorityLevel', priorityLevel);
         try {
             await createPost(formData);
         } catch (error) {
             const message = error instanceof Error ? error.message : 'No se pudo crear la necesidad';
-            alert(message);
+            setSubmitError(message);
         }
     };
 
@@ -44,6 +46,12 @@ export default function CreatePage() {
                 </p>
 
                 <form action={handleSubmit} className="space-y-8">
+                    {submitError && (
+                        <div className="rounded-2xl border border-[#f1c7bb] bg-[#fff2ed] px-4 py-3 text-sm text-[#8f2f18]" role="alert">
+                            {submitError}
+                        </div>
+                    )}
+
                     <div>
                         <label className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Categoría</label>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
