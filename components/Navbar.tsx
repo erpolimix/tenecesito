@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { Plus, User, LogOut, Bell } from 'lucide-react';
+import { Plus, User, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { signout } from '@/app/login/actions';
+import NavbarUnreadCounter from './NavbarUnreadCounter';
 
 export default async function Navbar() {
     const supabase = await createClient();
@@ -42,17 +43,7 @@ export default async function Navbar() {
                 <div className="flex items-center gap-2 sm:gap-3 overflow-visible">
                     {user ? (
                         <>
-                            <Link
-                                href="/dashboard"
-                                className="relative flex items-center justify-center w-10 h-10 rounded-full border border-[var(--tn-outline)]/40 bg-white/60 hover:bg-[var(--tn-surface-strong)] transition-colors"
-                            >
-                                <Bell size={18} strokeWidth={2.5} />
-                                {unreadCount > 0 && (
-                                    <span className="absolute -top-1 -right-1 flex h-5 min-w-5 px-1 items-center justify-center rounded-full bg-[var(--tn-primary)] text-[10px] font-bold text-white">
-                                        {unreadCount}
-                                    </span>
-                                )}
-                            </Link>
+                            {user && <NavbarUnreadCounter initialCount={unreadCount} userId={user.id} />}
 
                             <Link
                                 href="/create"

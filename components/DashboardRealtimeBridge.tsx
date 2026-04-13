@@ -29,7 +29,6 @@ export default function DashboardRealtimeBridge({
             }
 
             refreshTimerRef.current = setTimeout(() => {
-                console.log('[Dashboard RT] Ejecutando router.refresh()');
                 router.refresh();
             }, 250);
         };
@@ -44,10 +43,7 @@ export default function DashboardRealtimeBridge({
                 table: 'posts',
                 filter: `author_id=eq.${userId}`,
             },
-            (payload) => {
-                console.log('[Dashboard RT] Evento posts recibido:', payload.eventType, payload.new);
-                scheduleRefresh();
-            },
+            scheduleRefresh,
         );
 
         // Sin filter server-side porque Supabase Realtime no soporta `in`.
@@ -60,19 +56,15 @@ export default function DashboardRealtimeBridge({
                 table: 'responses',
             },
             (payload) => {
-                console.log('[Dashboard RT] Evento responses INSERT recibido:', payload.new);
                 const postId = payload.new.post_id;
                 const match = postIdsSetRef.current.has(postId);
-                console.log(`[Dashboard RT] post_id=${postId} match=${match} postIds=[${[...postIdsSetRef.current].join(',')}]`);
                 if (match) {
                     scheduleRefresh();
                 }
-            },
+            },        
         );
 
-        channel.subscribe((status, err) => {
-            console.log('[Dashboard RT] Estado del canal:', status, err ?? '');
-        });
+        channel.subscribe();
 
         return () => {
             if (refreshTimerRef.current) {
@@ -81,9 +73,6 @@ export default function DashboardRealtimeBridge({
             }
             void supabase.removeChannel(channel);
         };
-    // postIds fuera del array: su contenido se lee via postIdsSetRef, estabilizando
-    // el channel. userId y supabase son estables por definición.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router, supabase, userId]);
 
     return null;
