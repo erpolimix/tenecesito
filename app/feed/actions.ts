@@ -16,7 +16,7 @@ function uniquePostsById<T extends { id: string }>(posts: T[]) {
     return uniquePosts
 }
 
-export async function fetchFeedPosts(limit: number, offset: number, categoryId?: string, urgency?: string) {
+export async function fetchFeedPosts(limit: number, offset: number, categoryId?: string, urgency?: string, showClosed?: boolean) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     const nowIso = new Date().toISOString()
@@ -87,6 +87,10 @@ export async function fetchFeedPosts(limit: number, offset: number, categoryId?:
         .or(`priority_level.neq.${URGENT_PRIORITY},urgent_until.is.null,urgent_until.lte.${nowIso},is_closed.eq.true`)
         .order('created_at', { ascending: false })
         .range(regularOffset, regularOffset + remaining - 1)
+
+    if (!showClosed) {
+        regularQuery = regularQuery.eq('is_closed', false)
+    }
 
     if (user?.id) {
         regularQuery = regularQuery.neq('author_id', user.id)

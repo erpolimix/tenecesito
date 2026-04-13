@@ -50,10 +50,12 @@ export default function InfinitePostList({
     initialPosts, 
     categoryId,
     urgency,
+    showClosed,
 }: { 
     initialPosts: FeedPost[], 
     categoryId?: string,
     urgency?: string,
+    showClosed?: boolean,
 }) {
     const [posts, setPosts] = useState(initialPosts);
     const [page, setPage] = useState(1);
@@ -87,7 +89,7 @@ export default function InfinitePostList({
         setIsLoadingMore(true);
         
         const nextOffset = page * 9;
-        const newPosts = await fetchFeedPosts(9, nextOffset, categoryId, urgency);
+        const newPosts = await fetchFeedPosts(9, nextOffset, categoryId, urgency, showClosed);
         
         if (newPosts.length === 0) {
             setHasMore(false);
@@ -99,20 +101,20 @@ export default function InfinitePostList({
             }
         }
         setIsLoadingMore(false);
-    }, [page, hasMore, categoryId, urgency, isLoadingMore, mergeUniqueById]);
+    }, [page, hasMore, categoryId, urgency, showClosed, isLoadingMore, mergeUniqueById]);
 
     const syncFeed = useCallback(async () => {
         if (isSyncingRef.current) return;
         isSyncingRef.current = true;
 
         const loadedCount = Math.max(9, postsRef.current.length || 0);
-        const refreshed = await fetchFeedPosts(loadedCount, 0, categoryId, urgency);
+        const refreshed = await fetchFeedPosts(loadedCount, 0, categoryId, urgency, showClosed);
 
         setPosts(refreshed);
         setPage(Math.max(1, Math.ceil(refreshed.length / 9)));
         setHasMore(refreshed.length >= loadedCount);
         isSyncingRef.current = false;
-    }, [categoryId, urgency]);
+    }, [categoryId, urgency, showClosed]);
 
     const scheduleSync = useCallback(() => {
         if (refreshTimerRef.current) {
