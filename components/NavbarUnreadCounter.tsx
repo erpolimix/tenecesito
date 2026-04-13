@@ -12,28 +12,39 @@ export default function NavbarUnreadCounter({ initialCount, userId }: { initialC
     const countRef = useRef(initialCount);
 
     useEffect(() => {
+        console.log('[Navbar Counter] Montado con userId:', userId, 'initialCount:', initialCount);
+        return () => {
+            console.log('[Navbar Counter] Desmontado');
+        };
+    }, [userId, initialCount]);
+
+    useEffect(() => {
         countRef.current = unreadCount;
     }, [unreadCount]);
 
     const scheduleRecount = useCallback(() => {
+        console.log('[Navbar Counter] Evento recibido, recalculando...');
         if (debounceTimerRef.current) {
             clearTimeout(debounceTimerRef.current);
         }
 
         debounceTimerRef.current = setTimeout(async () => {
-            const { data: unreadResponses } = await supabase
+            const { data: unreadResponses, error } = await supabase
                 .from('responses')
                 .select('id, posts!inner(author_id)')
                 .eq('posts.author_id', userId)
                 .eq('is_read', false);
 
+            console.log('[Navbar Counter] Recuento completado:', unreadResponses?.length || 0, 'error:', error?.message);
             setUnreadCount(unreadResponses?.length || 0);
         }, 250);
     }, [supabase, userId]);
 
     useEffect(() => {
+        console.log('[Navbar Counter] Suscribiendo a eventos realtime para userId:', userId);
         const channel = supabase.channel(`navbar-unread:${userId}`);
 
+        // INSERT: nueva respuesta llegó
         channel.on(
             'postgres_changes',
             {
@@ -41,23 +52,32 @@ export default function NavbarUnreadCounter({ initialCount, userId }: { initialC
                 schema: 'public',
                 table: 'responses',
             },
-            scheduleRecount,
+            () => {
+                console.log('[Navbar Counter] Evento INSERT recibido');
+                scheduleRecount();
+            },
         );
 
+        // UPDATE: respuesta marcada como leída o cambio cualquiera
         channel.on(
             'postgres_changes',
             {
                 event: 'UPDATE',
                 schema: 'public',
                 table: 'responses',
-                filter: `is_read=eq.false`,
             },
-            scheduleRecount,
+            () => {
+                console.log('[Navbar Counter] Evento UPDATE recibido');
+                scheduleRecount();
+            },
         );
 
-        channel.subscribe();
+        channel.subscribe((status) => {
+            console.log('[Navbar Counter] Estado del canal:', status);
+        });
 
         return () => {
+            console.log('[Navbar Counter] Desuscribiendo del channel');
             if (debounceTimerRef.current) {
                 clearTimeout(debounceTimerRef.current);
             }
