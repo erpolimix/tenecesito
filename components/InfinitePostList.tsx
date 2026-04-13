@@ -1,11 +1,24 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { MessageSquare, Loader2 } from 'lucide-react';
 import { CATEGORIES } from '@/lib/constants';
 import { useInView } from 'react-intersection-observer';
 import { fetchFeedPosts } from '@/app/feed/actions';
+import UrgencyBadge from '@/components/UrgencyBadge';
+
+type FeedPost = {
+    id: string;
+    title: string;
+    content: string;
+    category_id: string;
+    created_at?: string;
+    is_closed?: boolean;
+    priority_level?: string | null;
+    urgent_until?: string | null;
+    responses?: Array<{ count: number }>;
+}
 
 function getTimeAgoEs(dateString?: string) {
     if (!dateString) return 'Hace un momento';
@@ -35,29 +48,24 @@ function getExcerpt(content?: string, max = 150) {
 export default function InfinitePostList({ 
     initialPosts, 
     categoryId,
-    currentUserId 
+    urgency,
 }: { 
-    initialPosts: any[], 
+    initialPosts: FeedPost[], 
     categoryId?: string,
-    currentUserId?: string 
+    urgency?: string,
 }) {
     const [posts, setPosts] = useState(initialPosts);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(initialPosts.length >= 9);
-    const [ref, inView] = useInView();
-
-    useEffect(() => {
-        // When category changes, reset infinite-scroll state to server-provided posts.
-        setPosts(initialPosts);
-        setPage(1);
-        setHasMore(initialPosts.length >= 9);
-    }, [initialPosts, categoryId]);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
 
     const loadMore = useCallback(async () => {
-        if (!hasMore) return;
+        if (!hasMore || isLoadingMore) return;
+
+        setIsLoadingMore(true);
         
         const nextOffset = page * 9;
-        const newPosts = await fetchFeedPosts(9, nextOffset, categoryId);
+        const newPosts = await fetchFeedPosts(9, nextOffset, categoryId, urgency);
         
         if (newPosts.length === 0) {
             setHasMore(false);
@@ -68,13 +76,16 @@ export default function InfinitePostList({
                 setHasMore(false);
             }
         }
-    }, [page, hasMore, categoryId]);
+        setIsLoadingMore(false);
+    }, [page, hasMore, categoryId, urgency, isLoadingMore]);
 
-    useEffect(() => {
-        if (inView && hasMore) {
-            loadMore();
-        }
-    }, [inView, hasMore, loadMore]);
+    const [ref] = useInView({
+        onChange: (inView) => {
+            if (inView) {
+                void loadMore();
+            }
+        },
+    });
 
     if (posts.length === 0) {
         return (
@@ -109,10 +120,17 @@ export default function InfinitePostList({
                             <span className={`text-xs font-semibold uppercase tracking-[0.14em] px-3 py-1 rounded-sm ${tone.bg} ${tone.text}`}>
                                 {cat?.name}
                             </span>
-                            <span className={`flex items-center gap-2 text-xs font-semibold rounded-full px-3 py-1 ${statusClasses}`}>
-                                <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
-                                {statusLabel}
-                            </span>
+                            <div className="flex flex-col items-end gap-2">
+                                <span className={`flex items-center gap-2 text-xs font-semibold rounded-full px-3 py-1 ${statusClasses}`}>
+                                    <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
+                                    {statusLabel}
+                                </span>
+                                <UrgencyBadge
+                                    priorityLevel={post.priority_level}
+                                    urgentUntil={post.urgent_until}
+                                    isClosed={post.is_closed}
+                                />
+                            </div>
                         </div>
 
                         <h3 className="font-editorial text-3xl font-bold leading-tight mb-4 flex-grow break-words text-[var(--tn-text)]">
@@ -123,7 +141,7 @@ export default function InfinitePostList({
                             {getExcerpt(post.content)}
                         </p>
 
-                        <div className="mt-4 pt-4 border-t border-[var(--tn-outline)]/25 flex items-center justify-between text-sm">
+                        <div className="mt-4 pt-4 border-t border-[var(--tn-outline)]/25 flex items-center justify-between gap-3 text-sm">
                             <span className="flex items-center gap-2 text-[var(--tn-primary)] font-semibold">
                                 <MessageSquare size={14} />
                                 {responseCount} perspectiva{responseCount === 1 ? '' : 's'} compartida{responseCount === 1 ? '' : 's'}
@@ -136,7 +154,7 @@ export default function InfinitePostList({
             
             {hasMore && (
                 <div ref={ref} className="col-span-full py-10 flex justify-center items-center">
-                    <Loader2 className="animate-spin text-[var(--tn-primary)]" size={30} />
+                    <Loader2 className={`text-[var(--tn-primary)] ${isLoadingMore ? 'animate-spin' : ''}`} size={30} />
                 </div>
             )}
             

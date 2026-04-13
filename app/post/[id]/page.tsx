@@ -1,10 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
 import { CATEGORIES } from '@/lib/constants';
+import { isUrgentActive } from '@/lib/urgency';
 import Link from 'next/link';
 import { ArrowLeft, Lock, Edit3 } from 'lucide-react';
 import { respondToPost, closePost } from './actions';
 import LoadMoreResponses from '@/components/LoadMoreResponses';
 import PendingSubmitButton from '@/components/PendingSubmitButton';
+import UrgencyBadge from '@/components/UrgencyBadge';
 
 function getTimeAgoEs(dateInput: string) {
     const now = new Date();
@@ -38,6 +40,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
     const cat = CATEGORIES.find(c => c.id === post.category_id);
     const isAuthor = user && post.author_id === user.id;
+    const showUrgentBadge = isUrgentActive(post);
     const realTags = Array.isArray(post.tags)
         ? post.tags
             .map((tag: unknown) => String(tag).trim().replace(/^#+/, '').replace(/\s+/g, ''))
@@ -121,6 +124,11 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                         <span className={`w-2 h-2 rounded-full ${post.is_closed ? 'bg-[#6d5a52]' : 'bg-[#5f7a67]'}`} />
                         {post.is_closed ? 'Cerrada' : 'Abierto'}
                     </span>
+                    <UrgencyBadge
+                        priorityLevel={post.priority_level}
+                        urgentUntil={post.urgent_until}
+                        isClosed={post.is_closed}
+                    />
                     <span className="text-[var(--tn-muted)] text-sm font-medium">{getTimeAgoEs(post.created_at)}</span>
                 </div>
 
@@ -133,6 +141,11 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                         <p className="text-lg md:text-xl text-[var(--tn-muted)] line-height-editorial max-w-2xl whitespace-pre-wrap break-words">
                             {post.content}
                         </p>
+                        {showUrgentBadge && (
+                            <p className="mt-6 max-w-2xl rounded-2xl border border-[#f1c7bb] bg-[#fff5f0] px-4 py-3 text-sm text-[#8f5a4e]">
+                                Esta necesidad aparece destacada como urgente durante 24 horas para facilitar respuestas mas rapidas de la comunidad.
+                            </p>
+                        )}
                         <div className="mt-10 flex flex-wrap gap-2">
                             {tagsToDisplay.map((tag: string) => (
                                 <span key={tag} className="bg-[#e3e2e0] px-4 py-2 rounded-lg text-sm text-[#54433e] font-medium">#{tag}</span>

@@ -4,7 +4,9 @@ import Link from 'next/link'
 import { Inbox, MessageSquare, ArrowRight, FileText, MessageCircleMore } from 'lucide-react'
 import { markPostResponsesAsRead, markAllAsRead } from './actions'
 import { CATEGORIES } from '@/lib/constants'
+import { isUrgentActive } from '@/lib/urgency'
 import PendingSubmitButton from '@/components/PendingSubmitButton'
+import UrgencyBadge from '@/components/UrgencyBadge'
 
 type DashboardResponse = {
     id: string;
@@ -64,7 +66,19 @@ export default async function DashboardPage({
     const myPosts = posts || []
     const params = await searchParams
     const selectedStatus = params.status === 'closed' ? 'closed' : 'active'
-    const visiblePosts = myPosts.filter((post) => selectedStatus === 'closed' ? post.is_closed : !post.is_closed)
+    const visiblePosts = [...myPosts]
+        .filter((post) => selectedStatus === 'closed' ? post.is_closed : !post.is_closed)
+        .sort((leftPost, rightPost) => {
+            const leftUrgent = isUrgentActive(leftPost) ? 1 : 0
+            const rightUrgent = isUrgentActive(rightPost) ? 1 : 0
+
+            if (leftUrgent !== rightUrgent) {
+                return rightUrgent - leftUrgent
+            }
+
+            return new Date(rightPost.created_at).getTime() - new Date(leftPost.created_at).getTime()
+        })
+    const totalUrgentActive = myPosts.filter((post) => isUrgentActive(post)).length
 
     const totalUnread = myPosts.reduce((acc, post) => 
         acc + (post.responses?.filter((r: DashboardResponse) => !r.is_read).length || 0)
@@ -80,6 +94,7 @@ export default async function DashboardPage({
                     <p className="text-[#546258] font-medium tracking-wide text-xs uppercase mb-2">Total de publicaciones</p>
                     <h2 className="font-editorial text-5xl font-bold text-[#91462e]">{myPosts.length}</h2>
                     <p className="text-[#54433e] text-sm mt-4 leading-relaxed">Has compartido {myPosts.length} necesidades con la comunidad.</p>
+                    <p className="text-[#91462e] text-sm mt-2 font-medium">{totalUrgentActive} urgentes activas en este momento.</p>
                 </div>
                 <div className="bg-[#d5e3d7] p-8 rounded-lg relative overflow-hidden group">
                     <div className="absolute -right-4 -top-4 opacity-5 group-hover:scale-110 transition-transform duration-700">
@@ -147,6 +162,11 @@ export default async function DashboardPage({
                                             <span>{getTimeAgoEs(post.created_at)}</span>
                                             <span className="w-1 h-1 bg-[#dac1ba] rounded-full" />
                                             <span className="text-[#af5e44] font-semibold">{cat?.name}</span>
+                                            <UrgencyBadge
+                                                priorityLevel={post.priority_level}
+                                                urgentUntil={post.urgent_until}
+                                                isClosed={post.is_closed}
+                                            />
                                         </div>
                                         <h3 className="font-editorial text-2xl md:text-[2rem] leading-tight text-[#1b1c1b]">
                                             <Link href={`/post/${post.id}`} className="hover:text-[var(--tn-primary)] transition-colors">

@@ -1,10 +1,12 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { URGENT_PRIORITY } from '@/lib/urgency'
 
-export async function fetchFeedPosts(limit: number, offset: number, categoryId?: string) {
+export async function fetchFeedPosts(limit: number, offset: number, categoryId?: string, urgency?: string) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
+    const nowIso = new Date().toISOString()
 
     // Using range for pagination: range(from, to) inclusive
     let query = supabase
@@ -19,6 +21,10 @@ export async function fetchFeedPosts(limit: number, offset: number, categoryId?:
 
     if (categoryId) {
         query = query.eq('category_id', categoryId)
+    }
+
+    if (urgency === URGENT_PRIORITY) {
+        query = query.eq('priority_level', URGENT_PRIORITY).gt('urgent_until', nowIso).eq('is_closed', false)
     }
 
     const { data: posts, error } = await query

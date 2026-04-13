@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { CATEGORIES } from '@/lib/constants';
+import { NORMAL_PRIORITY, URGENT_PRIORITY } from '@/lib/urgency';
 import { createPost } from './actions';
 import PendingSubmitButton from '@/components/PendingSubmitButton';
 
@@ -13,13 +14,16 @@ export default function CreatePage() {
     const [content, setContent] = useState('');
     const [category, setCategory] = useState(CATEGORIES[0].id);
     const [tags, setTags] = useState('');
+    const [priorityLevel, setPriorityLevel] = useState(NORMAL_PRIORITY);
 
     const handleSubmit = async (formData: FormData) => {
         formData.append('categoryId', category);
+        formData.append('priorityLevel', priorityLevel);
         try {
             await createPost(formData);
-        } catch (error: any) {
-            alert(error.message);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'No se pudo crear la necesidad';
+            alert(message);
         }
     };
 
@@ -103,6 +107,28 @@ export default function CreatePage() {
                             onChange={(e) => setTags(e.target.value)}
                         />
                         <p className="mt-2 text-xs text-[var(--tn-muted)]">Puedes escribirlos con o sin #. Se limpiarán automáticamente al guardar.</p>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Prioridad</label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setPriorityLevel(NORMAL_PRIORITY)}
+                                className={`rounded-[24px] border p-4 text-left transition-all ${priorityLevel === NORMAL_PRIORITY ? 'border-[var(--tn-primary)] bg-white shadow-[0_10px_24px_rgba(27,28,27,0.08)]' : 'border-[var(--tn-outline)]/25 bg-[var(--tn-surface)]/75 hover:bg-white'}`}
+                            >
+                                <span className="block text-sm font-semibold text-[var(--tn-text)]">Normal</span>
+                                <span className="mt-1 block text-sm text-[var(--tn-muted)]">Se mostrará en el feed general de la comunidad.</span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setPriorityLevel(URGENT_PRIORITY)}
+                                className={`rounded-[24px] border p-4 text-left transition-all ${priorityLevel === URGENT_PRIORITY ? 'border-[#a13d21] bg-[#ffede7] shadow-[0_10px_24px_rgba(145,70,46,0.12)]' : 'border-[#f1c7bb] bg-[#fff6f2] hover:bg-[#ffede7]'}`}
+                            >
+                                <span className="block text-sm font-semibold text-[#8f2f18]">Urgente 24h</span>
+                                <span className="mt-1 block text-sm text-[#8f5a4e]">Prioriza tu necesidad durante 24 horas. Solo puedes crear una urgente cada 24 horas.</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div className="flex gap-3 p-5 rounded-2xl bg-[var(--tn-surface)] border border-[var(--tn-outline)]/20">
