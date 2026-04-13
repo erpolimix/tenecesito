@@ -29,6 +29,7 @@ export default function DashboardRealtimeBridge({
             }
 
             refreshTimerRef.current = setTimeout(() => {
+                console.log('[Dashboard RT] Ejecutando router.refresh()');
                 router.refresh();
             }, 250);
         };
@@ -43,12 +44,14 @@ export default function DashboardRealtimeBridge({
                 table: 'posts',
                 filter: `author_id=eq.${userId}`,
             },
-            scheduleRefresh,
+            (payload) => {
+                console.log('[Dashboard RT] Evento posts recibido:', payload.eventType, payload.new);
+                scheduleRefresh();
+            },
         );
 
-        // No usamos filter server-side con `in` porque Supabase Realtime
-        // no soporta ese operador en postgres_changes. Filtramos en el callback.
-        // Solo INSERT para evitar el bucle con los UPDATEs de is_read.
+        // Sin filter server-side porque Supabase Realtime no soporta `in`.
+        // Filtramos en el callback. Solo INSERT para evitar bucle con is_read.
         channel.on(
             'postgres_changes',
             {
@@ -57,13 +60,19 @@ export default function DashboardRealtimeBridge({
                 table: 'responses',
             },
             (payload) => {
-                if (postIdsSetRef.current.has(payload.new.post_id)) {
+                console.log('[Dashboard RT] Evento responses INSERT recibido:', payload.new);
+                const postId = payload.new.post_id;
+                const match = postIdsSetRef.current.has(postId);
+                console.log(`[Dashboard RT] post_id=${postId} match=${match} postIds=[${[...postIdsSetRef.current].join(',')}]`);
+                if (match) {
                     scheduleRefresh();
                 }
             },
         );
 
-        channel.subscribe();
+        channel.subscribe((status, err) => {
+            console.log('[Dashboard RT] Estado del canal:', status, err ?? '');
+        });
 
         return () => {
             if (refreshTimerRef.current) {
