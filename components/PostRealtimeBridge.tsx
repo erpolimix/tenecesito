@@ -35,7 +35,9 @@ export default function PostRealtimeBridge({ postId }: { postId: string }) {
             .on(
                 'postgres_changes',
                 {
-                    event: '*',
+                    // Solo INSERT: evita bucle infinito con el UPDATE de is_read
+                    // que el propio Server Component ejecuta al renderizar.
+                    event: 'INSERT',
                     schema: 'public',
                     table: 'responses',
                     filter: `post_id=eq.${postId}`,

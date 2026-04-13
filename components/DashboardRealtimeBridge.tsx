@@ -44,7 +44,9 @@ export default function DashboardRealtimeBridge({
             channel.on(
                 'postgres_changes',
                 {
-                    event: '*',
+                    // Solo INSERT: evita bucle circular por los UPDATEs de is_read
+                    // que disparan el evento y causan otro refresh que vuelve a actualizar.
+                    event: 'INSERT',
                     schema: 'public',
                     table: 'responses',
                     filter: `post_id=in.(${idList})`,
