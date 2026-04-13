@@ -14,6 +14,13 @@ export default function DashboardRealtimeBridge({
     const router = useRouter();
     const supabase = useMemo(() => createClient(), []);
     const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    // Ref estable para evitar que postIds (nuevo array en cada render) force
+    // reconectar el channel tras cada router.refresh().
+    const postIdsSetRef = useRef(new Set(postIds));
+
+    useEffect(() => {
+        postIdsSetRef.current = new Set(postIds);
+    }, [postIds]);
 
     useEffect(() => {
         const scheduleRefresh = () => {
@@ -39,21 +46,22 @@ export default function DashboardRealtimeBridge({
             scheduleRefresh,
         );
 
-        if (postIds.length > 0) {
-            const idList = postIds.join(',');
-            channel.on(
-                'postgres_changes',
-                {
-                    // Solo INSERT: evita bucle circular por los UPDATEs de is_read
-                    // que disparan el evento y causan otro refresh que vuelve a actualizar.
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'responses',
-                    filter: `post_id=in.(${idList})`,
-                },
-                scheduleRefresh,
-            );
-        }
+        // No usamos filter server-side con `in` porque Supabase Realtime
+        // no soporta ese operador en postgres_changes. Filtramos en el callback.
+        // Solo INSERT para evitar el bucle con los UPDATEs de is_read.
+        channel.on(
+            'postgres_changes',
+            {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'responses',
+            },
+            (payload) => {
+                if (postIdsSetRef.current.has(payload.new.post_id)) {
+                    scheduleRefresh();
+                }
+            },
+        );
 
         channel.subscribe();
 
@@ -64,7 +72,10 @@ export default function DashboardRealtimeBridge({
             }
             void supabase.removeChannel(channel);
         };
-    }, [postIds, router, supabase, userId]);
+    // postIds fuera del array: su contenido se lee via postIdsSetRef, estabilizando
+    // el channel. userId y supabase son estables por definición.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [router, supabase, userId]);
 
     return null;
 }
