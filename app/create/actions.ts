@@ -9,8 +9,6 @@ import {
 } from '@/lib/urgency'
 import { revalidatePath } from 'next/cache'
 
-import { redirect } from 'next/navigation'
-
 function parseTags(rawTags: string | undefined) {
     if (!rawTags) return [] as string[]
 
@@ -31,7 +29,12 @@ function parseTags(rawTags: string | undefined) {
     return Array.from(unique)
 }
 
-export async function createPost(formData: FormData) {
+type CreatePostResult = {
+    ok: boolean
+    error?: string
+}
+
+export async function createPost(formData: FormData): Promise<CreatePostResult> {
     const supabase = await createClient();
     const title = (formData.get('title') as string)?.trim();
     const content = (formData.get('content') as string)?.trim();
@@ -41,7 +44,19 @@ export async function createPost(formData: FormData) {
     const tags = parseTags(tagsRaw || undefined);
 
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Debes iniciar sesión para publicar');
+    if (!user) return { ok: false, error: 'Debes iniciar sesión para publicar' };
+
+    if (!title || title.length < 8) {
+        return { ok: false, error: 'El título debe tener al menos 8 caracteres' }
+    }
+
+    if (!content || content.length < 20) {
+        return { ok: false, error: 'El contenido debe tener al menos 20 caracteres' }
+    }
+
+    if (!categoryId) {
+        return { ok: false, error: 'Debes seleccionar una categoría' }
+    }
 
     const priorityLevel = requestedPriority === URGENT_PRIORITY ? URGENT_PRIORITY : NORMAL_PRIORITY;
     let urgentUntil: string | null = null;
@@ -57,14 +72,16 @@ export async function createPost(formData: FormData) {
             .order('created_at', { ascending: false })
             .limit(5);
 
-        if (recentUrgentPostsError) throw new Error(recentUrgentPostsError.message);
+        if (recentUrgentPostsError) {
+            return { ok: false, error: 'No se pudo validar tu prioridad urgente. Inténtalo de nuevo.' }
+        }
 
         const alreadyCreatedUrgentToday = (recentUrgentPosts || []).some((post) =>
             hasRecentUrgentCreation(post.created_at, post.urgent_activated_at, now.getTime())
         );
 
         if (alreadyCreatedUrgentToday) {
-            throw new Error('Solo puedes crear una necesidad urgente cada 24 horas');
+            return { ok: false, error: 'Solo puedes crear una necesidad urgente cada 24 horas' };
         }
 
         urgentActivatedAt = now.toISOString();
@@ -83,10 +100,13 @@ export async function createPost(formData: FormData) {
         urgent_activated_at: urgentActivatedAt,
     });
 
-    if (error) throw new Error(error.message);
+    if (error) {
+        return { ok: false, error: 'No se pudo crear la necesidad. Inténtalo de nuevo.' }
+    }
 
     revalidatePath('/feed');
     revalidatePath('/dashboard');
     revalidatePath('/comunidad');
-    redirect('/feed');
+
+    return { ok: true }
 }

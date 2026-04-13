@@ -21,12 +21,15 @@ export default function CreatePage() {
         setSubmitError('');
         formData.append('categoryId', category);
         formData.append('priorityLevel', priorityLevel);
-        try {
-            await createPost(formData);
-        } catch (error) {
-            const message = error instanceof Error ? error.message : 'No se pudo crear la necesidad';
-            setSubmitError(message);
+        const result = await createPost(formData);
+
+        if (!result.ok) {
+            setSubmitError(result.error || 'No se pudo crear la necesidad');
+            return;
         }
+
+        router.push('/feed');
+        router.refresh();
     };
 
     return (
