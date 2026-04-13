@@ -29,59 +29,54 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
     const showUrgentOnly = params.urgency === URGENT_PRIORITY;
     const nowIso = new Date().toISOString();
 
-    const applyBaseFilters = <T,>(query: T & {
-        neq: (column: string, value: string) => T;
-        eq: (column: string, value: string | boolean) => T;
-    }) => {
-        let nextQuery = query;
-
-        if (user?.id) {
-            nextQuery = nextQuery.neq('author_id', user.id);
-        }
-
-        if (categoryId) {
-            nextQuery = nextQuery.eq('category_id', categoryId);
-        }
-
-        return nextQuery;
-    };
-
     let filteredPosts = [];
 
     if (showUrgentOnly) {
-        const urgentQuery = applyBaseFilters(
-            supabase
-                .from('posts')
-                .select('*, responses(count)')
-                .eq('priority_level', URGENT_PRIORITY)
-                .gt('urgent_until', nowIso)
-                .eq('is_closed', false)
-                .order('created_at', { ascending: false })
-                .limit(9)
-        );
+        let urgentQuery = supabase
+            .from('posts')
+            .select('*, responses(count)')
+            .eq('priority_level', URGENT_PRIORITY)
+            .gt('urgent_until', nowIso)
+            .eq('is_closed', false)
+            .order('created_at', { ascending: false })
+            .limit(9);
+
+        if (user?.id) {
+            urgentQuery = urgentQuery.neq('author_id', user.id);
+        }
+
+        if (categoryId) {
+            urgentQuery = urgentQuery.eq('category_id', categoryId);
+        }
 
         const { data: posts } = await urgentQuery;
         filteredPosts = posts || [];
     } else {
-        const urgentQuery = applyBaseFilters(
-            supabase
-                .from('posts')
-                .select('*, responses(count)')
-                .eq('priority_level', URGENT_PRIORITY)
-                .gt('urgent_until', nowIso)
-                .eq('is_closed', false)
-                .order('created_at', { ascending: false })
-                .limit(9)
-        );
+        let urgentQuery = supabase
+            .from('posts')
+            .select('*, responses(count)')
+            .eq('priority_level', URGENT_PRIORITY)
+            .gt('urgent_until', nowIso)
+            .eq('is_closed', false)
+            .order('created_at', { ascending: false })
+            .limit(9);
 
-        const regularQuery = applyBaseFilters(
-            supabase
-                .from('posts')
-                .select('*, responses(count)')
-                .or(`priority_level.neq.${URGENT_PRIORITY},urgent_until.is.null,urgent_until.lte.${nowIso},is_closed.eq.true`)
-                .order('created_at', { ascending: false })
-                .limit(9)
-        );
+        let regularQuery = supabase
+            .from('posts')
+            .select('*, responses(count)')
+            .or(`priority_level.neq.${URGENT_PRIORITY},urgent_until.is.null,urgent_until.lte.${nowIso},is_closed.eq.true`)
+            .order('created_at', { ascending: false })
+            .limit(9);
+
+        if (user?.id) {
+            urgentQuery = urgentQuery.neq('author_id', user.id);
+            regularQuery = regularQuery.neq('author_id', user.id);
+        }
+
+        if (categoryId) {
+            urgentQuery = urgentQuery.eq('category_id', categoryId);
+            regularQuery = regularQuery.eq('category_id', categoryId);
+        }
 
         const [{ data: urgentPosts }, { data: regularPosts }] = await Promise.all([urgentQuery, regularQuery]);
         filteredPosts = [...(urgentPosts || []), ...(regularPosts || [])].slice(0, 9);

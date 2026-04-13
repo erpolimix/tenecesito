@@ -21,34 +21,23 @@ export async function fetchFeedPosts(limit: number, offset: number, categoryId?:
     const { data: { user } } = await supabase.auth.getUser()
     const nowIso = new Date().toISOString()
 
-    const applyBaseFilters = <T,>(query: T & {
-        neq: (column: string, value: string) => T;
-        eq: (column: string, value: string | boolean) => T;
-    }) => {
-        let nextQuery = query
+    if (urgency === URGENT_PRIORITY) {
+        let urgentQuery = supabase
+            .from('posts')
+            .select('*, responses(count)')
+            .eq('priority_level', URGENT_PRIORITY)
+            .gt('urgent_until', nowIso)
+            .eq('is_closed', false)
+            .order('created_at', { ascending: false })
+            .range(offset, offset + limit - 1)
 
         if (user?.id) {
-            nextQuery = nextQuery.neq('author_id', user.id)
+            urgentQuery = urgentQuery.neq('author_id', user.id)
         }
 
         if (categoryId) {
-            nextQuery = nextQuery.eq('category_id', categoryId)
+            urgentQuery = urgentQuery.eq('category_id', categoryId)
         }
-
-        return nextQuery
-    }
-
-    if (urgency === URGENT_PRIORITY) {
-        const urgentQuery = applyBaseFilters(
-            supabase
-                .from('posts')
-                .select('*, responses(count)')
-                .eq('priority_level', URGENT_PRIORITY)
-                .gt('urgent_until', nowIso)
-                .eq('is_closed', false)
-                .order('created_at', { ascending: false })
-                .range(offset, offset + limit - 1)
-        )
 
         const { data: posts, error } = await urgentQuery
 
@@ -60,15 +49,21 @@ export async function fetchFeedPosts(limit: number, offset: number, categoryId?:
         return posts || []
     }
 
-    const urgentQuery = applyBaseFilters(
-        supabase
-            .from('posts')
-            .select('*, responses(count)')
-            .eq('priority_level', URGENT_PRIORITY)
-            .gt('urgent_until', nowIso)
-            .eq('is_closed', false)
-            .order('created_at', { ascending: false })
-    )
+    let urgentQuery = supabase
+        .from('posts')
+        .select('*, responses(count)')
+        .eq('priority_level', URGENT_PRIORITY)
+        .gt('urgent_until', nowIso)
+        .eq('is_closed', false)
+        .order('created_at', { ascending: false })
+
+    if (user?.id) {
+        urgentQuery = urgentQuery.neq('author_id', user.id)
+    }
+
+    if (categoryId) {
+        urgentQuery = urgentQuery.eq('category_id', categoryId)
+    }
 
     const { data: urgentPosts, error: urgentError } = await urgentQuery
 
@@ -86,14 +81,20 @@ export async function fetchFeedPosts(limit: number, offset: number, categoryId?:
 
     const remaining = limit - urgentSlice.length
     const regularOffset = Math.max(0, offset - urgentCount)
-    const regularQuery = applyBaseFilters(
-        supabase
-            .from('posts')
-            .select('*, responses(count)')
-            .or(`priority_level.neq.${URGENT_PRIORITY},urgent_until.is.null,urgent_until.lte.${nowIso},is_closed.eq.true`)
-            .order('created_at', { ascending: false })
-            .range(regularOffset, regularOffset + remaining - 1)
-    )
+    let regularQuery = supabase
+        .from('posts')
+        .select('*, responses(count)')
+        .or(`priority_level.neq.${URGENT_PRIORITY},urgent_until.is.null,urgent_until.lte.${nowIso},is_closed.eq.true`)
+        .order('created_at', { ascending: false })
+        .range(regularOffset, regularOffset + remaining - 1)
+
+    if (user?.id) {
+        regularQuery = regularQuery.neq('author_id', user.id)
+    }
+
+    if (categoryId) {
+        regularQuery = regularQuery.eq('category_id', categoryId)
+    }
 
     const { data: regularPosts, error } = await regularQuery
 
