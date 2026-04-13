@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { MessageSquare, Loader2 } from 'lucide-react';
 import { CATEGORIES } from '@/lib/constants';
 import { useInView } from 'react-intersection-observer';
 import { fetchFeedPosts } from '@/app/feed/actions';
 import UrgencyBadge from '@/components/UrgencyBadge';
+import { createClient } from '@/lib/supabase/client';
 
 type FeedPost = {
     id: string;
@@ -58,6 +59,27 @@ export default function InfinitePostList({
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(initialPosts.length >= 9);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const postsRef = useRef(posts);
+    const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const isSyncingRef = useRef(false);
+    const supabase = useMemo(() => createClient(), []);
+
+    useEffect(() => {
+        postsRef.current = posts;
+    }, [posts]);
+
+    const mergeUniqueById = useCallback((currentPosts: FeedPost[], incomingPosts: FeedPost[]) => {
+        const seen = new Set(currentPosts.map((post) => post.id));
+        const merged = [...currentPosts];
+
+        for (const post of incomingPosts) {
+            if (seen.has(post.id)) continue;
+            seen.add(post.id);
+            merged.push(post);
+        }
+
+        return merged;
+    }, []);
 
     const loadMore = useCallback(async () => {
         if (!hasMore || isLoadingMore) return;
@@ -70,14 +92,65 @@ export default function InfinitePostList({
         if (newPosts.length === 0) {
             setHasMore(false);
         } else {
-            setPosts((prev) => [...prev, ...newPosts]);
+            setPosts((prev) => mergeUniqueById(prev, newPosts));
             setPage((prev) => prev + 1);
             if (newPosts.length < 9) {
                 setHasMore(false);
             }
         }
         setIsLoadingMore(false);
-    }, [page, hasMore, categoryId, urgency, isLoadingMore]);
+    }, [page, hasMore, categoryId, urgency, isLoadingMore, mergeUniqueById]);
+
+    const syncFeed = useCallback(async () => {
+        if (isSyncingRef.current) return;
+        isSyncingRef.current = true;
+
+        const loadedCount = Math.max(9, postsRef.current.length || 0);
+        const refreshed = await fetchFeedPosts(loadedCount, 0, categoryId, urgency);
+
+        setPosts(refreshed);
+        setPage(Math.max(1, Math.ceil(refreshed.length / 9)));
+        setHasMore(refreshed.length >= loadedCount);
+        isSyncingRef.current = false;
+    }, [categoryId, urgency]);
+
+    const scheduleSync = useCallback(() => {
+        if (refreshTimerRef.current) {
+            clearTimeout(refreshTimerRef.current);
+        }
+
+        refreshTimerRef.current = setTimeout(() => {
+            void syncFeed();
+        }, 250);
+    }, [syncFeed]);
+
+    useEffect(() => {
+        const channel = supabase
+            .channel(`feed-live:${categoryId || 'all'}:${urgency || 'all'}`)
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'posts' },
+                () => {
+                    scheduleSync();
+                }
+            )
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'responses' },
+                () => {
+                    scheduleSync();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            if (refreshTimerRef.current) {
+                clearTimeout(refreshTimerRef.current);
+                refreshTimerRef.current = null;
+            }
+            void supabase.removeChannel(channel);
+        };
+    }, [supabase, categoryId, urgency, scheduleSync]);
 
     const [ref] = useInView({
         onChange: (inView) => {

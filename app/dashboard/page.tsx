@@ -7,6 +7,7 @@ import { CATEGORIES } from '@/lib/constants'
 import { isUrgentActive } from '@/lib/urgency'
 import PendingSubmitButton from '@/components/PendingSubmitButton'
 import UrgencyBadge from '@/components/UrgencyBadge'
+import DashboardRealtimeBridge from '@/components/DashboardRealtimeBridge'
 
 type DashboardResponse = {
     id: string;
@@ -64,6 +65,7 @@ export default async function DashboardPage({
         .order('created_at', { ascending: false })
 
     const myPosts = posts || []
+    const myPostIds = myPosts.map((post) => post.id)
     const params = await searchParams
     const selectedStatus = params.status === 'closed' ? 'closed' : 'active'
     const visiblePosts = [...myPosts]
@@ -85,6 +87,8 @@ export default async function DashboardPage({
     , 0)
 
     return (
+        <>
+        <DashboardRealtimeBridge userId={user.id} postIds={myPostIds} />
         <main className="max-w-4xl mx-auto px-6 pt-10 pb-32 animate-in fade-in duration-300">
             <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
                 <div className="bg-[#f5f3f1] p-8 rounded-lg relative overflow-hidden group">
@@ -207,5 +211,6 @@ export default async function DashboardPage({
                 </div>
             )}
         </main>
+        </>
     )
 }
