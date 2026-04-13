@@ -109,25 +109,25 @@ export default async function DashboardPage({
                 </div>
             </section>
 
-            <div className="flex gap-3 mb-8">
+            <div className="flex flex-wrap items-stretch gap-3 mb-8">
                 <Link
                     href="/dashboard?status=active"
-                    className={`px-8 py-3 rounded-full text-sm font-bold tracking-tight shadow-sm transition-transform active:scale-95 ${selectedStatus === 'active' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[#54433e] hover:bg-[#dbdad8]'}`}
+                    className={`flex-1 sm:flex-none min-w-[120px] text-center px-6 py-3 rounded-full text-sm font-bold tracking-tight shadow-sm transition-transform active:scale-95 ${selectedStatus === 'active' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[#54433e] hover:bg-[#dbdad8]'}`}
                 >
                     Activas
                 </Link>
                 <Link
                     href="/dashboard?status=closed"
-                    className={`px-8 py-3 rounded-full text-sm font-bold tracking-tight shadow-sm transition-transform active:scale-95 ${selectedStatus === 'closed' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[#54433e] hover:bg-[#dbdad8]'}`}
+                    className={`flex-1 sm:flex-none min-w-[120px] text-center px-6 py-3 rounded-full text-sm font-bold tracking-tight shadow-sm transition-transform active:scale-95 ${selectedStatus === 'closed' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[#54433e] hover:bg-[#dbdad8]'}`}
                 >
                     Cerradas
                 </Link>
 
                 {totalUnread > 0 && (
-                    <form action={markAllAsRead} className="ml-auto">
+                    <form action={markAllAsRead} className="w-full sm:w-auto sm:ml-auto">
                         <PendingSubmitButton
                             pendingText="Marcando..."
-                            className="px-5 py-3 rounded-full text-xs font-semibold uppercase border border-[#dac1ba] text-[#54433e] bg-white hover:bg-[#efeeec] transition-colors"
+                            className="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold border border-[#dac1ba] text-[#54433e] bg-white hover:bg-[#efeeec] transition-colors"
                         >
                             Marcar todo como leído
                         </PendingSubmitButton>
