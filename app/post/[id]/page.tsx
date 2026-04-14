@@ -8,6 +8,7 @@ import LoadMoreResponses from '@/components/LoadMoreResponses';
 import PendingSubmitButton from '@/components/PendingSubmitButton';
 import UrgencyBadge from '@/components/UrgencyBadge';
 import PostRealtimeBridge from '@/components/PostRealtimeBridge';
+import UnreadResponsesNotifier from '@/components/UnreadResponsesNotifier';
 
 function getTimeAgoEs(dateInput: string) {
     const now = new Date();
@@ -115,6 +116,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
     return (
         <>
         <PostRealtimeBridge postId={postId} />
+        {isAuthor && <UnreadResponsesNotifier />}
         <main className="max-w-4xl mx-auto px-6 py-8 pb-32 animate-in fade-in duration-300">
             <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--tn-muted)] hover:text-[var(--tn-primary)] transition-colors mb-8">
                 <ArrowLeft size={16} strokeWidth={2.5} /> Volver

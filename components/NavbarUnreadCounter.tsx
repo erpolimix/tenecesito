@@ -46,6 +46,18 @@ export default function NavbarUnreadCounter({ initialCount, userId }: { initialC
     }, [pathname, recountUnread]);
 
     useEffect(() => {
+        const handleUnreadChanged = () => {
+            void recountUnread();
+        };
+
+        window.addEventListener('tn:unread-responses-changed', handleUnreadChanged);
+
+        return () => {
+            window.removeEventListener('tn:unread-responses-changed', handleUnreadChanged);
+        };
+    }, [recountUnread]);
+
+    useEffect(() => {
         const channel = supabase.channel(`navbar-unread:${userId}`);
 
         channel.on(
