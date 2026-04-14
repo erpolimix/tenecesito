@@ -64,7 +64,7 @@ export default async function Navbar() {
 
                                 <Link
                                     href="/create"
-                                    className="inline-flex items-center justify-center rounded-2xl bg-[#5d3d2e] text-white px-4 py-3 text-sm font-bold hover:bg-[#433422] active:scale-95 transition-all shadow-lg shadow-stone-200 md:px-6 md:gap-2"
+                                    className="hidden md:inline-flex items-center justify-center rounded-2xl bg-[#5d3d2e] text-white px-4 py-3 text-sm font-bold hover:bg-[#433422] active:scale-95 transition-all shadow-lg shadow-stone-200 md:px-6 md:gap-2"
                                 >
                                     <Plus size={17} strokeWidth={2.8} />
                                     <span className="hidden md:inline">Nueva Necesidad</span>
