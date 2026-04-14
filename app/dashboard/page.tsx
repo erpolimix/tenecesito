@@ -166,49 +166,68 @@ export default async function DashboardPage({
                             : 'Sin respuestas nuevas'
                         
                         return (
-                            <div key={post.id} className={`bg-[#f5f3f1] p-6 md:p-8 rounded-lg hover:bg-[#efeeec] transition-all duration-300 group cursor-pointer ${unreadResponses.length === 0 ? 'opacity-80' : ''}`}>
-                                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                                    <div className="space-y-3">
-                                        <div className="flex items-center gap-3 text-sm text-[#546258] font-medium">
-                                            <span>{getTimeAgoEs(post.created_at)}</span>
-                                            <span className="w-1 h-1 bg-[#dac1ba] rounded-full" />
-                                            <span className="text-[#af5e44] font-semibold">{cat?.name}</span>
-                                            <UrgencyBadge
-                                                priorityLevel={post.priority_level}
-                                                urgentUntil={post.urgent_until}
-                                                isClosed={post.is_closed}
-                                            />
+                            <div key={post.id} className={`bg-[#f5f3f1] p-5 md:p-7 rounded-[24px] hover:bg-[#efeeec] transition-all duration-300 group ${unreadResponses.length === 0 ? 'opacity-80' : ''}`}>
+                                <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
+                                    <div className="flex flex-wrap items-center gap-2.5 text-sm text-[#546258] font-medium">
+                                        <span className="px-3 py-1.5 rounded-md bg-white/60 text-[#af5e44] font-semibold">{cat?.name}</span>
+                                        <span>{getTimeAgoEs(post.created_at)}</span>
+                                    </div>
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <UrgencyBadge
+                                            priorityLevel={post.priority_level}
+                                            urgentUntil={post.urgent_until}
+                                            isClosed={post.is_closed}
+                                        />
+                                        <span className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-[0.12em] flex items-center gap-1.5 ${post.is_closed ? 'bg-[#e7dfd5] text-[#6d5a52]' : 'bg-[#d5e3d7] text-[#425649]'}`}>
+                                            <span className={`w-2 h-2 rounded-full ${post.is_closed ? 'bg-[#6d5a52]' : 'bg-[#5f7a67]'}`} />
+                                            {post.is_closed ? 'Cerrada' : 'Abierta'}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <h3 className="font-editorial text-[2rem] md:text-[2.4rem] leading-[0.98] text-[#1b1c1b]">
+                                        <Link href={`/post/${post.id}`} className="hover:text-[var(--tn-primary)] transition-colors">
+                                            {post.title}
+                                        </Link>
+                                    </h3>
+                                    <p className="text-[#54433e] text-[1.02rem] md:text-[1.08rem] leading-[1.65] max-w-2xl">
+                                        {excerpt(post.content)}
+                                    </p>
+                                </div>
+
+                                <div className="mt-8 pt-5 border-t border-[var(--tn-outline)]/20 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <div className="w-11 h-11 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold shrink-0">
+                                            T
                                         </div>
-                                        <h3 className="font-editorial text-2xl md:text-[2rem] leading-tight text-[#1b1c1b]">
-                                            <Link href={`/post/${post.id}`} className="hover:text-[var(--tn-primary)] transition-colors">
-                                                {post.title}
-                                            </Link>
-                                        </h3>
-                                        <p className="text-[#54433e] leading-[1.6] max-w-2xl">
-                                            {excerpt(post.content)}
-                                        </p>
+                                        <div className="min-w-0">
+                                            <p className="text-[11px] uppercase tracking-[0.14em] text-[#87736d] font-semibold">Tu necesidad</p>
+                                            <p className="text-[#1b1c1b] font-semibold truncate">Gestiona respuestas y estado</p>
+                                        </div>
                                     </div>
 
-                                    <div className="flex flex-col items-start md:items-end gap-3">
+                                    <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center md:justify-end">
                                         {unreadResponses.length > 0 ? (
                                             <form action={markPostResponsesAsRead}>
                                                 <input type="hidden" name="postId" value={post.id} />
                                                 <PendingSubmitButton
                                                     pendingText="Marcando..."
-                                                    className="bg-[#ffdbd0] px-4 py-2 rounded-full flex items-center gap-2 shadow-sm"
+                                                    className="bg-[#ffdbd0] px-4 py-2.5 rounded-full flex items-center gap-2 shadow-sm"
                                                 >
                                                     <MessageSquare size={16} className="text-[#91462e]" />
                                                     <span className="text-[#76321c] font-bold text-sm">{responseCountLabel}</span>
                                                 </PendingSubmitButton>
                                             </form>
                                         ) : (
-                                            <div className="text-[#87736d] font-medium text-sm px-4 py-2">
+                                            <div className="text-[#87736d] font-medium text-sm px-4 py-2.5 bg-white/45 rounded-full">
                                                 {responseCountLabel}
                                             </div>
                                         )}
 
-                                        <Link href={`/post/${post.id}`} className="text-[#dac1ba] group-hover:text-[#91462e] transition-colors mt-1">
-                                            <ArrowRight size={20} />
+                                        <Link href={`/post/${post.id}`} className="inline-flex items-center gap-2 text-[#91462e] font-semibold group-hover:translate-x-1 transition-all">
+                                            <span>Ver detalle</span>
+                                            <ArrowRight size={18} />
                                         </Link>
                                     </div>
                                 </div>

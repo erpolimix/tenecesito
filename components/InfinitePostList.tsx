@@ -191,55 +191,59 @@ export default function InfinitePostList({
                     <Link
                         href={`/post/${post.id}`}
                         key={post.id}
-                        className="bg-white/85 border border-[var(--tn-outline)]/35 rounded-3xl p-6 md:p-7 cursor-pointer hover:-translate-y-1 hover:shadow-[0_16px_35px_rgba(27,28,27,0.12)] transition-all flex flex-col h-full"
+                        className="bg-white/85 border border-[var(--tn-outline)]/35 rounded-3xl p-5 md:p-7 cursor-pointer hover:-translate-y-1 hover:shadow-[0_16px_35px_rgba(27,28,27,0.12)] transition-all flex flex-col h-full"
                     >
-                        <div className="flex items-start justify-between mb-4">
-                            <span className={`text-xs font-semibold uppercase tracking-[0.14em] px-3 py-1 rounded-sm ${tone.bg} ${tone.text}`}>
+                        <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
+                            <span className={`text-xs font-semibold uppercase tracking-[0.14em] px-3 py-1.5 rounded-md ${tone.bg} ${tone.text}`}>
                                 {cat?.name}
                             </span>
-                            <div className="flex flex-col items-end gap-2">
-                                <span className={`flex items-center gap-2 text-xs font-semibold rounded-full px-3 py-1 ${statusClasses}`}>
-                                    <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
-                                    {statusLabel}
-                                </span>
+                            <div className="flex flex-wrap items-center justify-end gap-2 ml-auto">
                                 <UrgencyBadge
                                     priorityLevel={post.priority_level}
                                     urgentUntil={post.urgent_until}
                                     isClosed={post.is_closed}
                                 />
+                                <span className={`flex items-center gap-2 text-xs font-semibold rounded-full px-3 py-1.5 ${statusClasses}`}>
+                                    <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
+                                    {statusLabel}
+                                </span>
                             </div>
                         </div>
 
-                        <h3 className="font-editorial text-3xl font-bold leading-tight mb-4 flex-grow break-words text-[var(--tn-text)]">
+                        <h3 className="font-editorial text-[2.1rem] md:text-[2.5rem] font-bold leading-[0.98] mb-5 break-words text-[var(--tn-text)]">
                             {post.title}
                         </h3>
 
-                        <p className="text-[#67706c] text-[1.1rem] leading-relaxed mb-6">
+                        <p className="text-[#67706c] text-[1.05rem] md:text-[1.15rem] leading-[1.65] mb-8 flex-grow">
                             {getExcerpt(post.content)}
                         </p>
 
-                        <div className="mt-4 pt-4 border-t border-[var(--tn-outline)]/25 flex items-center justify-between gap-3 text-sm">
+                        <div className="mt-auto pt-5 border-t border-[var(--tn-outline)]/25 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                             <div className="flex items-center gap-3 min-w-0">
                                 {post.author_avatar_url ? (
                                     <img
                                         src={post.author_avatar_url}
                                         alt={`Avatar de ${post.author_name || 'autor'}`}
-                                        className="w-9 h-9 rounded-full object-cover border border-[var(--tn-outline)]/20"
+                                        className="w-11 h-11 rounded-full object-cover border border-[var(--tn-outline)]/20 shrink-0"
                                     />
                                 ) : (
-                                    <div className="w-9 h-9 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold shrink-0">
+                                    <div className="w-11 h-11 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold shrink-0">
                                         {(post.author_name?.[0] || 'A').toUpperCase()}
                                     </div>
                                 )}
                                 <div className="min-w-0">
-                                    <p className="text-[var(--tn-text)] font-semibold truncate">{post.author_name || 'Usuario de la comunidad'}</p>
-                                    <span className="flex items-center gap-2 text-[var(--tn-primary)] font-semibold">
-                                        <MessageSquare size={14} />
-                                        {responseCount} perspectiva{responseCount === 1 ? '' : 's'} compartida{responseCount === 1 ? '' : 's'}
-                                    </span>
+                                    <p className="text-[11px] uppercase tracking-[0.14em] text-[var(--tn-muted)] font-semibold">Publicado por</p>
+                                    <p className="text-[var(--tn-text)] text-base font-semibold truncate">{post.author_name || 'Usuario de la comunidad'}</p>
                                 </div>
                             </div>
-                            <span className="text-[#91857f] italic">{timeAgo}</span>
+
+                            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between md:flex-col md:items-end md:text-right lg:flex-row lg:items-center lg:text-left xl:text-right">
+                                <span className="flex items-center gap-2 text-[var(--tn-primary)] font-semibold text-base leading-tight">
+                                        <MessageSquare size={14} />
+                                        {responseCount} perspectiva{responseCount === 1 ? '' : 's'} compartida{responseCount === 1 ? '' : 's'}
+                                </span>
+                                <span className="text-[#91857f] italic text-lg leading-none">{timeAgo}</span>
+                            </div>
                         </div>
                     </Link>
                 );

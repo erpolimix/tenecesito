@@ -171,21 +171,31 @@ export default async function ComunidadPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {featuredPosts.length > 0 ? featuredPosts.map((post) => (
-                        <Link key={post.id} href={`/post/${post.id}`} className="bg-white/80 border border-[var(--tn-outline)]/25 rounded-2xl p-6 hover:-translate-y-1 transition-transform">
-                            <p className="text-xs uppercase tracking-[0.14em] font-semibold text-[var(--tn-muted)]">{categoryName(post.category_id)}</p>
-                            <h3 className="font-editorial text-2xl leading-tight mt-3 text-[var(--tn-text)]">{post.title}</h3>
-                            <p className="text-sm text-[var(--tn-muted)] mt-4 line-height-editorial">{excerpt(post.content, 120)}</p>
-                            <div className="mt-5 flex items-center gap-3">
-                                {post.author_avatar_url ? (
-                                    <img src={post.author_avatar_url} alt={`Avatar de ${post.author_name}`} className="w-10 h-10 rounded-full object-cover" />
-                                ) : (
-                                    <div className="w-10 h-10 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold">
-                                        {post.author_name.charAt(0).toUpperCase()}
-                                    </div>
-                                )}
-                                <p className="text-sm font-medium text-[var(--tn-text)] truncate">Publicado por {post.author_name}</p>
+                        <Link key={post.id} href={`/post/${post.id}`} className="bg-white/80 border border-[var(--tn-outline)]/25 rounded-2xl p-5 md:p-6 hover:-translate-y-1 transition-transform flex flex-col h-full">
+                            <div className="flex items-start justify-between gap-3 mb-4">
+                                <p className="text-xs uppercase tracking-[0.14em] font-semibold text-[var(--tn-muted)]">{categoryName(post.category_id)}</p>
+                                <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${post.is_closed ? 'bg-[#e7e6eb] text-[#5f627a]' : 'bg-[#e7ece8] text-[#4f6353]'}`}>
+                                    {post.is_closed ? 'Cerrada' : 'Abierta'}
+                                </span>
                             </div>
-                            <p className="mt-5 text-sm font-semibold text-[var(--tn-primary)]">{post.interactionCount} interacciones</p>
+                            <h3 className="font-editorial text-2xl md:text-[2rem] leading-[1.02] text-[var(--tn-text)]">{post.title}</h3>
+                            <p className="text-sm md:text-base text-[var(--tn-muted)] mt-4 leading-[1.65] flex-grow">{excerpt(post.content, 120)}</p>
+                            <div className="mt-6 pt-5 border-t border-[var(--tn-outline)]/20 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="flex items-center gap-3 min-w-0">
+                                    {post.author_avatar_url ? (
+                                        <img src={post.author_avatar_url} alt={`Avatar de ${post.author_name}`} className="w-10 h-10 rounded-full object-cover" />
+                                    ) : (
+                                        <div className="w-10 h-10 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold shrink-0">
+                                            {post.author_name.charAt(0).toUpperCase()}
+                                        </div>
+                                    )}
+                                    <div className="min-w-0">
+                                        <p className="text-[11px] uppercase tracking-[0.14em] text-[var(--tn-muted)] font-semibold">Publicado por</p>
+                                        <p className="text-sm font-medium text-[var(--tn-text)] truncate">{post.author_name}</p>
+                                    </div>
+                                </div>
+                                <p className="text-sm font-semibold text-[var(--tn-primary)]">{post.interactionCount} interacciones</p>
+                            </div>
                         </Link>
                     )) : (
                         <div className="md:col-span-3 bg-white/75 border border-[var(--tn-outline)]/25 rounded-2xl p-8 text-center text-[var(--tn-muted)]">Todavia no hay suficientes datos para destacados.</div>
@@ -226,31 +236,39 @@ export default async function ComunidadPage() {
                     <h2 className="font-editorial text-4xl text-[var(--tn-text)] mb-6">Necesidades con mas interaccion</h2>
                     <div className="space-y-4">
                         {topInteractedNeeds.length > 0 ? topInteractedNeeds.map((post) => (
-                            <Link key={post.id} href={`/post/${post.id}`} className="block bg-white/80 border border-[var(--tn-outline)]/25 rounded-xl p-5 hover:bg-white transition-colors">
-                                <div className="flex items-start justify-between gap-3">
-                                    <div>
-                                        <p className="text-xs uppercase tracking-[0.14em] text-[var(--tn-muted)] font-semibold">
-                                            {categoryName(post.category_id)}
-                                        </p>
-                                        <h3 className="font-editorial text-2xl leading-tight text-[var(--tn-text)] mt-2">{post.title}</h3>
-                                        <p className="text-sm text-[var(--tn-muted)] mt-3 line-height-editorial">{excerpt(post.content, 130)}</p>
-                                        <div className="mt-4 flex items-center gap-3">
+                            <Link key={post.id} href={`/post/${post.id}`} className="block bg-white/80 border border-[var(--tn-outline)]/25 rounded-xl p-5 md:p-6 hover:bg-white transition-colors">
+                                <div className="flex flex-col gap-5">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <p className="text-xs uppercase tracking-[0.14em] text-[var(--tn-muted)] font-semibold">
+                                                {categoryName(post.category_id)}
+                                            </p>
+                                            <h3 className="font-editorial text-2xl md:text-[2.2rem] leading-[1.02] text-[var(--tn-text)] mt-2">{post.title}</h3>
+                                            <p className="text-sm md:text-base text-[var(--tn-muted)] mt-4 leading-[1.65]">{excerpt(post.content, 130)}</p>
+                                        </div>
+                                        <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${post.is_closed ? 'bg-[#e7e6eb] text-[#5f627a]' : 'bg-[#e7ece8] text-[#4f6353]'}`}>
+                                            {post.is_closed ? 'Cerrada' : 'Abierta'}
+                                        </span>
+                                    </div>
+
+                                    <div className="pt-4 border-t border-[var(--tn-outline)]/20 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                        <div className="flex items-center gap-3 min-w-0">
                                             {post.author_avatar_url ? (
-                                                <img src={post.author_avatar_url} alt={`Avatar de ${post.author_name}`} className="w-9 h-9 rounded-full object-cover" />
+                                                <img src={post.author_avatar_url} alt={`Avatar de ${post.author_name}`} className="w-10 h-10 rounded-full object-cover" />
                                             ) : (
-                                                <div className="w-9 h-9 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold">
+                                                <div className="w-10 h-10 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold shrink-0">
                                                     {post.author_name.charAt(0).toUpperCase()}
                                                 </div>
                                             )}
-                                            <p className="text-sm font-medium text-[var(--tn-text)] truncate">{post.author_name}</p>
+                                            <div className="min-w-0">
+                                                <p className="text-[11px] uppercase tracking-[0.14em] text-[var(--tn-muted)] font-semibold">Publicado por</p>
+                                                <p className="text-sm font-medium text-[var(--tn-text)] truncate">{post.author_name}</p>
+                                            </div>
+                                        </div>
+                                        <div className="text-sm font-semibold text-[var(--tn-primary)]">
+                                            {post.interactionCount} respuestas registradas
                                         </div>
                                     </div>
-                                    <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${post.is_closed ? 'bg-[#e7e6eb] text-[#5f627a]' : 'bg-[#e7ece8] text-[#4f6353]'}`}>
-                                        {post.is_closed ? 'Cerrada' : 'Abierta'}
-                                    </span>
-                                </div>
-                                <div className="mt-4 pt-4 border-t border-[var(--tn-outline)]/20 text-sm font-semibold text-[var(--tn-primary)]">
-                                    {post.interactionCount} respuestas registradas
                                 </div>
                             </Link>
                         )) : (
