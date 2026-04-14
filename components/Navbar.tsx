@@ -35,7 +35,7 @@ export default async function Navbar() {
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-6">
                     <div className="flex min-w-0 items-center justify-between gap-4 md:justify-start md:gap-8">
                         <Link href="/" className="block shrink min-w-0 hover:opacity-80 transition-opacity">
-                            <BrandLogo className="w-[240px] sm:w-[290px] md:w-[360px]" />
+                            <BrandLogo className="max-w-full" />
                         </Link>
 
                         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-stone-500">

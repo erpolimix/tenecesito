@@ -31,16 +31,22 @@ body {
 	color: var(--tn-text);
 	overflow-x: hidden;
 	touch-action: manipulation;
+	position: relative;
 }
 
 #tn-bg-canvas {
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: -1;
+	z-index: 0;
 	pointer-events: none;
 	width: 100%;
 	height: 100%;
+}
+
+body > :not(#tn-bg-canvas) {
+	position: relative;
+	z-index: 1;
 }
 
 .font-editorial {
@@ -173,44 +179,35 @@ h3 {
 	overflow: visible;
 }
 
-.tn-brand-logo-text {
+.tn-brand-logo-wordmark {
 	font-family: var(--font-playfair-display), serif;
-	font-size: 72px;
 	font-weight: 700;
-	letter-spacing: -0.03em;
-	fill: transparent;
-	stroke: rgba(140, 90, 68, 0.92);
-	stroke-width: 1.1;
-	stroke-dasharray: 1200;
-	stroke-dashoffset: 1200;
-	paint-order: stroke fill;
-	animation: tn-logo-draw 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards, tn-logo-fill 0.5s ease 0.65s forwards;
-	transform-origin: left center;
-	transform: translateY(6px);
+	animation: tn-logo-wordmark-in 0.7s ease 0.35s both;
 }
 
-.tn-brand-logo-subtitle {
+.tn-brand-logo-path {
+	fill: none;
+	stroke-dasharray: 220;
+	stroke-dashoffset: 220;
+	animation: tn-logo-path-draw 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.tn-brand-logo-path-2 {
+	animation-delay: 0.18s;
+}
+
+.tn-brand-logo-node {
 	opacity: 0;
-	animation: tn-logo-fade-up 0.55s ease 0.9s forwards;
+	transition: opacity 0.5s ease;
+	animation: tn-logo-node-in 0.45s ease 0.95s forwards;
 }
 
-.tn-brand-logo-line {
-	stroke: rgba(140, 90, 68, 0.25);
-	stroke-width: 2;
-	stroke-linecap: round;
+.tn-brand-logo:hover .tn-brand-logo-node {
+	opacity: 1;
 }
 
-.tn-brand-logo-caption {
-	font-family: var(--font-plus-jakarta-sans), sans-serif;
-	font-size: 18px;
-	font-weight: 700;
-	letter-spacing: 0.28em;
-	fill: rgba(140, 90, 68, 0.65);
-}
-
-.tn-brand-logo-subtle .tn-brand-logo-text {
-	animation-duration: 0.9s, 0.4s;
-	opacity: 0.96;
+.tn-brand-logo-subdued {
+	opacity: 0.2;
 }
 
 .tn-urgent-badge {
@@ -233,24 +230,13 @@ h3 {
 	box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.45);
 }
 
-@keyframes tn-logo-draw {
+@keyframes tn-logo-path-draw {
 	to {
 		stroke-dashoffset: 0;
-		transform: translateY(0);
 	}
 }
 
-@keyframes tn-logo-fill {
-	from {
-		fill: transparent;
-	}
-	to {
-		fill: rgba(140, 90, 68, 1);
-		stroke: rgba(140, 90, 68, 0.3);
-	}
-}
-
-@keyframes tn-logo-fade-up {
+@keyframes tn-logo-wordmark-in {
 	from {
 		opacity: 0;
 		transform: translateY(6px);
@@ -258,6 +244,17 @@ h3 {
 	to {
 		opacity: 1;
 		transform: translateY(0);
+	}
+}
+
+@keyframes tn-logo-node-in {
+	from {
+		opacity: 0;
+		transform: scale(0.7);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
 	}
 }
 

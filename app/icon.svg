@@ -1,14 +1,14 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="tn_bg" x1="64" y1="40" x2="454" y2="472" gradientUnits="userSpaceOnUse">
+    <linearGradient id="tn_bg" x1="76" y1="56" x2="448" y2="454" gradientUnits="userSpaceOnUse">
       <stop stop-color="#FFFDFC"/>
       <stop offset="1" stop-color="#F8EFE8"/>
     </linearGradient>
-    <radialGradient id="tn_glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(402 120) rotate(130.763) scale(286.435)">
-      <stop stop-color="#F1D5CA" stop-opacity="0.6"/>
+    <radialGradient id="tn_glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(382 138) rotate(130.763) scale(264.435)">
+      <stop stop-color="#F1D5CA" stop-opacity="0.55"/>
       <stop offset="1" stop-color="#F1D5CA" stop-opacity="0"/>
     </radialGradient>
-    <filter id="tn_shadow" x="18" y="18" width="476" height="476" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+    <filter id="tn_shadow" x="26" y="26" width="460" height="460" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
       <feFlood flood-opacity="0" result="BackgroundImageFix"/>
       <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
       <feOffset dy="18"/>
@@ -19,11 +19,11 @@
     </filter>
   </defs>
   <g filter="url(#tn_shadow)">
-    <rect x="62" y="44" width="388" height="388" rx="92" fill="url(#tn_bg)"/>
-    <rect x="62.75" y="44.75" width="386.5" height="386.5" rx="91.25" stroke="#F0E1D6" stroke-width="1.5"/>
-    <circle cx="362" cy="152" r="120" fill="url(#tn_glow)"/>
-    <path d="M141 151.5C141 138.521 151.521 128 164.5 128H347.5C360.479 128 371 138.521 371 151.5C371 164.479 360.479 175 347.5 175H276V332.5C276 345.479 265.479 356 252.5 356H246.5C233.521 356 223 345.479 223 332.5V175H164.5C151.521 175 141 164.479 141 151.5Z" fill="#8C5A44"/>
-    <path d="M188 116.5C188 106.283 196.283 98 206.5 98H305.5C315.717 98 324 106.283 324 116.5C324 126.717 315.717 135 305.5 135H206.5C196.283 135 188 126.717 188 116.5Z" fill="#A56B52"/>
-    <path d="M178 385C178 378.373 183.373 373 190 373H322C328.627 373 334 378.373 334 385C334 391.627 328.627 397 322 397H190C183.373 397 178 391.627 178 385Z" fill="#EAD8CB"/>
+    <rect x="70" y="52" width="372" height="372" rx="96" fill="url(#tn_bg)"/>
+    <rect x="70.75" y="52.75" width="370.5" height="370.5" rx="95.25" stroke="#F0E1D6" stroke-width="1.5"/>
+    <circle cx="360" cy="150" r="112" fill="url(#tn_glow)"/>
+    <path d="M190 312C190 312 150 232 230 152C310 72 430 152 350 232C270 312 190 312 190 312Z" stroke="#8C5A44" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M322 184C322 184 362 264 282 344C202 424 82 344 162 264C242 184 322 184 322 184Z" stroke="#5D3D2E" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="256" cy="248" r="14" fill="#8C5A44"/>
   </g>
 </svg>
