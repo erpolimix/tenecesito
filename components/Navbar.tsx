@@ -25,63 +25,76 @@ export default async function Navbar() {
     const initialName = user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || '?';
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-4">
-            <div className="max-w-7xl mx-auto tn-glass-card rounded-2xl px-5 md:px-8 py-3 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-6 md:gap-8 min-w-0">
-                <Link href="/" className="font-editorial text-[2rem] sm:text-[2.5rem] font-bold tracking-tight text-[var(--tn-primary)] hover:opacity-80 transition-opacity leading-none shrink-0">
-                    TENECESITO
-                </Link>
+        <nav className="sticky top-0 z-50 px-3 pt-3 md:px-6 md:pt-4">
+            <div className="max-w-7xl mx-auto rounded-[28px] px-4 py-3 md:px-8 md:py-4 tn-glass-nav">
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-6">
+                    <div className="flex min-w-0 items-center justify-between gap-4 md:justify-start md:gap-8">
+                        <Link href="/" className="font-editorial text-[1.9rem] sm:text-[2.2rem] md:text-[3.15rem] font-bold tracking-tight text-[var(--tn-primary)] hover:opacity-80 transition-opacity leading-none shrink min-w-0">
+                            TENECESITO
+                        </Link>
 
-                <div className="hidden md:flex items-center gap-6 text-sm font-medium text-stone-500">
-                    <Link href="/feed" className="text-[var(--tn-primary)] border-b-2 border-[var(--tn-primary)] pb-1 transition-colors hover:text-[var(--tn-primary)]">
-                        Explorar
-                    </Link>
-                    <Link
-                        href="/comunidad"
-                        className="transition-colors hover:text-[var(--tn-primary)]"
-                    >
-                        Comunidad
-                    </Link>
-                </div>
-                </div>
-
-                <div className="flex items-center gap-2 sm:gap-3 overflow-visible shrink-0">
-                    {user ? (
-                        <>
-                            {user && <NavbarUnreadCounter initialCount={unreadCount} userId={user.id} />}
-
+                        {!user && (
                             <Link
-                                href="/create"
-                                className="bg-[#5d3d2e] text-white px-5 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold hover:bg-[#433422] active:scale-95 transition-all shadow-lg shadow-stone-200 flex items-center gap-1.5 sm:gap-2"
+                                href="/login"
+                                className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 transition-colors md:hidden"
                             >
-                                <Plus size={16} strokeWidth={2.8} />
-                                <span className="hidden sm:inline">Nueva Necesidad</span>
+                                <span>Entrar</span>
+                                <User size={16} strokeWidth={2.5} />
                             </Link>
+                        )}
 
-                            <div className="flex items-center gap-2 sm:pl-2">
+                        <div className="hidden md:flex items-center gap-6 text-sm font-medium text-stone-500">
+                            <Link href="/feed" className="text-[var(--tn-primary)] border-b-2 border-[var(--tn-primary)] pb-1 transition-colors hover:text-[var(--tn-primary)]">
+                                Explorar
+                            </Link>
+                            <Link
+                                href="/comunidad"
+                                className="transition-colors hover:text-[var(--tn-primary)]"
+                            >
+                                Comunidad
+                            </Link>
+                        </div>
+                    </div>
+
+                    {user ? (
+                        <div className="flex items-center justify-between gap-3 md:justify-end md:gap-3">
+                            <div className="flex items-center gap-3">
+                                <NavbarUnreadCounter initialCount={unreadCount} userId={user.id} />
+
+                                <Link
+                                    href="/create"
+                                    className="inline-flex items-center justify-center rounded-2xl bg-[#5d3d2e] text-white px-4 py-3 text-sm font-bold hover:bg-[#433422] active:scale-95 transition-all shadow-lg shadow-stone-200 md:px-6 md:gap-2"
+                                >
+                                    <Plus size={17} strokeWidth={2.8} />
+                                    <span className="hidden md:inline">Nueva Necesidad</span>
+                                </Link>
+                            </div>
+
+                            <div className="flex items-center gap-2 md:pl-2">
                                 {avatarUrl ? (
-                                    <img src={avatarUrl} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm" />
+                                    <img src={avatarUrl} alt="Avatar" className="h-10 w-10 rounded-full border-2 border-white object-cover shadow-sm md:h-11 md:w-11" />
                                 ) : (
-                                    <div className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-white bg-[#f4e7de] text-[var(--tn-primary)] font-bold uppercase text-base shadow-sm">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-[#f4e7de] text-[var(--tn-primary)] font-bold uppercase text-base shadow-sm md:h-11 md:w-11">
                                         {initialName}
                                     </div>
                                 )}
 
                                 <form action={signout}>
-                                    <button title="Cerrar sesión" className="flex items-center justify-center w-10 h-10 rounded-full bg-[#2f2f2f] text-white hover:bg-[var(--tn-primary)] transition-colors shadow-sm">
+                                    <button title="Cerrar sesión" className="flex items-center justify-center w-10 h-10 rounded-full bg-[#2f2f2f] text-white hover:bg-[var(--tn-primary)] transition-colors shadow-sm md:w-11 md:h-11">
                                         <LogOut size={16} strokeWidth={2.5} />
                                     </button>
                                 </form>
                             </div>
-                        </>
+                        </div>
                     ) : (
-                        <Link
-                            href="/login"
-                            className="text-sm font-semibold text-stone-600 hover:text-stone-900 transition-colors flex items-center gap-2"
-                        >
-                            <span>Entrar</span>
-                            <User size={16} strokeWidth={2.5} className="sm:hidden" />
-                        </Link>
+                        <div className="hidden md:flex items-center gap-3 shrink-0">
+                            <Link
+                                href="/login"
+                                className="text-sm font-semibold text-stone-600 hover:text-stone-900 transition-colors flex items-center gap-2"
+                            >
+                                <span>Entrar</span>
+                            </Link>
+                        </div>
                     )}
                 </div>
             </div>
