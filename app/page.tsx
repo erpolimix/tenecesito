@@ -55,17 +55,17 @@ export default async function LandingPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 pb-12 pt-8 md:pb-14 md:pt-10">
-      <section className="mb-12 text-center md:text-left">
+    <div className="max-w-6xl mx-auto px-4 pb-10 pt-5 md:pb-14 md:pt-10">
+      <section className="mb-8 md:mb-12 text-center md:text-left">
         <p className="text-xs uppercase tracking-[0.2em] text-stone-400 font-bold mb-2">Comunidad</p>
-        <h1 className="font-editorial text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight leading-[0.95] text-[#5d3d2e] mt-4 md:mt-5">
+        <h1 className="font-editorial text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight leading-[0.95] text-[#5d3d2e] mt-2 md:mt-5">
           ¿Qué necesitas
           <span className="italic text-[var(--tn-primary-soft)]"> hoy?</span>
         </h1>
-        <p className="mt-5 max-w-2xl mx-auto md:mx-0 text-[var(--tn-muted)] text-lg leading-[1.65]">
+        <p className="mt-4 max-w-xl mx-auto md:mx-0 text-[var(--tn-muted)] text-base md:text-lg leading-[1.6]">
           Elige un espacio para publicar tu necesidad y recibir perspectivas de la comunidad.
         </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center md:justify-start gap-3">
+        <div className="mt-6 flex flex-wrap items-center justify-center md:justify-start gap-3">
           <Link
             href="/feed"
             className="tn-button-primary inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold shadow-sm"
@@ -74,7 +74,7 @@ export default async function LandingPage() {
           </Link>
           <Link
             href="/comunidad"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-[#eadfd6] text-sm font-semibold text-[var(--tn-text)] hover:border-[#d4b7a7] transition-colors"
+            className="hidden md:inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-[#eadfd6] text-sm font-semibold text-[var(--tn-text)] hover:border-[#d4b7a7] transition-colors"
           >
             Ver panel de Comunidad
           </Link>
@@ -102,12 +102,12 @@ export default async function LandingPage() {
                   <h2 className="font-editorial text-4xl md:text-5xl font-bold leading-[1.02] mt-4 text-[var(--tn-text)]">{cat.name}</h2>
                   <p className="mt-4 text-sm md:text-base font-medium text-[var(--tn-muted)] leading-[1.65] max-w-xl">{cat.desc}</p>
 
-                  <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="rounded-2xl bg-[#fcf8f4] border border-[#f0e6de] px-4 py-4">
+                  <div className="mt-6 grid grid-cols-2 gap-3">
+                    <div className="rounded-2xl bg-[#fcf8f4] border border-[#f0e6de] px-3 py-4 md:px-4">
                       <p className="text-[10px] uppercase tracking-[0.15em] text-[var(--tn-muted)] font-semibold">Abiertas ahora</p>
                       <p className="text-2xl font-editorial font-bold text-[var(--tn-text)] leading-none mt-2">{openCount}</p>
                     </div>
-                    <div className="rounded-2xl bg-[#fcf8f4] border border-[#f0e6de] px-4 py-4">
+                    <div className="rounded-2xl bg-[#fcf8f4] border border-[#f0e6de] px-3 py-4 md:px-4">
                       <p className="text-[10px] uppercase tracking-[0.15em] text-[var(--tn-muted)] font-semibold">Sin tu interacción</p>
                       <p className="text-2xl font-editorial font-bold text-[var(--tn-primary)] leading-none mt-2">
                         {pendingCount !== null ? pendingCount : '—'}

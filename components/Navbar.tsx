@@ -3,6 +3,7 @@ import { Plus, User, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { signout } from '@/app/login/actions';
 import NavbarUnreadCounter from './NavbarUnreadCounter';
+import MobileCreateFab from './MobileCreateFab';
 
 export default async function Navbar() {
     const supabase = await createClient();
@@ -37,13 +38,21 @@ export default async function Navbar() {
                         </Link>
 
                         {!user && (
-                            <Link
-                                href="/login"
-                                className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 transition-colors md:hidden"
-                            >
-                                <span>Entrar</span>
-                                <User size={16} strokeWidth={2.5} />
-                            </Link>
+                            <div className="flex items-center gap-3 md:hidden">
+                                <Link
+                                    href="/comunidad"
+                                    className="text-sm font-semibold text-stone-600 hover:text-[var(--tn-primary)] transition-colors"
+                                >
+                                    Comunidad
+                                </Link>
+                                <Link
+                                    href="/login"
+                                    className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 transition-colors"
+                                >
+                                    <span>Entrar</span>
+                                    <User size={16} strokeWidth={2.5} />
+                                </Link>
+                            </div>
                         )}
 
                         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-stone-500">
@@ -63,6 +72,13 @@ export default async function Navbar() {
                         <div className="flex items-center justify-between gap-3 md:justify-end md:gap-3">
                             <div className="flex items-center gap-3">
                                 <NavbarUnreadCounter initialCount={unreadCount} userId={user.id} />
+
+                                <Link
+                                    href="/comunidad"
+                                    className="md:hidden text-sm font-semibold text-stone-600 hover:text-[var(--tn-primary)] transition-colors"
+                                >
+                                    Comunidad
+                                </Link>
 
                                 <Link
                                     href="/create"
@@ -102,13 +118,7 @@ export default async function Navbar() {
                 </div>
             </div>
         </nav>
-        <Link
-            href={mobileFabHref}
-            aria-label={mobileFabLabel}
-            className="tn-mobile-fab md:hidden"
-        >
-            <Plus size={28} strokeWidth={2.5} />
-        </Link>
+        <MobileCreateFab href={mobileFabHref} label={mobileFabLabel} />
         </>
     );
 }
