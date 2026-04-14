@@ -55,27 +55,33 @@ export default async function LandingPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-5 py-10 md:py-14">
-      <section className="mb-10 md:mb-12">
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[var(--tn-muted)] font-semibold">Comunidad</p>
-        <h1 className="font-editorial text-5xl md:text-7xl font-bold tracking-tight leading-[0.95] text-[var(--tn-primary)] mt-3">
+    <div className="max-w-6xl mx-auto px-4 py-12 md:py-14">
+      <section className="mb-12 text-center md:text-left">
+        <p className="text-xs uppercase tracking-[0.2em] text-stone-400 font-bold mb-2">Comunidad</p>
+        <h1 className="font-editorial text-5xl md:text-7xl font-bold tracking-tight leading-[0.95] text-[#5d3d2e] mt-3">
           ¿Qué necesitas
           <span className="italic text-[var(--tn-primary-soft)]"> hoy?</span>
         </h1>
-        <p className="mt-5 max-w-2xl text-[var(--tn-muted)] text-lg">
+        <p className="mt-5 max-w-2xl mx-auto md:mx-0 text-[var(--tn-muted)] text-lg leading-[1.65]">
           Elige un espacio para publicar tu necesidad y recibir perspectivas de la comunidad.
         </p>
-        <div className="mt-6">
+        <div className="mt-8 flex flex-wrap items-center justify-center md:justify-start gap-3">
+          <Link
+            href="/feed"
+            className="tn-button-primary inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold shadow-sm"
+          >
+            Explorar necesidades
+          </Link>
           <Link
             href="/comunidad"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#f0ece7] border border-[var(--tn-outline)]/30 text-sm font-semibold text-[var(--tn-text)] hover:bg-[#e7e2dc] transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-[#eadfd6] text-sm font-semibold text-[var(--tn-text)] hover:border-[#d4b7a7] transition-colors"
           >
             Ver panel de Comunidad
           </Link>
         </div>
       </section>
 
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         {CATEGORIES.map((cat, index) => {
           const Icon = cat.icon;
           const large = index === 0;
@@ -86,22 +92,22 @@ export default async function LandingPage() {
             <Link
               key={cat.id}
               href={`/feed?category=${cat.id}`}
-              className={`group relative overflow-hidden rounded-[28px] border border-[var(--tn-outline)]/35 p-6 md:p-8 shadow-[0_12px_40px_rgba(27,28,27,0.08)] hover:-translate-y-1 transition-transform ${large ? 'md:col-span-2' : ''} ${cat.softBg}`}
+              className={`group relative overflow-hidden rounded-[28px] border border-[#efe2d8] bg-white p-6 md:p-8 tn-card-shadow hover:border-[#e5c9b7] transition-all ${large ? 'md:col-span-2' : ''}`}
             >
-              <div className="absolute -right-10 -top-10 w-32 h-32 rounded-full bg-white/25 blur-xl" />
+              <div className={`absolute -right-12 -top-12 w-36 h-36 rounded-full blur-3xl opacity-80 ${cat.softBg}`} />
 
               <div className="relative flex items-start justify-between gap-6">
                 <div>
-                  <p className={`text-xs uppercase tracking-[0.18em] font-semibold ${cat.softText}`}>Categoría</p>
-                  <h2 className="font-editorial text-4xl md:text-5xl font-bold leading-tight mt-3 text-[var(--tn-text)]">{cat.name}</h2>
-                  <p className="mt-4 text-sm md:text-base font-medium text-[var(--tn-muted)]">{cat.desc}</p>
+                  <span className={`inline-flex px-3 py-1 rounded-md text-[10px] uppercase tracking-[0.18em] font-bold ${cat.softBg} ${cat.softText}`}>{cat.name}</span>
+                  <h2 className="font-editorial text-4xl md:text-5xl font-bold leading-[1.02] mt-4 text-[var(--tn-text)]">{cat.name}</h2>
+                  <p className="mt-4 text-sm md:text-base font-medium text-[var(--tn-muted)] leading-[1.65] max-w-xl">{cat.desc}</p>
 
-                  <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <div className="rounded-xl bg-white/55 border border-black/10 px-4 py-3">
+                  <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="rounded-2xl bg-[#fcf8f4] border border-[#f0e6de] px-4 py-4">
                       <p className="text-[10px] uppercase tracking-[0.15em] text-[var(--tn-muted)] font-semibold">Abiertas ahora</p>
                       <p className="text-2xl font-editorial font-bold text-[var(--tn-text)] leading-none mt-2">{openCount}</p>
                     </div>
-                    <div className="rounded-xl bg-white/55 border border-black/10 px-4 py-3">
+                    <div className="rounded-2xl bg-[#fcf8f4] border border-[#f0e6de] px-4 py-4">
                       <p className="text-[10px] uppercase tracking-[0.15em] text-[var(--tn-muted)] font-semibold">Sin tu interacción</p>
                       <p className="text-2xl font-editorial font-bold text-[var(--tn-primary)] leading-none mt-2">
                         {pendingCount !== null ? pendingCount : '—'}
@@ -109,8 +115,8 @@ export default async function LandingPage() {
                     </div>
                   </div>
                 </div>
-                <div className="w-14 h-14 rounded-full bg-white/45 border border-black/10 flex items-center justify-center shrink-0 group-hover:rotate-6 transition-transform">
-                  <Icon size={26} strokeWidth={2} />
+                <div className="w-14 h-14 rounded-full bg-[#fcf2eb] border border-[#f0e1d5] flex items-center justify-center shrink-0 group-hover:rotate-6 transition-transform text-[var(--tn-primary)]">
+                  <Icon size={24} strokeWidth={2} />
                 </div>
               </div>
             </Link>

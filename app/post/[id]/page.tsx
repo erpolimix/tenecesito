@@ -120,51 +120,62 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
         <>
         <PostRealtimeBridge postId={postId} />
         {isAuthor && <UnreadResponsesNotifier />}
-        <main className="max-w-4xl mx-auto px-6 py-8 pb-32 animate-in fade-in duration-300">
-            <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--tn-muted)] hover:text-[var(--tn-primary)] transition-colors mb-8">
+        <main className="max-w-6xl mx-auto px-4 py-10 pb-32 animate-in fade-in duration-300">
+            <Link href="/feed" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--tn-muted)] hover:text-[var(--tn-primary)] transition-colors mb-8">
                 <ArrowLeft size={16} strokeWidth={2.5} /> Volver
             </Link>
 
             <section className="space-y-6">
-                <div className="flex items-center gap-3">
-                    <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${postWithAuthor.is_closed ? 'bg-[#e7dfd5] text-[#6d5a52]' : 'bg-[#d5e3d7] text-[#425649]'}`}>
-                        <span className={`w-2 h-2 rounded-full ${postWithAuthor.is_closed ? 'bg-[#6d5a52]' : 'bg-[#5f7a67]'}`} />
-                        {postWithAuthor.is_closed ? 'Cerrada' : 'Abierto'}
-                    </span>
-                    <UrgencyBadge
-                        priorityLevel={postWithAuthor.priority_level}
-                        urgentUntil={postWithAuthor.urgent_until}
-                        isClosed={postWithAuthor.is_closed}
-                    />
-                    <span className="text-[var(--tn-muted)] text-sm font-medium">{getTimeAgoEs(postWithAuthor.created_at)}</span>
-                </div>
-
-                <div className="bg-[#f5f3f1] rounded-xl p-8 md:p-12 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-[color:rgba(145,70,46,0.08)] rounded-full -mr-20 -mt-20 blur-3xl" />
+                <div className="bg-white rounded-[32px] p-6 md:p-10 border border-[#efe2d8] tn-card-shadow relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-[color:rgba(165,107,82,0.08)] rounded-full -mr-20 -mt-20 blur-3xl" />
                     <div className="relative z-10">
-                        <h2 className="text-4xl md:text-5xl font-bold text-[var(--tn-text)] leading-[1.1] tracking-tight mb-8 font-editorial break-words">
+                        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-8">
+                            <div className="flex flex-wrap items-center gap-2.5">
+                                <span className="px-3 py-1 rounded-md bg-[#f8e0da] text-[#8c5a44] text-[10px] font-bold uppercase tracking-[0.18em]">
+                                    {cat?.name || 'Comunidad'}
+                                </span>
+                                <UrgencyBadge
+                                    priorityLevel={postWithAuthor.priority_level}
+                                    urgentUntil={postWithAuthor.urgent_until}
+                                    isClosed={postWithAuthor.is_closed}
+                                />
+                            </div>
+                            <div className="flex flex-wrap items-center gap-2.5 md:justify-end">
+                                <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-[0.14em] flex items-center gap-1.5 ${postWithAuthor.is_closed ? 'bg-[#ece5df] text-[#6d5a52]' : 'bg-[#eef3ee] text-[#526454]'}`}>
+                                    <span className={`w-2 h-2 rounded-full ${postWithAuthor.is_closed ? 'bg-[#6d5a52]' : 'bg-[#627663]'}`} />
+                                    {postWithAuthor.is_closed ? 'Cerrada' : 'Abierta'}
+                                </span>
+                                <span className="text-sm text-stone-400 font-medium">{getTimeAgoEs(postWithAuthor.created_at)}</span>
+                            </div>
+                        </div>
+
+                        <h2 className="text-4xl md:text-6xl font-bold text-[var(--tn-text)] leading-[1.04] tracking-tight mb-6 font-editorial break-words max-w-5xl">
                             {postWithAuthor.title}
                         </h2>
-                        <p className="text-lg md:text-xl text-[var(--tn-muted)] line-height-editorial max-w-2xl whitespace-pre-wrap break-words">
+                        <p className="text-xl md:text-[2rem] text-[var(--tn-muted)] leading-[1.6] max-w-4xl whitespace-pre-wrap break-words">
                             {postWithAuthor.content}
                         </p>
-                        <div className="mt-8 flex items-center gap-4">
+
+                        <div className="mt-10 pt-6 border-t border-[#f3e7de] flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+                          <div className="flex items-center gap-4">
                             {postWithAuthor.author_avatar_url ? (
                                 <img
                                     src={postWithAuthor.author_avatar_url}
                                     alt={`Avatar de ${postWithAuthor.author_name}`}
-                                    className="w-12 h-12 rounded-full object-cover border border-[var(--tn-outline)]/20"
+                                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"
                                 />
                             ) : (
-                                <div className="w-12 h-12 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold">
+                                <div className="w-12 h-12 rounded-full bg-[#f4e7de] flex items-center justify-center text-[var(--tn-primary)] font-bold shadow-sm">
                                     {postWithAuthor.author_name.charAt(0).toUpperCase()}
                                 </div>
                             )}
                             <div>
-                                <p className="text-sm uppercase tracking-[0.14em] text-[var(--tn-muted)] font-semibold">Publicado por</p>
+                                <p className="text-xs uppercase tracking-[0.16em] text-stone-400 font-bold">Publicado por</p>
                                 <p className="text-lg font-semibold text-[var(--tn-text)]">{postWithAuthor.author_name}</p>
                             </div>
+                          </div>
                         </div>
+
                         {showUrgentBadge && (
                             <p className="mt-6 max-w-2xl rounded-2xl border border-[#f1c7bb] bg-[#fff5f0] px-4 py-3 text-sm text-[#8f5a4e]">
                                 Esta necesidad aparece destacada como urgente durante 24 horas para facilitar respuestas mas rapidas de la comunidad.
@@ -188,7 +199,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {canRespond && (
-                <div className="bg-white/80 p-6 md:p-10 border border-[var(--tn-outline)]/35 rounded-[28px] mt-16">
+                <div className="bg-white p-6 md:p-10 border border-[#efe2d8] rounded-[28px] mt-16 tn-card-shadow">
                     <h4 className="font-editorial text-4xl text-[var(--tn-primary)] mb-2">Aporta tu perspectiva</h4>
                     <p className="font-semibold text-[var(--tn-muted)] text-sm mb-8">Solo tienes una oportunidad. Sé claro y útil.</p>
 
@@ -199,13 +210,13 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                             required
                             minLength={10}
                             placeholder="Escribe directamente lo que piensas..."
-                            className="w-full p-6 bg-white border border-[var(--tn-outline)]/35 rounded-2xl min-h-[160px] resize-y text-lg focus:outline-none focus:border-[var(--tn-primary)] transition-colors mb-6"
+                            className="w-full p-6 bg-[#fcf8f4] border border-[#efe2d8] rounded-2xl min-h-[160px] resize-y text-lg focus:outline-none focus:border-[var(--tn-primary)] transition-colors mb-6"
                         />
 
                         <div className="flex justify-end">
                             <PendingSubmitButton
                                 pendingText="Enviando..."
-                                className="px-8 py-4 bg-[var(--tn-primary)] text-white text-base font-semibold rounded-full hover:opacity-90 disabled:opacity-50 transition-opacity"
+                                className="tn-button-primary px-8 py-4 text-base font-semibold rounded-full disabled:opacity-50"
                             >
                                 Enviar Respuesta
                             </PendingSubmitButton>
@@ -215,21 +226,21 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {!isAuthor && postWithAuthor.is_closed && (
-                <div className="bg-[var(--tn-surface)] border border-[var(--tn-outline)]/35 rounded-3xl p-12 text-center">
+                <div className="bg-white border border-[#efe2d8] rounded-3xl p-12 text-center tn-card-shadow">
                     <h4 className="font-editorial text-4xl tracking-tight mb-4 text-[var(--tn-primary)]">Cerrada</h4>
                     <p className="text-lg text-[var(--tn-muted)]">El autor ha decidido no recibir más perspectivas.</p>
                 </div>
             )}
 
             {!user && !isAuthor && !postWithAuthor.is_closed && (
-                <div className="bg-white/75 border border-[var(--tn-outline)]/35 rounded-3xl p-12 text-center">
+                <div className="bg-white border border-[#efe2d8] rounded-3xl p-12 text-center tn-card-shadow">
                     <h4 className="font-editorial text-4xl text-[var(--tn-primary)] tracking-tight mb-4">Inicia Sesión</h4>
                     <p className="text-lg text-[var(--tn-muted)]">Debes iniciar sesión para dar tu perspectiva.</p>
                 </div>
             )}
 
             {!isAuthor && hasResponded && !postWithAuthor.is_closed && (
-                <div className="bg-[#d7e8ff] border border-[#bfd5f8] rounded-3xl p-12 text-center">
+                <div className="bg-white border border-[#efe2d8] rounded-3xl p-12 text-center tn-card-shadow">
                     <h4 className="font-editorial text-4xl tracking-tight mb-4 text-[#2a4f87]">Gracias</h4>
                     <p className="text-lg text-[#375783]">Ya has aportado tu perspectiva a esta necesidad.</p>
                 </div>

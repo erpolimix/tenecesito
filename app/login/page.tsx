@@ -20,24 +20,43 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="bg-[var(--tn-bg)] text-[var(--tn-text)] animate-in fade-in duration-300">
-      <main className="flex flex-col justify-center px-8 py-12 max-w-lg mx-auto w-full">
-        <div className="space-y-12">
-          <div className="space-y-6">
-            <h2 className="font-editorial text-5xl md:text-6xl text-[var(--tn-primary)] leading-[1.1] tracking-tight -ml-1">
-              Bienvenido a tu espacio seguro
+    <div className="bg-[var(--tn-bg)] text-[var(--tn-text)] animate-in fade-in duration-300 min-h-[calc(100vh-5rem)]">
+      <main className="max-w-6xl mx-auto px-4 py-12 md:py-16 min-h-[calc(100vh-5rem)] flex items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center w-full">
+          <section className="max-w-2xl">
+            <p className="text-xs uppercase tracking-[0.2em] text-stone-400 font-bold mb-3">Acceso</p>
+            <h2 className="font-editorial text-5xl md:text-7xl text-[#5d3d2e] leading-[1.02] tracking-tight">
+              Entra en tu espacio para pedir ayuda con calma.
             </h2>
-            <div className="w-12 h-1 bg-[var(--tn-primary-soft)] rounded-full opacity-30" />
-            <p className="text-lg text-[var(--tn-muted)] leading-[1.6]">
+            <p className="mt-6 text-lg text-[var(--tn-muted)] leading-[1.7] max-w-xl">
               Accede con Google para entrar de forma segura. Tu correo no se muestra públicamente y limitamos la exposición de tus datos dentro de la app.
             </p>
-          </div>
 
-          <div className="space-y-8">
-            <button
-              onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-4 bg-[var(--tn-surface-strong)] hover:bg-[var(--tn-surface)] active:scale-[0.98] transition-all py-5 px-6 rounded-xl group shadow-[0_12px_40px_rgba(27,28,27,0.06)]"
-            >
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl">
+              <div className="bg-white rounded-2xl border border-[#efe2d8] p-5 tn-card-shadow">
+                <Lock size={20} className="text-[var(--tn-primary)]" />
+                <p className="mt-3 text-xs font-bold uppercase tracking-[0.16em] text-[var(--tn-muted)]">Acceso seguro</p>
+                <p className="mt-2 text-sm text-[var(--tn-muted)] leading-[1.6]">El acceso se gestiona mediante autenticación estándar con Google.</p>
+              </div>
+              <div className="bg-white rounded-2xl border border-[#efe2d8] p-5 tn-card-shadow">
+                <EyeOff size={20} className="text-[var(--tn-primary)]" />
+                <p className="mt-3 text-xs font-bold uppercase tracking-[0.16em] text-[var(--tn-muted)]">Perfil discreto</p>
+                <p className="mt-2 text-sm text-[var(--tn-muted)] leading-[1.6]">Tu email no se publica y el perfil visible queda limitado dentro de la plataforma.</p>
+              </div>
+            </div>
+          </section>
+
+          <section className="bg-white rounded-[32px] border border-[#efe2d8] p-6 md:p-8 tn-card-shadow-strong">
+            <div className="space-y-8">
+              <div>
+                <p className="text-xs uppercase tracking-[0.18em] text-stone-400 font-bold">Continuar</p>
+                <h3 className="font-editorial text-4xl md:text-5xl text-[var(--tn-text)] mt-3 leading-[1.05]">Accede para publicar o responder necesidades</h3>
+              </div>
+
+              <button
+                onClick={handleGoogleLogin}
+                className="w-full flex items-center justify-center gap-4 bg-[#fcf8f4] hover:bg-[#f7efe9] active:scale-[0.98] transition-all py-5 px-6 rounded-2xl group border border-[#efe2d8]"
+              >
               <svg className="w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
@@ -45,25 +64,18 @@ export default function LoginPage() {
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.66l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
               <span className="font-semibold text-lg">Continuar con Google</span>
-            </button>
+              </button>
 
-            <div className="flex items-center gap-4 opacity-20">
-              <div className="flex-grow h-px bg-[var(--tn-outline)]" />
-              <span className="text-xs tracking-widest uppercase">Seguridad</span>
-              <div className="flex-grow h-px bg-[var(--tn-outline)]" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-[var(--tn-surface)] p-4 rounded-lg flex flex-col gap-2">
-                <Lock size={20} className="text-[var(--tn-muted)]" />
-                <span className="text-xs font-bold uppercase tracking-wider text-[var(--tn-muted)]">Acceso seguro</span>
-              </div>
-              <div className="bg-[#dff0e2] p-4 rounded-lg flex flex-col gap-2">
-                <EyeOff size={20} className="text-[#3f6b49]" />
-                <span className="text-xs font-bold uppercase tracking-wider text-[#3f6b49]">Perfil discreto</span>
+              <div className="rounded-2xl bg-[#fcf8f4] border border-[#efe2d8] p-5">
+                <p className="text-xs uppercase tracking-[0.16em] text-[var(--tn-muted)] font-bold">Qué ocurre al acceder</p>
+                <ul className="mt-4 space-y-3 text-sm text-[var(--tn-muted)] leading-[1.6]">
+                  <li>Se crea o actualiza tu sesión con Google.</li>
+                  <li>Tu correo no se muestra públicamente en la app.</li>
+                  <li>El perfil visible puede incluir tu nombre y avatar de Google.</li>
+                </ul>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </main>
     </div>

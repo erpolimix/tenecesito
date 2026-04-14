@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-	--tn-bg: #faf9f7;
-	--tn-surface: #f5f3f1;
-	--tn-surface-strong: #e9e8e6;
-	--tn-primary: #91462e;
-	--tn-primary-soft: #af5e44;
-	--tn-text: #1b1c1b;
-	--tn-muted: #546258;
-	--tn-outline: #87736d;
+	--tn-bg: #fdfaf7;
+	--tn-surface: #ffffff;
+	--tn-surface-strong: #f5eee8;
+	--tn-primary: #8c5a44;
+	--tn-primary-soft: #a56b52;
+	--tn-text: #433422;
+	--tn-muted: #7c6c5f;
+	--tn-outline: #dccdc1;
 }
 
 * {
@@ -23,8 +23,8 @@ body {
 body {
 	font-family: var(--font-plus-jakarta-sans), sans-serif;
 	background:
-		radial-gradient(1200px 500px at 5% -10%, rgba(145, 70, 46, 0.12), transparent 50%),
-		radial-gradient(900px 500px at 100% 10%, rgba(84, 98, 88, 0.12), transparent 55%),
+		radial-gradient(1200px 520px at 0% -10%, rgba(140, 90, 68, 0.1), transparent 52%),
+		radial-gradient(900px 520px at 100% 0%, rgba(215, 187, 172, 0.18), transparent 55%),
 		var(--tn-bg);
 	color: var(--tn-text);
 }
@@ -50,6 +50,25 @@ h3 {
 
 .line-height-editorial {
 	line-height: 1.6;
+}
+
+.tn-card-shadow {
+	box-shadow: 0 4px 20px rgba(67, 52, 34, 0.05);
+}
+
+.tn-card-shadow-strong {
+	box-shadow: 0 18px 48px rgba(67, 52, 34, 0.08);
+}
+
+.tn-button-primary {
+	background-color: var(--tn-primary);
+	color: white;
+	transition: all 0.2s ease;
+}
+
+.tn-button-primary:hover {
+	background-color: #724937;
+	transform: translateY(-1px);
 }
 
 a[href],
