@@ -17,17 +17,17 @@
 	box-sizing: border-box;
 }
 
-html,
-body {
+html {
 	min-height: 100%;
+	/* Fallback si WebGL no está disponible */
+	background-color: var(--tn-bg);
 }
 
 body {
+	min-height: 100%;
 	font-family: var(--font-plus-jakarta-sans), sans-serif;
-	background:
-		radial-gradient(1200px 520px at 0% -10%, rgba(140, 90, 68, 0.1), transparent 52%),
-		radial-gradient(900px 520px at 100% 0%, rgba(215, 187, 172, 0.18), transparent 55%),
-		var(--tn-bg);
+	/* Transparente para que el canvas Three.js sea el fondo */
+	background-color: transparent;
 	color: var(--tn-text);
 	overflow-x: hidden;
 	touch-action: manipulation;
