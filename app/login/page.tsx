@@ -29,7 +29,7 @@ export default function LoginPage() {
             </h2>
             <div className="w-12 h-1 bg-[var(--tn-primary-soft)] rounded-full opacity-30" />
             <p className="text-lg text-[var(--tn-muted)] leading-[1.6]">
-              Tu privacidad es nuestra prioridad. El acceso vía Google asegura un entorno verificado manteniendo tu anonimato.
+              Accede con Google para entrar de forma segura. Tu correo no se muestra públicamente y limitamos la exposición de tus datos dentro de la app.
             </p>
           </div>
 
@@ -56,11 +56,11 @@ export default function LoginPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-[var(--tn-surface)] p-4 rounded-lg flex flex-col gap-2">
                 <Lock size={20} className="text-[var(--tn-muted)]" />
-                <span className="text-xs font-bold uppercase tracking-wider text-[var(--tn-muted)]">Cifrado total</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-[var(--tn-muted)]">Acceso seguro</span>
               </div>
               <div className="bg-[#dff0e2] p-4 rounded-lg flex flex-col gap-2">
                 <EyeOff size={20} className="text-[#3f6b49]" />
-                <span className="text-xs font-bold uppercase tracking-wider text-[#3f6b49]">100% Anónimo</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#3f6b49]">Perfil discreto</span>
               </div>
             </div>
           </div>
