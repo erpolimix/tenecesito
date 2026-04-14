@@ -10,6 +10,8 @@ export default function AmbientBackground() {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
+        const isMobileViewport = window.innerWidth < 768;
+
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -18,7 +20,7 @@ export default function AmbientBackground() {
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         const geometry = new THREE.BufferGeometry();
-        const particleCount = 1400;
+        const particleCount = isMobileViewport ? 800 : 1500;
         const positions = new Float32Array(particleCount * 3);
         const colors = new Float32Array(particleCount * 3);
 
@@ -36,7 +38,7 @@ export default function AmbientBackground() {
         geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
         const material = new THREE.PointsMaterial({
-            size: 0.045,
+            size: isMobileViewport ? 0.06 : 0.04,
             vertexColors: true,
             transparent: true,
             opacity: 0.34,
@@ -52,15 +54,26 @@ export default function AmbientBackground() {
         let mouseY = 0;
         let frameId = 0;
 
+        const updateCoords = (clientX: number, clientY: number) => {
+            mouseX = (clientX / window.innerWidth - 0.5) * 0.8;
+            mouseY = (clientY / window.innerHeight - 0.5) * 0.8;
+        };
+
         const onMouseMove = (event: MouseEvent) => {
-            mouseX = (event.clientX / window.innerWidth - 0.5) * 0.45;
-            mouseY = (event.clientY / window.innerHeight - 0.5) * 0.45;
+            updateCoords(event.clientX, event.clientY);
+        };
+
+        const onTouchMove = (event: TouchEvent) => {
+            const touch = event.touches[0];
+            if (!touch) return;
+            updateCoords(touch.clientX, touch.clientY);
         };
 
         const onResize = () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         };
 
         const animate = () => {
@@ -75,12 +88,14 @@ export default function AmbientBackground() {
         };
 
         window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('touchmove', onTouchMove, { passive: true });
         window.addEventListener('resize', onResize);
         animate();
 
         return () => {
             window.cancelAnimationFrame(frameId);
             window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('touchmove', onTouchMove);
             window.removeEventListener('resize', onResize);
             geometry.dispose();
             material.dispose();

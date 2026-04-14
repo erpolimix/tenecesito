@@ -96,9 +96,20 @@ export default async function DashboardPage({
     return (
         <>
         <DashboardRealtimeBridge userId={user.id} postIds={myPostIds} />
-        <main className="max-w-4xl mx-auto px-6 pt-10 pb-32 animate-in fade-in duration-300">
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                <div className="bg-[#f5f3f1] p-8 rounded-lg relative overflow-hidden group">
+        <main className="max-w-4xl mx-auto px-4 md:px-6 pt-10 pb-32 animate-in fade-in duration-300">
+            <section className="max-w-3xl mb-10 md:mb-12">
+                <p className="text-[11px] uppercase tracking-[0.2em] text-[var(--tn-muted)] font-semibold">Tu panel</p>
+                <h1 className="font-editorial text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight leading-[0.95] text-[var(--tn-primary)] mt-3">
+                    Dashboard
+                </h1>
+                <p className="mt-5 text-base md:text-lg text-[var(--tn-muted)] leading-relaxed">
+                    Revisa respuestas nuevas, prioriza tus necesidades activas y gestiona el estado de cada publicación.
+                </p>
+            </section>
+
+            <section className="-mx-4 overflow-x-auto px-4 pb-2 hide-scrollbar md:mx-0 md:px-0 md:overflow-visible md:pb-0 mb-12">
+                <div className="flex gap-4 md:grid md:grid-cols-2 md:gap-6">
+                <div className="min-w-[84vw] bg-[#f5f3f1] p-8 rounded-[24px] relative overflow-hidden group md:min-w-0">
                     <div className="absolute -right-4 -top-4 opacity-5 group-hover:scale-110 transition-transform duration-700">
                         <FileText size={128} strokeWidth={1.6} />
                     </div>
@@ -107,7 +118,7 @@ export default async function DashboardPage({
                     <p className="text-[#54433e] text-sm mt-4 leading-relaxed">Has compartido {myPosts.length} necesidades con la comunidad.</p>
                     <p className="text-[#91462e] text-sm mt-2 font-medium">{totalUrgentActive} urgentes activas en este momento.</p>
                 </div>
-                <div className="bg-[#d5e3d7] p-8 rounded-lg relative overflow-hidden group">
+                <div className="min-w-[84vw] bg-[#d5e3d7] p-8 rounded-[24px] relative overflow-hidden group md:min-w-0">
                     <div className="absolute -right-4 -top-4 opacity-5 group-hover:scale-110 transition-transform duration-700">
                         <MessageCircleMore size={128} strokeWidth={1.6} />
                     </div>
@@ -118,32 +129,35 @@ export default async function DashboardPage({
                         <p className="text-[#58665c] text-sm font-medium">Pendientes de revisión</p>
                     </div>
                 </div>
+                </div>
             </section>
 
-            <div className="flex flex-wrap items-stretch gap-3 mb-8">
-                <Link
-                    href="/dashboard?status=active"
-                    className={`flex-1 sm:flex-none min-w-[120px] text-center px-6 py-3 rounded-full text-sm font-bold tracking-tight shadow-sm transition-transform active:scale-95 ${selectedStatus === 'active' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[#54433e] hover:bg-[#dbdad8]'}`}
-                >
-                    Activas
-                </Link>
-                <Link
-                    href="/dashboard?status=closed"
-                    className={`flex-1 sm:flex-none min-w-[120px] text-center px-6 py-3 rounded-full text-sm font-bold tracking-tight shadow-sm transition-transform active:scale-95 ${selectedStatus === 'closed' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[#54433e] hover:bg-[#dbdad8]'}`}
-                >
-                    Cerradas
-                </Link>
+            <div className="-mx-4 overflow-x-auto px-4 pb-2 hide-scrollbar md:mx-0 md:px-0 md:overflow-visible md:pb-0 mb-8">
+                <div className="flex w-max min-w-full items-stretch gap-3 md:min-w-0 md:w-auto md:flex-wrap">
+                    <Link
+                        href="/dashboard?status=active"
+                        className={`inline-flex shrink-0 items-center justify-center min-w-[120px] text-center px-6 py-3 rounded-full text-sm font-bold tracking-tight shadow-sm transition-transform active:scale-95 ${selectedStatus === 'active' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[#54433e] hover:bg-[#dbdad8]'}`}
+                    >
+                        Activas
+                    </Link>
+                    <Link
+                        href="/dashboard?status=closed"
+                        className={`inline-flex shrink-0 items-center justify-center min-w-[120px] text-center px-6 py-3 rounded-full text-sm font-bold tracking-tight shadow-sm transition-transform active:scale-95 ${selectedStatus === 'closed' ? 'bg-[#546258] text-white' : 'bg-[#e3e2e0] text-[#54433e] hover:bg-[#dbdad8]'}`}
+                    >
+                        Cerradas
+                    </Link>
 
-                {totalUnread > 0 && (
-                    <form action={markAllAsRead} className="w-full sm:w-auto sm:ml-auto">
+                    {totalUnread > 0 && (
+                    <form action={markAllAsRead} className="shrink-0 md:ml-auto">
                         <PendingSubmitButton
                             pendingText="Marcando..."
-                            className="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold border border-[#dac1ba] text-[#54433e] bg-white hover:bg-[#efeeec] transition-colors"
+                            className="w-full px-5 py-3 rounded-full text-sm font-semibold border border-[#dac1ba] text-[#54433e] bg-white hover:bg-[#efeeec] transition-colors"
                         >
                             Marcar todo como leído
                         </PendingSubmitButton>
                     </form>
-                )}
+                    )}
+                </div>
             </div>
 
             {visiblePosts.length === 0 ? (

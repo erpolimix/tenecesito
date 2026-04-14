@@ -126,7 +126,7 @@ export default async function ComunidadPage() {
         <main className="max-w-6xl mx-auto px-5 md:px-6 pt-10 pb-24 space-y-14 animate-in fade-in duration-300">
             <section className="max-w-3xl">
                 <p className="text-[11px] uppercase tracking-[0.2em] text-[var(--tn-muted)] font-semibold">Comunidad</p>
-                <h1 className="font-editorial text-5xl md:text-7xl font-bold tracking-tight leading-[0.95] text-[var(--tn-primary)] mt-3">
+                <h1 className="font-editorial text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight leading-[0.95] text-[var(--tn-primary)] mt-3">
                     Panel Comunitario
                 </h1>
                 <p className="mt-5 text-lg md:text-xl text-[var(--tn-muted)] leading-relaxed">
@@ -139,7 +139,7 @@ export default async function ComunidadPage() {
                     <h2 className="font-editorial text-3xl text-[var(--tn-primary)] mb-1">Impacto comunitario</h2>
                     <p className="text-[var(--tn-muted)] italic">El pulso actual de la red de apoyo.</p>
 
-                    <div className="grid grid-cols-2 gap-6 mt-10">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10">
                         <div>
                             <p className="font-editorial text-5xl text-[var(--tn-primary)]">{formatCount(totalShared || 0)}</p>
                             <p className="text-xs uppercase tracking-[0.15em] text-[var(--tn-muted)] font-semibold mt-2">necesidades compartidas</p>
@@ -164,14 +164,15 @@ export default async function ComunidadPage() {
             </section>
 
             <section>
-                <div className="flex items-end justify-between mb-8">
+                <div className="flex items-end justify-between gap-4 mb-8">
                     <h2 className="font-editorial text-4xl text-[var(--tn-text)]">Lo mas destacado</h2>
                     <Link href="/feed" className="text-sm font-semibold text-[var(--tn-primary)] hover:opacity-80 transition-opacity">Ver feed completo</Link>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="-mx-5 overflow-x-auto px-5 pb-2 hide-scrollbar md:mx-0 md:px-0 md:overflow-visible md:pb-0">
+                    <div className="flex gap-4 md:grid md:grid-cols-3 md:gap-6">
                     {featuredPosts.length > 0 ? featuredPosts.map((post) => (
-                        <Link key={post.id} href={`/post/${post.id}`} className="bg-white/80 border border-[var(--tn-outline)]/25 rounded-2xl p-5 md:p-6 hover:-translate-y-1 transition-transform flex flex-col h-full">
+                        <Link key={post.id} href={`/post/${post.id}`} className="min-w-[82vw] snap-start bg-white/80 border border-[var(--tn-outline)]/25 rounded-2xl p-5 md:p-6 hover:-translate-y-1 transition-transform flex flex-col h-full md:min-w-0">
                             <div className="flex items-start justify-between gap-3 mb-4">
                                 <p className="text-xs uppercase tracking-[0.14em] font-semibold text-[var(--tn-muted)]">{categoryName(post.category_id)}</p>
                                 <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${post.is_closed ? 'bg-[#e7e6eb] text-[#5f627a]' : 'bg-[#e7ece8] text-[#4f6353]'}`}>
@@ -198,21 +199,23 @@ export default async function ComunidadPage() {
                             </div>
                         </Link>
                     )) : (
-                        <div className="md:col-span-3 bg-white/75 border border-[var(--tn-outline)]/25 rounded-2xl p-8 text-center text-[var(--tn-muted)]">Todavia no hay suficientes datos para destacados.</div>
+                        <div className="w-full md:col-span-3 bg-white/75 border border-[var(--tn-outline)]/25 rounded-2xl p-8 text-center text-[var(--tn-muted)]">Todavia no hay suficientes datos para destacados.</div>
                     )}
+                    </div>
                 </div>
             </section>
 
             <section className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 <div className="lg:col-span-2">
                     <h2 className="font-editorial text-4xl text-[var(--tn-text)] mb-6">Usuarios con mas actividad</h2>
-                    <div className="space-y-4">
+                    <div className="-mx-5 overflow-x-auto px-5 pb-2 hide-scrollbar lg:mx-0 lg:px-0 lg:overflow-visible lg:pb-0">
+                    <div className="flex gap-4 lg:block lg:space-y-4">
                         {topUsers.length > 0 ? topUsers.map((user) => {
                             const profile = profilesById.get(user.id);
                             const name = safeAuthorName(profile, user.id);
                             const avatarUrl = profile?.avatar_url;
                             return (
-                                <div key={user.id} className="bg-[#f5f3f1] border border-[var(--tn-outline)]/20 rounded-xl p-4 flex items-center gap-3">
+                                <div key={user.id} className="min-w-[74vw] bg-[#f5f3f1] border border-[var(--tn-outline)]/20 rounded-xl p-4 flex items-center gap-3 lg:min-w-0">
                                     {avatarUrl ? (
                                         <img src={avatarUrl} alt={`Avatar de ${name}`} className="w-11 h-11 rounded-full object-cover" />
                                     ) : (
@@ -229,6 +232,7 @@ export default async function ComunidadPage() {
                         }) : (
                             <div className="bg-white/75 border border-[var(--tn-outline)]/25 rounded-xl p-5 text-sm text-[var(--tn-muted)]">Sin actividad suficiente todavia.</div>
                         )}
+                    </div>
                     </div>
                 </div>
 

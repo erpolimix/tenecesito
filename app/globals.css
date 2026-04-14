@@ -30,6 +30,7 @@ body {
 		var(--tn-bg);
 	color: var(--tn-text);
 	overflow-x: hidden;
+	touch-action: manipulation;
 }
 
 #tn-bg-canvas {
@@ -101,11 +102,18 @@ h3 {
 	box-shadow: 0 8px 32px 0 rgba(140, 90, 68, 0.08);
 }
 
-.tn-glass-card:hover {
-	transform: translateY(-8px) scale(1.01);
-	background: rgba(255, 255, 255, 0.82);
-	border-color: rgba(140, 90, 68, 0.18);
-	box-shadow: 0 20px 40px 0 rgba(140, 90, 68, 0.12);
+.tn-glass-card:active {
+	transform: scale(0.985);
+	background: rgba(255, 255, 255, 0.92);
+}
+
+@media (hover: hover) {
+	.tn-glass-card:hover {
+		transform: translateY(-8px) scale(1.01);
+		background: rgba(255, 255, 255, 0.82);
+		border-color: rgba(140, 90, 68, 0.18);
+		box-shadow: 0 20px 40px 0 rgba(140, 90, 68, 0.12);
+	}
 }
 
 .tn-filter-btn {

@@ -58,7 +58,7 @@ export default async function LandingPage() {
     <div className="max-w-6xl mx-auto px-4 pb-12 pt-8 md:pb-14 md:pt-10">
       <section className="mb-12 text-center md:text-left">
         <p className="text-xs uppercase tracking-[0.2em] text-stone-400 font-bold mb-2">Comunidad</p>
-        <h1 className="font-editorial text-5xl md:text-7xl font-bold tracking-tight leading-[0.95] text-[#5d3d2e] mt-4 md:mt-5">
+        <h1 className="font-editorial text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight leading-[0.95] text-[#5d3d2e] mt-4 md:mt-5">
           ¿Qué necesitas
           <span className="italic text-[var(--tn-primary-soft)]"> hoy?</span>
         </h1>

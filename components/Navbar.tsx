@@ -57,6 +57,7 @@ export default async function Navbar() {
                     </div>
 
                     {user ? (
+                        <>
                         <div className="flex items-center justify-between gap-3 md:justify-end md:gap-3">
                             <div className="flex items-center gap-3">
                                 <NavbarUnreadCounter initialCount={unreadCount} userId={user.id} />
@@ -86,15 +87,32 @@ export default async function Navbar() {
                                 </form>
                             </div>
                         </div>
+                        <Link
+                            href="/create"
+                            aria-label="Crear nueva necesidad"
+                            className="md:hidden fixed bottom-6 right-5 z-[60] flex h-16 w-16 items-center justify-center rounded-[20px] bg-[#5d3d2e] text-white shadow-[0_10px_25px_rgba(93,61,46,0.3)] active:scale-95 transition-transform"
+                        >
+                            <Plus size={28} strokeWidth={2.5} />
+                        </Link>
+                        </>
                     ) : (
-                        <div className="hidden md:flex items-center gap-3 shrink-0">
+                        <>
+                            <div className="hidden md:flex items-center gap-3 shrink-0">
+                                <Link
+                                    href="/login"
+                                    className="text-sm font-semibold text-stone-600 hover:text-stone-900 transition-colors flex items-center gap-2"
+                                >
+                                    <span>Entrar</span>
+                                </Link>
+                            </div>
                             <Link
                                 href="/login"
-                                className="text-sm font-semibold text-stone-600 hover:text-stone-900 transition-colors flex items-center gap-2"
+                                aria-label="Entrar para crear una necesidad"
+                                className="md:hidden fixed bottom-6 right-5 z-[60] flex h-16 w-16 items-center justify-center rounded-[20px] bg-[#5d3d2e] text-white shadow-[0_10px_25px_rgba(93,61,46,0.3)] active:scale-95 transition-transform"
                             >
-                                <span>Entrar</span>
+                                <Plus size={28} strokeWidth={2.5} />
                             </Link>
-                        </div>
+                        </>
                     )}
                 </div>
             </div>
