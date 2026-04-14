@@ -23,8 +23,11 @@ export default async function Navbar() {
 
     const avatarUrl = user?.user_metadata?.avatar_url;
     const initialName = user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || '?';
+    const mobileFabHref = user ? '/create' : '/login';
+    const mobileFabLabel = user ? 'Crear nueva necesidad' : 'Entrar para crear una necesidad';
 
     return (
+        <>
         <nav className="sticky top-0 z-50 px-3 pt-3 md:px-6 md:pt-4">
             <div className="max-w-7xl mx-auto rounded-[28px] px-4 py-3 md:px-8 md:py-4 tn-glass-nav">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-6">
@@ -57,7 +60,6 @@ export default async function Navbar() {
                     </div>
 
                     {user ? (
-                        <>
                         <div className="flex items-center justify-between gap-3 md:justify-end md:gap-3">
                             <div className="flex items-center gap-3">
                                 <NavbarUnreadCounter initialCount={unreadCount} userId={user.id} />
@@ -87,35 +89,26 @@ export default async function Navbar() {
                                 </form>
                             </div>
                         </div>
-                        <Link
-                            href="/create"
-                            aria-label="Crear nueva necesidad"
-                            className="md:hidden fixed bottom-6 right-5 z-[60] flex h-16 w-16 items-center justify-center rounded-[20px] bg-[#5d3d2e] text-white shadow-[0_10px_25px_rgba(93,61,46,0.3)] active:scale-95 transition-transform"
-                        >
-                            <Plus size={28} strokeWidth={2.5} />
-                        </Link>
-                        </>
                     ) : (
-                        <>
-                            <div className="hidden md:flex items-center gap-3 shrink-0">
-                                <Link
-                                    href="/login"
-                                    className="text-sm font-semibold text-stone-600 hover:text-stone-900 transition-colors flex items-center gap-2"
-                                >
-                                    <span>Entrar</span>
-                                </Link>
-                            </div>
+                        <div className="hidden md:flex items-center gap-3 shrink-0">
                             <Link
                                 href="/login"
-                                aria-label="Entrar para crear una necesidad"
-                                className="md:hidden fixed bottom-6 right-5 z-[60] flex h-16 w-16 items-center justify-center rounded-[20px] bg-[#5d3d2e] text-white shadow-[0_10px_25px_rgba(93,61,46,0.3)] active:scale-95 transition-transform"
+                                className="text-sm font-semibold text-stone-600 hover:text-stone-900 transition-colors flex items-center gap-2"
                             >
-                                <Plus size={28} strokeWidth={2.5} />
+                                <span>Entrar</span>
                             </Link>
-                        </>
+                        </div>
                     )}
                 </div>
             </div>
         </nav>
+        <Link
+            href={mobileFabHref}
+            aria-label={mobileFabLabel}
+            className="tn-mobile-fab md:hidden"
+        >
+            <Plus size={28} strokeWidth={2.5} />
+        </Link>
+        </>
     );
 }

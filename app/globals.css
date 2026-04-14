@@ -144,6 +144,27 @@ h3 {
 	box-shadow: 0 4px 12px rgba(93, 61, 46, 0.2);
 }
 
+.tn-mobile-fab {
+	position: fixed;
+	right: max(1.25rem, env(safe-area-inset-right));
+	bottom: max(1.5rem, env(safe-area-inset-bottom));
+	z-index: 60;
+	display: flex;
+	height: 4rem;
+	width: 4rem;
+	align-items: center;
+	justify-content: center;
+	border-radius: 20px;
+	background: #5d3d2e;
+	color: white;
+	box-shadow: 0 10px 25px rgba(93, 61, 46, 0.3);
+	transition: transform 0.2s ease;
+}
+
+.tn-mobile-fab:active {
+	transform: scale(0.95);
+}
+
 a[href],
 button:not(:disabled),
 input[type='button']:not(:disabled),
