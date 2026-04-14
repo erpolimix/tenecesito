@@ -71,6 +71,13 @@ export default async function DashboardPage({
     const visiblePosts = [...myPosts]
         .filter((post) => selectedStatus === 'closed' ? post.is_closed : !post.is_closed)
         .sort((leftPost, rightPost) => {
+            const leftUnreadCount = leftPost.responses?.filter((response: DashboardResponse) => !response.is_read).length || 0
+            const rightUnreadCount = rightPost.responses?.filter((response: DashboardResponse) => !response.is_read).length || 0
+
+            if (leftUnreadCount !== rightUnreadCount) {
+                return rightUnreadCount - leftUnreadCount
+            }
+
             const leftUrgent = isUrgentActive(leftPost) ? 1 : 0
             const rightUrgent = isUrgentActive(rightPost) ? 1 : 0
 
