@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { signout } from '@/app/login/actions';
 import NavbarUnreadCounter from './NavbarUnreadCounter';
 import MobileCreateFab from './MobileCreateFab';
+import BrandLogo from './BrandLogo';
 
 export default async function Navbar() {
     const supabase = await createClient();
@@ -33,27 +34,9 @@ export default async function Navbar() {
             <div className="max-w-7xl mx-auto rounded-[28px] px-4 py-3 md:px-8 md:py-4 tn-glass-nav">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-6">
                     <div className="flex min-w-0 items-center justify-between gap-4 md:justify-start md:gap-8">
-                        <Link href="/" className="font-editorial text-[1.9rem] sm:text-[2.2rem] md:text-[3.15rem] font-bold tracking-tight text-[var(--tn-primary)] hover:opacity-80 transition-opacity leading-none shrink min-w-0">
-                            TENECESITO
+                        <Link href="/" className="block shrink min-w-0 hover:opacity-80 transition-opacity">
+                            <BrandLogo className="w-[240px] sm:w-[290px] md:w-[360px]" />
                         </Link>
-
-                        {!user && (
-                            <div className="flex items-center gap-3 md:hidden">
-                                <Link
-                                    href="/comunidad"
-                                    className="text-sm font-semibold text-stone-600 hover:text-[var(--tn-primary)] transition-colors"
-                                >
-                                    Comunidad
-                                </Link>
-                                <Link
-                                    href="/login"
-                                    className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 transition-colors"
-                                >
-                                    <span>Entrar</span>
-                                    <User size={16} strokeWidth={2.5} />
-                                </Link>
-                            </div>
-                        )}
 
                         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-stone-500">
                             <Link href="/feed" className="text-[var(--tn-primary)] border-b-2 border-[var(--tn-primary)] pb-1 transition-colors hover:text-[var(--tn-primary)]">
@@ -67,6 +50,24 @@ export default async function Navbar() {
                             </Link>
                         </div>
                     </div>
+
+                    {!user && (
+                        <div className="flex items-center justify-end gap-4 border-t border-[#f0e6de] pt-3 md:hidden">
+                            <Link
+                                href="/comunidad"
+                                className="text-sm font-semibold text-stone-600 hover:text-[var(--tn-primary)] transition-colors"
+                            >
+                                Comunidad
+                            </Link>
+                            <Link
+                                href="/login"
+                                className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 transition-colors"
+                            >
+                                <span>Entrar</span>
+                                <User size={16} strokeWidth={2.5} />
+                            </Link>
+                        </div>
+                    )}
 
                     {user ? (
                         <div className="flex items-center justify-between gap-3 md:justify-end md:gap-3">

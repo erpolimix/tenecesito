@@ -47,6 +47,10 @@ body {
 	font-family: var(--font-newsreader), serif;
 }
 
+.font-brand {
+	font-family: var(--font-playfair-display), serif;
+}
+
 h1,
 h2,
 h3 {
@@ -163,6 +167,116 @@ h3 {
 
 .tn-mobile-fab:active {
 	transform: scale(0.95);
+}
+
+.tn-brand-logo {
+	overflow: visible;
+}
+
+.tn-brand-logo-text {
+	font-family: var(--font-playfair-display), serif;
+	font-size: 72px;
+	font-weight: 700;
+	letter-spacing: -0.03em;
+	fill: transparent;
+	stroke: rgba(140, 90, 68, 0.92);
+	stroke-width: 1.1;
+	stroke-dasharray: 1200;
+	stroke-dashoffset: 1200;
+	paint-order: stroke fill;
+	animation: tn-logo-draw 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards, tn-logo-fill 0.5s ease 0.65s forwards;
+	transform-origin: left center;
+	transform: translateY(6px);
+}
+
+.tn-brand-logo-subtitle {
+	opacity: 0;
+	animation: tn-logo-fade-up 0.55s ease 0.9s forwards;
+}
+
+.tn-brand-logo-line {
+	stroke: rgba(140, 90, 68, 0.25);
+	stroke-width: 2;
+	stroke-linecap: round;
+}
+
+.tn-brand-logo-caption {
+	font-family: var(--font-plus-jakarta-sans), sans-serif;
+	font-size: 18px;
+	font-weight: 700;
+	letter-spacing: 0.28em;
+	fill: rgba(140, 90, 68, 0.65);
+}
+
+.tn-brand-logo-subtle .tn-brand-logo-text {
+	animation-duration: 0.9s, 0.4s;
+	opacity: 0.96;
+}
+
+.tn-urgent-badge {
+	position: relative;
+	gap: 0.4rem;
+	padding-left: 1.55rem;
+}
+
+.tn-urgent-badge::before {
+	content: '';
+	position: absolute;
+	left: 0.68rem;
+	top: 50%;
+	width: 6px;
+	height: 6px;
+	border-radius: 999px;
+	background: #f43f5e;
+	transform: translateY(-50%);
+	animation: tn-urgent-pulse 2s infinite;
+	box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.45);
+}
+
+@keyframes tn-logo-draw {
+	to {
+		stroke-dashoffset: 0;
+		transform: translateY(0);
+	}
+}
+
+@keyframes tn-logo-fill {
+	from {
+		fill: transparent;
+	}
+	to {
+		fill: rgba(140, 90, 68, 1);
+		stroke: rgba(140, 90, 68, 0.3);
+	}
+}
+
+@keyframes tn-logo-fade-up {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes tn-urgent-pulse {
+	0% {
+		transform: translateY(-50%) scale(1);
+		opacity: 1;
+		box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.35);
+	}
+	70% {
+		transform: translateY(-50%) scale(2.4);
+		opacity: 0;
+		box-shadow: 0 0 0 8px rgba(244, 63, 94, 0);
+	}
+	100% {
+		transform: translateY(-50%) scale(1);
+		opacity: 0;
+		box-shadow: 0 0 0 0 rgba(244, 63, 94, 0);
+	}
 }
 
 a[href],

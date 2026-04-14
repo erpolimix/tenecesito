@@ -50,13 +50,15 @@ export default function AmbientBackground() {
         scene.add(particles);
         camera.position.z = 5;
 
-        let mouseX = 0;
-        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
         let frameId = 0;
 
         const updateCoords = (clientX: number, clientY: number) => {
-            mouseX = (clientX / window.innerWidth - 0.5) * 0.8;
-            mouseY = (clientY / window.innerHeight - 0.5) * 0.8;
+            targetX = (clientX / window.innerWidth - 0.5) * 0.8;
+            targetY = (clientY / window.innerHeight - 0.5) * 0.8;
         };
 
         const onMouseMove = (event: MouseEvent) => {
@@ -79,10 +81,12 @@ export default function AmbientBackground() {
         const animate = () => {
             frameId = window.requestAnimationFrame(animate);
 
-            particles.rotation.y += 0.0009;
-            particles.rotation.x += 0.00035;
-            particles.position.x += (mouseX - particles.position.x) * 0.035;
-            particles.position.y += (-mouseY - particles.position.y) * 0.035;
+            particles.rotation.y += 0.0008;
+            currentX += (targetX - currentX) * 0.05;
+            currentY += (targetY - currentY) * 0.05;
+
+            particles.position.x = currentX;
+            particles.position.y = -currentY;
 
             renderer.render(scene, camera);
         };
