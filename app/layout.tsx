@@ -37,11 +37,13 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning className={`${newsreader.variable} ${plusJakartaSans.variable} ${playfairDisplay.variable}`}>
       <body className="flex flex-col min-h-screen text-[var(--tn-text)] selection:bg-[var(--tn-primary)]/25 selection:text-[var(--tn-text)]" suppressHydrationWarning>
         <AmbientBackground />
-        <Navbar />
-        <main className="flex-grow w-full">
-          {children}
-        </main>
-        <Footer />
+        <div className="relative flex flex-col flex-1" style={{ zIndex: 1, isolation: 'isolate' }}>
+          <Navbar />
+          <main className="flex-grow w-full">
+            {children}
+          </main>
+          <Footer />
+        </div>
       </body>
     </html>
   );
