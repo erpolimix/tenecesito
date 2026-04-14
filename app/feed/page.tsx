@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { CATEGORIES } from '@/lib/constants';
+import { attachAuthorProfiles } from '@/lib/post-authors';
 import { URGENT_PRIORITY } from '@/lib/urgency';
 import { createClient } from '@/lib/supabase/server';
 import InfinitePostList from '@/components/InfinitePostList';
@@ -90,6 +91,8 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
         const [{ data: urgentPosts }, { data: regularPosts }] = await Promise.all([urgentQuery, regularQuery]);
         filteredPosts = [...(urgentPosts || []), ...(regularPosts || [])].slice(0, 9);
     }
+
+    filteredPosts = await attachAuthorProfiles(supabase, filteredPosts || []);
 
     const currentCat = CATEGORIES.find(c => c.id === categoryId);
 

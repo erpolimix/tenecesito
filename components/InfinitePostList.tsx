@@ -14,6 +14,8 @@ type FeedPost = {
     title: string;
     content: string;
     category_id: string;
+    author_name?: string;
+    author_avatar_url?: string | null;
     created_at?: string;
     is_closed?: boolean;
     priority_level?: string | null;
@@ -217,10 +219,26 @@ export default function InfinitePostList({
                         </p>
 
                         <div className="mt-4 pt-4 border-t border-[var(--tn-outline)]/25 flex items-center justify-between gap-3 text-sm">
-                            <span className="flex items-center gap-2 text-[var(--tn-primary)] font-semibold">
-                                <MessageSquare size={14} />
-                                {responseCount} perspectiva{responseCount === 1 ? '' : 's'} compartida{responseCount === 1 ? '' : 's'}
-                            </span>
+                            <div className="flex items-center gap-3 min-w-0">
+                                {post.author_avatar_url ? (
+                                    <img
+                                        src={post.author_avatar_url}
+                                        alt={`Avatar de ${post.author_name || 'autor'}`}
+                                        className="w-9 h-9 rounded-full object-cover border border-[var(--tn-outline)]/20"
+                                    />
+                                ) : (
+                                    <div className="w-9 h-9 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold shrink-0">
+                                        {(post.author_name?.[0] || 'A').toUpperCase()}
+                                    </div>
+                                )}
+                                <div className="min-w-0">
+                                    <p className="text-[var(--tn-text)] font-semibold truncate">{post.author_name || 'Usuario de la comunidad'}</p>
+                                    <span className="flex items-center gap-2 text-[var(--tn-primary)] font-semibold">
+                                        <MessageSquare size={14} />
+                                        {responseCount} perspectiva{responseCount === 1 ? '' : 's'} compartida{responseCount === 1 ? '' : 's'}
+                                    </span>
+                                </div>
+                            </div>
                             <span className="text-[#91857f] italic">{timeAgo}</span>
                         </div>
                     </Link>

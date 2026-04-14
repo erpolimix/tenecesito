@@ -9,6 +9,7 @@ import PendingSubmitButton from '@/components/PendingSubmitButton';
 import UrgencyBadge from '@/components/UrgencyBadge';
 import PostRealtimeBridge from '@/components/PostRealtimeBridge';
 import UnreadResponsesNotifier from '@/components/UnreadResponsesNotifier';
+import { attachAuthorProfiles } from '@/lib/post-authors';
 
 function getTimeAgoEs(dateInput: string) {
     const now = new Date();
@@ -40,11 +41,13 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
         return <div className="p-12 text-center font-black text-2xl uppercase">Publicación no encontrada</div>;
     }
 
-    const cat = CATEGORIES.find(c => c.id === post.category_id);
-    const isAuthor = user && post.author_id === user.id;
-    const showUrgentBadge = isUrgentActive(post);
-    const realTags = Array.isArray(post.tags)
-        ? post.tags
+    const [postWithAuthor] = await attachAuthorProfiles(supabase, [post]);
+
+    const cat = CATEGORIES.find(c => c.id === postWithAuthor.category_id);
+    const isAuthor = user && postWithAuthor.author_id === user.id;
+    const showUrgentBadge = isUrgentActive(postWithAuthor);
+    const realTags = Array.isArray(postWithAuthor.tags)
+        ? postWithAuthor.tags
             .map((tag: unknown) => String(tag).trim().replace(/^#+/, '').replace(/\s+/g, ''))
             .filter((tag: string) => tag.length > 0)
             .slice(0, 8)
@@ -111,7 +114,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
         if (myResp) hasResponded = true;
     }
 
-    const canRespond = user && !isAuthor && !hasResponded && !post.is_closed;
+    const canRespond = user && !isAuthor && !hasResponded && !postWithAuthor.is_closed;
 
     return (
         <>
@@ -124,27 +127,44 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
-                    <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${post.is_closed ? 'bg-[#e7dfd5] text-[#6d5a52]' : 'bg-[#d5e3d7] text-[#425649]'}`}>
-                        <span className={`w-2 h-2 rounded-full ${post.is_closed ? 'bg-[#6d5a52]' : 'bg-[#5f7a67]'}`} />
-                        {post.is_closed ? 'Cerrada' : 'Abierto'}
+                    <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${postWithAuthor.is_closed ? 'bg-[#e7dfd5] text-[#6d5a52]' : 'bg-[#d5e3d7] text-[#425649]'}`}>
+                        <span className={`w-2 h-2 rounded-full ${postWithAuthor.is_closed ? 'bg-[#6d5a52]' : 'bg-[#5f7a67]'}`} />
+                        {postWithAuthor.is_closed ? 'Cerrada' : 'Abierto'}
                     </span>
                     <UrgencyBadge
-                        priorityLevel={post.priority_level}
-                        urgentUntil={post.urgent_until}
-                        isClosed={post.is_closed}
+                        priorityLevel={postWithAuthor.priority_level}
+                        urgentUntil={postWithAuthor.urgent_until}
+                        isClosed={postWithAuthor.is_closed}
                     />
-                    <span className="text-[var(--tn-muted)] text-sm font-medium">{getTimeAgoEs(post.created_at)}</span>
+                    <span className="text-[var(--tn-muted)] text-sm font-medium">{getTimeAgoEs(postWithAuthor.created_at)}</span>
                 </div>
 
                 <div className="bg-[#f5f3f1] rounded-xl p-8 md:p-12 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-[color:rgba(145,70,46,0.08)] rounded-full -mr-20 -mt-20 blur-3xl" />
                     <div className="relative z-10">
                         <h2 className="text-4xl md:text-5xl font-bold text-[var(--tn-text)] leading-[1.1] tracking-tight mb-8 font-editorial break-words">
-                            {post.title}
+                            {postWithAuthor.title}
                         </h2>
                         <p className="text-lg md:text-xl text-[var(--tn-muted)] line-height-editorial max-w-2xl whitespace-pre-wrap break-words">
-                            {post.content}
+                            {postWithAuthor.content}
                         </p>
+                        <div className="mt-8 flex items-center gap-4">
+                            {postWithAuthor.author_avatar_url ? (
+                                <img
+                                    src={postWithAuthor.author_avatar_url}
+                                    alt={`Avatar de ${postWithAuthor.author_name}`}
+                                    className="w-12 h-12 rounded-full object-cover border border-[var(--tn-outline)]/20"
+                                />
+                            ) : (
+                                <div className="w-12 h-12 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold">
+                                    {postWithAuthor.author_name.charAt(0).toUpperCase()}
+                                </div>
+                            )}
+                            <div>
+                                <p className="text-sm uppercase tracking-[0.14em] text-[var(--tn-muted)] font-semibold">Publicado por</p>
+                                <p className="text-lg font-semibold text-[var(--tn-text)]">{postWithAuthor.author_name}</p>
+                            </div>
+                        </div>
                         {showUrgentBadge && (
                             <p className="mt-6 max-w-2xl rounded-2xl border border-[#f1c7bb] bg-[#fff5f0] px-4 py-3 text-sm text-[#8f5a4e]">
                                 Esta necesidad aparece destacada como urgente durante 24 horas para facilitar respuestas mas rapidas de la comunidad.
@@ -194,21 +214,21 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 </div>
             )}
 
-            {!isAuthor && post.is_closed && (
+            {!isAuthor && postWithAuthor.is_closed && (
                 <div className="bg-[var(--tn-surface)] border border-[var(--tn-outline)]/35 rounded-3xl p-12 text-center">
                     <h4 className="font-editorial text-4xl tracking-tight mb-4 text-[var(--tn-primary)]">Cerrada</h4>
                     <p className="text-lg text-[var(--tn-muted)]">El autor ha decidido no recibir más perspectivas.</p>
                 </div>
             )}
 
-            {!user && !isAuthor && !post.is_closed && (
+            {!user && !isAuthor && !postWithAuthor.is_closed && (
                 <div className="bg-white/75 border border-[var(--tn-outline)]/35 rounded-3xl p-12 text-center">
                     <h4 className="font-editorial text-4xl text-[var(--tn-primary)] tracking-tight mb-4">Inicia Sesión</h4>
                     <p className="text-lg text-[var(--tn-muted)]">Debes iniciar sesión para dar tu perspectiva.</p>
                 </div>
             )}
 
-            {!isAuthor && hasResponded && !post.is_closed && (
+            {!isAuthor && hasResponded && !postWithAuthor.is_closed && (
                 <div className="bg-[#d7e8ff] border border-[#bfd5f8] rounded-3xl p-12 text-center">
                     <h4 className="font-editorial text-4xl tracking-tight mb-4 text-[#2a4f87]">Gracias</h4>
                     <p className="text-lg text-[#375783]">Ya has aportado tu perspectiva a esta necesidad.</p>
@@ -216,7 +236,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
             )}
         </main>
 
-        {isAuthor && !post.is_closed && (
+        {isAuthor && !postWithAuthor.is_closed && (
             <div className="fixed bottom-0 left-0 w-full p-6 flex justify-center pointer-events-none z-50">
                 <div className="bg-[color:rgba(255,255,255,0.8)] backdrop-blur-2xl px-6 py-4 rounded-full shadow-[0_-12px_40px_rgba(27,28,27,0.08)] flex items-center gap-4 pointer-events-auto border border-[var(--tn-outline)]/10">
                     <form action={closePost}>

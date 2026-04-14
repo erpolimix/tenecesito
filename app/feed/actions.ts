@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { attachAuthorProfiles } from '@/lib/post-authors'
 import { URGENT_PRIORITY } from '@/lib/urgency'
 
 function uniquePostsById<T extends { id: string }>(posts: T[]) {
@@ -46,7 +47,7 @@ export async function fetchFeedPosts(limit: number, offset: number, categoryId?:
             return []
         }
 
-        return posts || []
+        return await attachAuthorProfiles(supabase, posts || [])
     }
 
     let urgentQuery = supabase
@@ -107,5 +108,5 @@ export async function fetchFeedPosts(limit: number, offset: number, categoryId?:
         return []
     }
 
-    return uniquePostsById([...(urgentSlice || []), ...((regularPosts || []))])
+    return await attachAuthorProfiles(supabase, uniquePostsById([...(urgentSlice || []), ...((regularPosts || []))]))
 }

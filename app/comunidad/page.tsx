@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { CATEGORIES } from '@/lib/constants';
+import { attachAuthorProfiles } from '@/lib/post-authors';
 
 type PostRow = {
     id: string;
@@ -71,7 +72,7 @@ export default async function ComunidadPage() {
         console.error('Error fetching community response authors', responseAuthorsError);
     }
 
-    const safePosts = (postsWithInteraction || []) as PostRow[];
+    const safePosts = await attachAuthorProfiles(supabase, (postsWithInteraction || []) as PostRow[]);
     const postInteractions = safePosts.map((post) => ({
         ...post,
         interactionCount: post.responses?.[0]?.count || 0,
@@ -174,6 +175,16 @@ export default async function ComunidadPage() {
                             <p className="text-xs uppercase tracking-[0.14em] font-semibold text-[var(--tn-muted)]">{categoryName(post.category_id)}</p>
                             <h3 className="font-editorial text-2xl leading-tight mt-3 text-[var(--tn-text)]">{post.title}</h3>
                             <p className="text-sm text-[var(--tn-muted)] mt-4 line-height-editorial">{excerpt(post.content, 120)}</p>
+                            <div className="mt-5 flex items-center gap-3">
+                                {post.author_avatar_url ? (
+                                    <img src={post.author_avatar_url} alt={`Avatar de ${post.author_name}`} className="w-10 h-10 rounded-full object-cover" />
+                                ) : (
+                                    <div className="w-10 h-10 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold">
+                                        {post.author_name.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
+                                <p className="text-sm font-medium text-[var(--tn-text)] truncate">Publicado por {post.author_name}</p>
+                            </div>
                             <p className="mt-5 text-sm font-semibold text-[var(--tn-primary)]">{post.interactionCount} interacciones</p>
                         </Link>
                     )) : (
@@ -223,6 +234,16 @@ export default async function ComunidadPage() {
                                         </p>
                                         <h3 className="font-editorial text-2xl leading-tight text-[var(--tn-text)] mt-2">{post.title}</h3>
                                         <p className="text-sm text-[var(--tn-muted)] mt-3 line-height-editorial">{excerpt(post.content, 130)}</p>
+                                        <div className="mt-4 flex items-center gap-3">
+                                            {post.author_avatar_url ? (
+                                                <img src={post.author_avatar_url} alt={`Avatar de ${post.author_name}`} className="w-9 h-9 rounded-full object-cover" />
+                                            ) : (
+                                                <div className="w-9 h-9 rounded-full bg-[#e8ddd7] flex items-center justify-center text-[#91462e] font-bold">
+                                                    {post.author_name.charAt(0).toUpperCase()}
+                                                </div>
+                                            )}
+                                            <p className="text-sm font-medium text-[var(--tn-text)] truncate">{post.author_name}</p>
+                                        </div>
                                     </div>
                                     <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${post.is_closed ? 'bg-[#e7e6eb] text-[#5f627a]' : 'bg-[#e7ece8] text-[#4f6353]'}`}>
                                         {post.is_closed ? 'Cerrada' : 'Abierta'}
