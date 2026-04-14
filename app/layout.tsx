@@ -1,4 +1,5 @@
 import './globals.css';
+import AmbientBackground from '@/components/AmbientBackground';
 import Navbar from '@/components/Navbar';
 import { Newsreader, Plus_Jakarta_Sans } from 'next/font/google';
 
@@ -27,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning className={`${newsreader.variable} ${plusJakartaSans.variable}`}>
       <body className="flex flex-col min-h-screen text-[var(--tn-text)] selection:bg-[var(--tn-primary)]/25 selection:text-[var(--tn-text)]" suppressHydrationWarning>
+        <AmbientBackground />
         <Navbar />
         <main className="flex-grow w-full">
           {children}

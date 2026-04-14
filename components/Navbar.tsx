@@ -25,15 +25,15 @@ export default async function Navbar() {
     const initialName = user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || '?';
 
     return (
-        <nav className="w-full sticky top-0 z-50 border-b border-[#f1e4db] bg-white/92 backdrop-blur-xl">
-            <div className="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between gap-4">
+        <nav className="fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-4">
+            <div className="max-w-7xl mx-auto tn-glass-card rounded-2xl px-5 md:px-8 py-3 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-6 md:gap-8 min-w-0">
                 <Link href="/" className="font-editorial text-[2rem] sm:text-[2.5rem] font-bold tracking-tight text-[var(--tn-primary)] hover:opacity-80 transition-opacity leading-none shrink-0">
                     TENECESITO
                 </Link>
 
                 <div className="hidden md:flex items-center gap-6 text-sm font-medium text-stone-500">
-                    <Link href="/feed" className="text-[var(--tn-primary)] transition-colors hover:text-[var(--tn-primary)]">
+                    <Link href="/feed" className="text-[var(--tn-primary)] border-b-2 border-[var(--tn-primary)] pb-1 transition-colors hover:text-[var(--tn-primary)]">
                         Explorar
                     </Link>
                     <Link
@@ -52,10 +52,10 @@ export default async function Navbar() {
 
                             <Link
                                 href="/create"
-                                className="tn-button-primary flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold px-4 sm:px-6 py-2.5 rounded-full shadow-sm"
+                                className="bg-[#5d3d2e] text-white px-5 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold hover:bg-[#433422] active:scale-95 transition-all shadow-lg shadow-stone-200 flex items-center gap-1.5 sm:gap-2"
                             >
                                 <Plus size={16} strokeWidth={2.8} />
-                                <span className="hidden sm:inline">Publicar Necesidad</span>
+                                <span className="hidden sm:inline">Nueva Necesidad</span>
                             </Link>
 
                             <div className="flex items-center gap-2 sm:pl-2">
@@ -77,10 +77,10 @@ export default async function Navbar() {
                     ) : (
                         <Link
                             href="/login"
-                            className="tn-button-primary flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold px-4 sm:px-6 py-2.5 rounded-full shadow-sm"
+                            className="text-sm font-semibold text-stone-600 hover:text-stone-900 transition-colors flex items-center gap-2"
                         >
                             <span>Entrar</span>
-                            <User size={16} strokeWidth={2.5} />
+                            <User size={16} strokeWidth={2.5} className="sm:hidden" />
                         </Link>
                     )}
                 </div>

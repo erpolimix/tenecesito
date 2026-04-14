@@ -96,12 +96,14 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
     filteredPosts = await attachAuthorProfiles(supabase, filteredPosts || []);
 
     return (
-        <div className="animate-in fade-in duration-300 max-w-6xl mx-auto px-4 py-12">
+        <div className="animate-in fade-in duration-300 max-w-6xl mx-auto px-6 pt-36 pb-20">
             <section className="mb-10 md:mb-12 text-center md:text-left">
                 <div className="flex items-end justify-between gap-4 mb-8">
                     <div>
-                        <p className="text-xs uppercase tracking-[0.2em] text-stone-400 font-bold mb-2">Explorar</p>
-                        <h1 className="font-editorial text-5xl md:text-7xl font-bold tracking-tight leading-[0.95] text-[#5d3d2e]">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-stone-100 text-[#8c5a44] text-[10px] font-extrabold uppercase tracking-[0.2em] mb-4">
+                            Comunidad de apoyo
+                        </span>
+                        <h1 className="text-6xl md:text-7xl font-editorial text-[#2d241a] leading-[1.1] mb-8">
                             Feed de Necesidades
                         </h1>
                     </div>
@@ -110,13 +112,13 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                 <div className="flex flex-wrap gap-3 items-center justify-center md:justify-start">
                     <Link
                         href={buildFeedHref(undefined, false, showClosed)}
-                        className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-colors ${!categoryId && !showUrgentOnly ? 'border-stone-300 bg-white text-[var(--tn-text)] shadow-sm' : 'border-stone-200 bg-white text-[var(--tn-text)] hover:border-stone-400'}`}
+                        className={`tn-filter-btn px-6 py-2.5 rounded-xl text-sm border ${!categoryId && !showUrgentOnly ? 'tn-filter-btn-active font-bold border-transparent' : 'bg-white text-[var(--tn-text)] font-semibold border-stone-200 hover:border-stone-300'}`}
                     >
                         Todas
                     </Link>
                     <Link
                         href={buildFeedHref(categoryId, true, showClosed)}
-                        className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-colors inline-flex items-center gap-2 ${showUrgentOnly ? 'border-orange-200 bg-orange-50 text-orange-700' : 'border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100/60'}`}
+                        className={`tn-filter-btn px-6 py-2.5 rounded-xl text-sm border inline-flex items-center gap-2 ${showUrgentOnly ? 'tn-filter-btn-active font-bold border-transparent' : 'bg-white text-[var(--tn-text)] font-semibold border-stone-200 hover:border-stone-300'}`}
                     >
                         <Clock3 size={16} />
                         Urgentes 24h
@@ -127,7 +129,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                             <Link
                                 key={cat.id}
                                 href={buildFeedHref(cat.id, showUrgentOnly, showClosed)}
-                                className={`px-5 py-2.5 rounded-full text-sm transition-colors border ${isActive ? 'bg-[#fce7e1] text-[#8c5a44] border-[#e9d5d0] font-bold border-2 shadow-sm' : 'border-stone-200 bg-white text-[var(--tn-text)] font-medium hover:border-stone-400'}`}
+                                className={`tn-filter-btn px-6 py-2.5 rounded-xl text-sm transition-colors border ${isActive ? 'tn-filter-btn-active font-bold border-transparent' : 'border-stone-200 bg-white text-[var(--tn-text)] font-semibold hover:border-stone-300'}`}
                             >
                                 {cat.name}
                             </Link>
