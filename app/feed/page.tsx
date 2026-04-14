@@ -95,8 +95,6 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
 
     filteredPosts = await attachAuthorProfiles(supabase, filteredPosts || []);
 
-    const currentCat = CATEGORIES.find(c => c.id === categoryId);
-
     return (
         <div className="animate-in fade-in duration-300 max-w-6xl mx-auto px-4 py-12">
             <section className="mb-10 md:mb-12 text-center md:text-left">
@@ -154,13 +152,6 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                         Mostrar cerradas
                     </Link>
                 </div>
-
-                {currentCat && (
-                    <div className={`mt-5 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm border border-black/10 ${currentCat.softBg} ${currentCat.softText}`}>
-                        <currentCat.icon size={16} strokeWidth={2} />
-                        Viendo categoría: <span className="font-semibold">{currentCat.name}</span>
-                    </div>
-                )}
 
                 {showUrgentOnly && (
                     <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#f1c7bb] bg-[#fff2ed] px-4 py-2 text-sm text-[#8f2f18]">
