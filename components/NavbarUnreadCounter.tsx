@@ -3,48 +3,51 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Bell } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
 export default function NavbarUnreadCounter({ initialCount, userId }: { initialCount: number; userId: string }) {
     const [unreadCount, setUnreadCount] = useState(initialCount);
+    const pathname = usePathname();
     const supabase = useMemo(() => createClient(), []);
     const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const countRef = useRef(initialCount);
+    const activeRequestRef = useRef(0);
 
     useEffect(() => {
-        console.log('[Navbar Counter] Montado con userId:', userId, 'initialCount:', initialCount);
-        return () => {
-            console.log('[Navbar Counter] Desmontado');
-        };
-    }, [userId, initialCount]);
+        setUnreadCount(initialCount);
+    }, [initialCount]);
 
-    useEffect(() => {
-        countRef.current = unreadCount;
-    }, [unreadCount]);
+    const recountUnread = useCallback(async () => {
+        const requestId = activeRequestRef.current + 1;
+        activeRequestRef.current = requestId;
+
+        const { data: unreadResponses } = await supabase
+            .from('responses')
+            .select('id, posts!inner(author_id)')
+            .eq('posts.author_id', userId)
+            .eq('is_read', false);
+
+        if (activeRequestRef.current !== requestId) return;
+        setUnreadCount(unreadResponses?.length || 0);
+    }, [supabase, userId]);
 
     const scheduleRecount = useCallback(() => {
-        console.log('[Navbar Counter] Evento recibido, recalculando...');
         if (debounceTimerRef.current) {
             clearTimeout(debounceTimerRef.current);
         }
 
         debounceTimerRef.current = setTimeout(async () => {
-            const { data: unreadResponses, error } = await supabase
-                .from('responses')
-                .select('id, posts!inner(author_id)')
-                .eq('posts.author_id', userId)
-                .eq('is_read', false);
-
-            console.log('[Navbar Counter] Recuento completado:', unreadResponses?.length || 0, 'error:', error?.message);
-            setUnreadCount(unreadResponses?.length || 0);
+            await recountUnread();
         }, 250);
-    }, [supabase, userId]);
+    }, [recountUnread]);
 
     useEffect(() => {
-        console.log('[Navbar Counter] Suscribiendo a eventos realtime para userId:', userId);
+        void recountUnread();
+    }, [pathname, recountUnread]);
+
+    useEffect(() => {
         const channel = supabase.channel(`navbar-unread:${userId}`);
 
-        // INSERT: nueva respuesta llegó
         channel.on(
             'postgres_changes',
             {
@@ -52,13 +55,9 @@ export default function NavbarUnreadCounter({ initialCount, userId }: { initialC
                 schema: 'public',
                 table: 'responses',
             },
-            () => {
-                console.log('[Navbar Counter] Evento INSERT recibido');
-                scheduleRecount();
-            },
+            scheduleRecount,
         );
 
-        // UPDATE: respuesta marcada como leída o cambio cualquiera
         channel.on(
             'postgres_changes',
             {
@@ -66,18 +65,12 @@ export default function NavbarUnreadCounter({ initialCount, userId }: { initialC
                 schema: 'public',
                 table: 'responses',
             },
-            () => {
-                console.log('[Navbar Counter] Evento UPDATE recibido');
-                scheduleRecount();
-            },
+            scheduleRecount,
         );
 
-        channel.subscribe((status) => {
-            console.log('[Navbar Counter] Estado del canal:', status);
-        });
+        channel.subscribe();
 
         return () => {
-            console.log('[Navbar Counter] Desuscribiendo del channel');
             if (debounceTimerRef.current) {
                 clearTimeout(debounceTimerRef.current);
             }
