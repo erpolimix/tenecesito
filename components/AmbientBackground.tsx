@@ -82,12 +82,12 @@ export default function AmbientBackground() {
 
                 // Size and opacity by depth
                 const size = 0.8 + p.z * 2.2;
-                const opacity = 0.12 + p.z * 0.22;
+                const opacity = 0.3 + p.z * 0.45;
 
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-                // Warm sand palette matching brand
-                ctx.fillStyle = `rgba(${Math.round(238 + p.z * 12)}, ${Math.round(212 + p.z * 8)}, ${Math.round(188 + p.z * 10)}, ${opacity})`;
+                // White particles with a very slight warm tint
+                ctx.fillStyle = `rgba(255, ${Math.round(248 + p.z * 7)}, ${Math.round(240 + p.z * 15)}, ${opacity})`;
                 ctx.fill();
             }
         };
