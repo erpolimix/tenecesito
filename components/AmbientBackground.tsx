@@ -1,7 +1,14 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+
+interface Particle {
+    x: number;
+    y: number;
+    z: number; // depth 0..1 for size/opacity scaling
+    vx: number;
+    vy: number;
+}
 
 export default function AmbientBackground() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -10,45 +17,25 @@ export default function AmbientBackground() {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        const isMobileViewport = window.innerWidth < 768;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
 
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        const isMobile = window.innerWidth < 768;
+        const COUNT = isMobile ? 600 : 1500;
 
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        let W = window.innerWidth;
+        let H = window.innerHeight;
+        canvas.width = W;
+        canvas.height = H;
 
-        const geometry = new THREE.BufferGeometry();
-        const particleCount = isMobileViewport ? 800 : 1500;
-        const positions = new Float32Array(particleCount * 3);
-        const colors = new Float32Array(particleCount * 3);
-
-        for (let index = 0; index < particleCount * 3; index += 3) {
-            positions[index] = (Math.random() - 0.5) * 15;
-            positions[index + 1] = (Math.random() - 0.5) * 15;
-            positions[index + 2] = (Math.random() - 0.5) * 15;
-
-            colors[index] = 0.93 + Math.random() * 0.05;
-            colors[index + 1] = 0.83 + Math.random() * 0.08;
-            colors[index + 2] = 0.74 + Math.random() * 0.1;
-        }
-
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-        const material = new THREE.PointsMaterial({
-            size: isMobileViewport ? 0.06 : 0.04,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.34,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false,
-        });
-
-        const particles = new THREE.Points(geometry, material);
-        scene.add(particles);
-        camera.position.z = 5;
+        // Spawn particles spread across full viewport
+        const particles: Particle[] = Array.from({ length: COUNT }, () => ({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            z: Math.random(), // depth
+            vx: (Math.random() - 0.5) * 0.15,
+            vy: (Math.random() - 0.5) * 0.15,
+        }));
 
         let targetX = 0;
         let targetY = 0;
@@ -57,38 +44,52 @@ export default function AmbientBackground() {
         let frameId = 0;
 
         const updateCoords = (clientX: number, clientY: number) => {
-            targetX = (clientX / window.innerWidth - 0.5) * 0.8;
-            targetY = (clientY / window.innerHeight - 0.5) * 0.8;
+            targetX = (clientX / W - 0.5) * 40;
+            targetY = (clientY / H - 0.5) * 40;
         };
 
-        const onMouseMove = (event: MouseEvent) => {
-            updateCoords(event.clientX, event.clientY);
-        };
-
-        const onTouchMove = (event: TouchEvent) => {
-            const touch = event.touches[0];
-            if (!touch) return;
-            updateCoords(touch.clientX, touch.clientY);
+        const onMouseMove = (e: MouseEvent) => updateCoords(e.clientX, e.clientY);
+        const onTouchMove = (e: TouchEvent) => {
+            const t = e.touches[0];
+            if (t) updateCoords(t.clientX, t.clientY);
         };
 
         const onResize = () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            W = window.innerWidth;
+            H = window.innerHeight;
+            canvas.width = W;
+            canvas.height = H;
         };
 
         const animate = () => {
-            frameId = window.requestAnimationFrame(animate);
+            frameId = requestAnimationFrame(animate);
 
-            particles.rotation.y += 0.0008;
+            ctx.clearRect(0, 0, W, H);
+
             currentX += (targetX - currentX) * 0.05;
             currentY += (targetY - currentY) * 0.05;
 
-            particles.position.x = currentX;
-            particles.position.y = -currentY;
+            for (const p of particles) {
+                // Drift
+                p.x += p.vx + currentX * p.z * 0.012;
+                p.y += p.vy + currentY * p.z * 0.012;
 
-            renderer.render(scene, camera);
+                // Wrap
+                if (p.x < 0) p.x += W;
+                if (p.x > W) p.x -= W;
+                if (p.y < 0) p.y += H;
+                if (p.y > H) p.y -= H;
+
+                // Size and opacity by depth
+                const size = 0.8 + p.z * 2.2;
+                const opacity = 0.12 + p.z * 0.22;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+                // Warm sand palette matching brand
+                ctx.fillStyle = `rgba(${Math.round(238 + p.z * 12)}, ${Math.round(212 + p.z * 8)}, ${Math.round(188 + p.z * 10)}, ${opacity})`;
+                ctx.fill();
+            }
         };
 
         window.addEventListener('mousemove', onMouseMove);
@@ -97,13 +98,10 @@ export default function AmbientBackground() {
         animate();
 
         return () => {
-            window.cancelAnimationFrame(frameId);
+            cancelAnimationFrame(frameId);
             window.removeEventListener('mousemove', onMouseMove);
             window.removeEventListener('touchmove', onTouchMove);
             window.removeEventListener('resize', onResize);
-            geometry.dispose();
-            material.dispose();
-            renderer.dispose();
         };
     }, []);
 

@@ -31,22 +31,16 @@ body {
 	color: var(--tn-text);
 	overflow-x: hidden;
 	touch-action: manipulation;
-	position: relative;
 }
 
 #tn-bg-canvas {
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 0;
+	z-index: -1;
 	pointer-events: none;
 	width: 100%;
 	height: 100%;
-}
-
-body > :not(#tn-bg-canvas) {
-	position: relative;
-	z-index: 1;
 }
 
 .font-editorial {
@@ -187,19 +181,23 @@ h3 {
 
 .tn-brand-logo-path {
 	fill: none;
-	stroke-dasharray: 220;
-	stroke-dashoffset: 220;
-	animation: tn-logo-path-draw 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+	stroke-dasharray: 100;
+	stroke-dashoffset: 100;
+	animation: tn-logo-path-draw 3s ease forwards;
+	transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.tn-brand-logo-path-2 {
-	animation-delay: 0.18s;
+.tn-brand-logo:hover .tn-brand-logo-path-1 {
+	transform: translate(2px, -2px);
+}
+
+.tn-brand-logo:hover .tn-brand-logo-path-2 {
+	transform: translate(-2px, 2px);
 }
 
 .tn-brand-logo-node {
 	opacity: 0;
 	transition: opacity 0.5s ease;
-	animation: tn-logo-node-in 0.45s ease 0.95s forwards;
 }
 
 .tn-brand-logo:hover .tn-brand-logo-node {
@@ -244,17 +242,6 @@ h3 {
 	to {
 		opacity: 1;
 		transform: translateY(0);
-	}
-}
-
-@keyframes tn-logo-node-in {
-	from {
-		opacity: 0;
-		transform: scale(0.7);
-	}
-	to {
-		opacity: 1;
-		transform: scale(1);
 	}
 }
 
