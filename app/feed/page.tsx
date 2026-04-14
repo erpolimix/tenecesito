@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { Clock3 } from 'lucide-react';
 import { CATEGORIES } from '@/lib/constants';
 import { attachAuthorProfiles } from '@/lib/post-authors';
 import { URGENT_PRIORITY } from '@/lib/urgency';
@@ -97,28 +98,29 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
     const currentCat = CATEGORIES.find(c => c.id === categoryId);
 
     return (
-        <div className="animate-in fade-in duration-300 max-w-7xl mx-auto px-5 md:px-6 py-10 md:py-12">
-            <section className="mb-8 md:mb-10">
-                <div className="flex items-end justify-between gap-4 mb-6">
+        <div className="animate-in fade-in duration-300 max-w-6xl mx-auto px-4 py-12">
+            <section className="mb-10 md:mb-12 text-center md:text-left">
+                <div className="flex items-end justify-between gap-4 mb-8">
                     <div>
-                        <p className="text-[11px] uppercase tracking-[0.2em] text-[var(--tn-muted)] font-semibold">Explorar</p>
-                        <h1 className="font-editorial text-5xl md:text-6xl font-bold tracking-tight leading-[0.95] mt-2 text-[var(--tn-primary)]">
+                        <p className="text-xs uppercase tracking-[0.2em] text-stone-400 font-bold mb-2">Explorar</p>
+                        <h1 className="font-editorial text-5xl md:text-7xl font-bold tracking-tight leading-[0.95] text-[#5d3d2e]">
                             Feed de Necesidades
                         </h1>
                     </div>
                 </div>
 
-                <div className="flex overflow-x-auto hide-scrollbar gap-3 pb-3">
+                <div className="flex flex-wrap gap-3 items-center justify-center md:justify-start">
                     <Link
                         href={buildFeedHref(undefined, false, showClosed)}
-                        className={`flex-none px-5 py-2.5 rounded-full text-sm font-semibold transition-colors ${!categoryId && !showUrgentOnly ? 'bg-[var(--tn-primary)] text-white' : 'bg-white/70 border border-[var(--tn-outline)]/30 hover:bg-[var(--tn-surface)]'}`}
+                        className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-colors ${!categoryId && !showUrgentOnly ? 'border-stone-300 bg-white text-[var(--tn-text)] shadow-sm' : 'border-stone-200 bg-white text-[var(--tn-text)] hover:border-stone-400'}`}
                     >
                         Todas
                     </Link>
                     <Link
                         href={buildFeedHref(categoryId, true, showClosed)}
-                        className={`flex-none px-5 py-2.5 rounded-full text-sm font-semibold transition-colors ${showUrgentOnly ? 'bg-[#8f2f18] text-white' : 'bg-[#fff2ed] text-[#8f2f18] border border-[#f1c7bb] hover:bg-[#ffebe4]'}`}
+                        className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-colors inline-flex items-center gap-2 ${showUrgentOnly ? 'border-orange-200 bg-orange-50 text-orange-700' : 'border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100/60'}`}
                     >
+                        <Clock3 size={16} />
                         Urgentes 24h
                     </Link>
                     {CATEGORIES.map((cat) => {
@@ -127,25 +129,21 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                             <Link
                                 key={cat.id}
                                 href={buildFeedHref(cat.id, showUrgentOnly, showClosed)}
-                                className={`flex-none px-5 py-2.5 rounded-full text-sm font-semibold transition-colors border ${isActive ? `${cat.softBg} ${cat.softText} border-black/10` : `${cat.softBg} ${cat.softText} border-transparent opacity-80 hover:opacity-100`}`}
+                                className={`px-5 py-2.5 rounded-full text-sm transition-colors border ${isActive ? 'bg-[#fce7e1] text-[#8c5a44] border-[#e9d5d0] font-bold border-2 shadow-sm' : 'border-stone-200 bg-white text-[var(--tn-text)] font-medium hover:border-stone-400'}`}
                             >
                                 {cat.name}
                             </Link>
                         );
                     })}
-                </div>
 
-                <div className="mt-4 flex items-center">
+                    <div className="h-6 w-px bg-stone-200 mx-2 hidden md:block" />
+
                     <Link
                         href={buildFeedHref(categoryId, showUrgentOnly, !showClosed)}
-                        className={`inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-sm font-semibold transition-colors border ${
-                            showClosed
-                                ? 'bg-[#e7e6eb] text-[#5f627a] border-[#c8c7d0]'
-                                : 'bg-white/70 border-[var(--tn-outline)]/30 text-[var(--tn-muted)] hover:bg-[var(--tn-surface)]'
-                        }`}
+                        className="inline-flex items-center gap-2.5 text-sm text-stone-500 hover:text-stone-800 transition-colors"
                     >
-                        <span className={`w-4 h-4 rounded flex items-center justify-center border-2 transition-colors ${
-                            showClosed ? 'bg-[#5f627a] border-[#5f627a]' : 'border-[var(--tn-outline)] bg-white'
+                        <span className={`w-4 h-4 rounded-sm flex items-center justify-center border transition-colors ${
+                            showClosed ? 'bg-[var(--tn-primary)] border-[var(--tn-primary)]' : 'border-stone-300 bg-white'
                         }`}>
                             {showClosed && (
                                 <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
@@ -171,7 +169,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                 )}
             </section>
 
-            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7 items-start">
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                 <InfinitePostList
                     key={`${categoryId || 'all'}:${showUrgentOnly ? URGENT_PRIORITY : 'all'}:${showClosed ? '1' : '0'}`}
                     initialPosts={filteredPosts}

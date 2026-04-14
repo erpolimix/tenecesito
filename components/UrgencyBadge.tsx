@@ -1,6 +1,5 @@
 'use client';
 
-import { AlertCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { isUrgentActive } from '@/lib/urgency';
 
@@ -47,8 +46,8 @@ export default function UrgencyBadge({
     const remaining = urgentUntil ? formatRemaining(urgentUntil, nowMs) : null;
 
     return (
-        <span className="inline-flex items-center gap-2 rounded-full bg-[#ffdbd0] px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-[#8f2f18]">
-            <AlertCircle size={14} strokeWidth={2.2} />
+        <span className="inline-flex items-center gap-1.5 rounded-md bg-rose-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-rose-600">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
             <span>Urgente</span>
             {remaining && <span className="font-semibold normal-case tracking-normal">{remaining}</span>}
         </span>
