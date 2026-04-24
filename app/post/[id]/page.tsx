@@ -30,9 +30,16 @@ function getTimeAgoEs(dateInput: string) {
     return `Publicado hace ${diffYears} año${diffYears === 1 ? '' : 's'}`;
 }
 
-export default async function PostDetailPage({ params }: Readonly<{ params: Promise<{ id: string }> }>) {
+export default async function PostDetailPage({
+    params,
+    searchParams,
+}: Readonly<{
+    params: Promise<{ id: string }>;
+    searchParams?: Promise<{ feedback?: string }>;
+}>) {
     const supabase = await createClient();
     const { id: postId } = await params;
+    const resolvedSearchParams = searchParams ? await searchParams : {};
     const { data: { user } } = await supabase.auth.getUser();
 
     const { data: post } = await supabase.from('posts').select('*').eq('id', postId).single();
@@ -150,6 +157,21 @@ export default async function PostDetailPage({ params }: Readonly<{ params: Prom
 
     const canRespond = user && !isAuthor && !hasResponded && !postWithAuthor.is_closed;
 
+    const feedbackMessageByCode: Record<string, string> = {
+        ok: 'Valoracion guardada correctamente.',
+        'sin-permiso': 'Solo el autor de la necesidad puede valorar respuestas.',
+        'ya-valorada': 'Esta respuesta ya fue valorada previamente.',
+        'datos-invalidos': 'No se pudo procesar la valoracion por datos incompletos.',
+        'tipo-invalido': 'El tipo de valoracion recibido no es valido.',
+        'migracion-pendiente': 'Falta aplicar la migracion de gamificacion en la base de datos.',
+        'perfil-faltante': 'Falta sincronizar el perfil de uno de los usuarios implicados.',
+        'error-servidor': 'No se pudo guardar la valoracion por un error interno.',
+    };
+
+    const feedbackCode = resolvedSearchParams.feedback || null;
+    const feedbackMessage = feedbackCode ? feedbackMessageByCode[feedbackCode] : null;
+    const feedbackIsError = Boolean(feedbackCode && feedbackCode !== 'ok');
+
     return (
         <>
         <PostRealtimeBridge postId={postId} />
@@ -158,6 +180,12 @@ export default async function PostDetailPage({ params }: Readonly<{ params: Prom
             <Link href="/feed" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--tn-muted)] hover:text-[var(--tn-primary)] transition-colors mb-8">
                 <ArrowLeft size={16} strokeWidth={2.5} /> Volver
             </Link>
+
+            {feedbackMessage && (
+                <div className={`mb-8 rounded-2xl border px-4 py-3 text-sm font-semibold ${feedbackIsError ? 'border-[#f3ccc1] bg-[#fff3ef] text-[#7c3f2f]' : 'border-[#cfe5d2] bg-[#eef8ef] text-[#2f5e3b]'}`}>
+                    {feedbackMessage}
+                </div>
+            )}
 
             <section className="space-y-6">
                 <div className="bg-white rounded-[32px] p-6 md:p-10 border border-[#efe2d8] tn-card-shadow relative overflow-hidden">

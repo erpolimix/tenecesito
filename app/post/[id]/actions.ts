@@ -6,6 +6,28 @@ import { redirect } from 'next/navigation'
 
 type ResponseFeedbackType = 'util' | 'reveladora'
 
+function getFeedbackErrorStatus(error: { code?: string | null; message?: string | null }) {
+    const message = error.message || ''
+    if (message.includes('forbidden')) return 'sin-permiso'
+    if (message.includes('already_feedbacked')) return 'ya-valorada'
+    if (
+        error.code === 'PGRST202' ||
+        message.includes('Could not find the function') ||
+        message.includes('No function matches')
+    ) {
+        return 'migracion-pendiente'
+    }
+    if (message.includes('foreign key constraint')) return 'perfil-faltante'
+    return 'error-servidor'
+}
+
+function getFeedbackRedirectPath(postId: string, status: string, extra?: string) {
+    const basePath = postId ? `/post/${postId}` : '/feed'
+    const params = new URLSearchParams({ feedback: status })
+    if (extra) params.set('detalle', extra)
+    return `${basePath}?${params.toString()}`
+}
+
 function parseFeedbackType(value: string | null): ResponseFeedbackType {
     if (value === 'util' || value === 'reveladora') return value
     throw new Error('Tipo de valoracion invalido')
@@ -88,14 +110,24 @@ export async function markResponseFeedback(formData: FormData) {
     const supabase = await createClient();
     const postId = formData.get('postId') as string;
     const responseId = formData.get('responseId') as string;
-    const feedbackType = parseFeedbackType((formData.get('feedbackType') as string | null) || null);
+    const feedbackRaw = (formData.get('feedbackType') as string | null) || null;
+
+    let feedbackType: ResponseFeedbackType;
+    try {
+        feedbackType = parseFeedbackType(feedbackRaw);
+    } catch {
+        redirect(getFeedbackRedirectPath(postId, 'tipo-invalido'));
+    }
 
     if (!postId || !responseId) {
-        throw new Error('Datos de valoracion incompletos');
+        redirect(getFeedbackRedirectPath(postId, 'datos-invalidos'));
     }
 
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Debes iniciar sesion');
+    if (!user) {
+        const nextPath = postId ? `/post/${postId}` : '/feed';
+        redirect(`/login?next=${encodeURIComponent(nextPath)}`);
+    }
 
     const { data, error } = await supabase.rpc('apply_response_feedback', {
         p_response_id: responseId,
@@ -103,13 +135,17 @@ export async function markResponseFeedback(formData: FormData) {
     });
 
     if (error) {
-        if (error.message.includes('forbidden')) {
-            throw new Error('Solo el autor de la necesidad puede valorar respuestas');
-        }
-        if (error.message.includes('already_feedbacked')) {
-            throw new Error('Esta respuesta ya fue valorada');
-        }
-        throw new Error(error.message);
+        console.error('Error marking response feedback', {
+            code: error.code,
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            postId,
+            responseId,
+            feedbackType,
+        });
+
+        redirect(getFeedbackRedirectPath(postId, getFeedbackErrorStatus(error)));
     }
 
     const updated = Array.isArray(data) ? data[0] : null;
@@ -122,6 +158,7 @@ export async function markResponseFeedback(formData: FormData) {
     if (responseAuthorId) {
         revalidatePath(`/perfil/${responseAuthorId}`);
     }
+    redirect(getFeedbackRedirectPath(postId, 'ok', feedbackType));
 }
 
 export async function updatePost(formData: FormData) {
