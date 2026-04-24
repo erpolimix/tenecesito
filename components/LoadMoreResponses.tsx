@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { fetchPostResponses, markResponseFeedback } from '@/app/post/[id]/actions';
 import { Loader2, Plus } from 'lucide-react';
+import GamificationBadgeIcon, { type BadgeTone, type BadgeVariant } from '@/components/GamificationBadgeIcon';
 
 type ResponseItem = {
     id: string;
@@ -41,6 +42,50 @@ function FeedbackActionButton({ label, tone }: Readonly<{ label: string; tone: '
 
 function formatBadgeLabel(key: string) {
     return key.replaceAll('_', ' ');
+}
+
+function toBadgeVisual(input: string): { variant: BadgeVariant; tone: BadgeTone; label: string } {
+    const key = input.toLowerCase();
+
+    if (key.includes('revel')) {
+        return { variant: 'reveladora', tone: 'creatividad', label: 'Reveladora' };
+    }
+
+    if (key.includes('streak') || key.includes('racha')) {
+        return { variant: 'racha', tone: 'decisiones', label: formatBadgeLabel(input) };
+    }
+
+    const hasCategoryMatch =
+        key.includes('especial') ||
+        key.includes('apoyo') ||
+        key.includes('relaciones') ||
+        key.includes('decisiones') ||
+        key.includes('creatividad');
+
+    let categoryTone: BadgeTone = 'neutral';
+    if (key.includes('apoyo')) categoryTone = 'apoyo';
+    if (key.includes('relaciones')) categoryTone = 'relaciones';
+    if (key.includes('decisiones')) categoryTone = 'decisiones';
+    if (key.includes('creatividad')) categoryTone = 'creatividad';
+
+    if (hasCategoryMatch) {
+        return { variant: 'especialista', tone: categoryTone, label: formatBadgeLabel(input) };
+    }
+
+    if (key.includes('nivel') || key.includes('guia') || key.includes('referente') || key.includes('sabio') || key.includes('faro')) {
+        return { variant: 'nivel', tone: 'neutral', label: formatBadgeLabel(input) };
+    }
+
+    return { variant: 'especialista', tone: 'neutral', label: formatBadgeLabel(input) };
+}
+
+function levelTone(level: string | undefined): BadgeTone {
+    const normalized = (level || '').toLowerCase();
+    if (normalized.includes('faro')) return 'creatividad';
+    if (normalized.includes('sabio')) return 'decisiones';
+    if (normalized.includes('referente')) return 'relaciones';
+    if (normalized.includes('guia')) return 'apoyo';
+    return 'neutral';
 }
 
 function formatResponseDate(dateInput: string) {
@@ -129,18 +174,36 @@ export default function LoadMoreResponses({
                                 </span>
                             )}
                         </div>
-                        {response.author_active_badges && response.author_active_badges.length > 0 && (
-                            <div className="mb-4 flex flex-wrap gap-2">
-                                {response.author_active_badges.map((badgeKey) => (
+                        <div className="mb-4 flex flex-wrap items-center gap-2.5">
+                            <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#f3ece6] text-[#6d584f] text-[10px] font-black uppercase tracking-[0.12em]">
+                                <GamificationBadgeIcon
+                                    variant="nivel"
+                                    tone={levelTone(response.author_current_level)}
+                                    size={20}
+                                    title={`Nivel ${response.author_current_level || 'Semilla'}`}
+                                />
+                                {response.author_current_level || 'Semilla'}
+                            </span>
+
+                            {(response.author_active_badges || []).map((badgeKey) => {
+                                const visual = toBadgeVisual(badgeKey);
+                                return (
                                     <span
                                         key={`${response.id}-${badgeKey}`}
-                                        className="px-2.5 py-1 rounded-full bg-[#f3ece6] text-[#6d584f] text-[10px] font-bold uppercase tracking-[0.14em]"
+                                        className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#faf5f1] text-[#6d584f] text-[10px] font-black uppercase tracking-[0.12em]"
+                                        title={visual.label}
                                     >
-                                        {formatBadgeLabel(badgeKey)}
+                                        <GamificationBadgeIcon
+                                            variant={visual.variant}
+                                            tone={visual.tone}
+                                            size={20}
+                                            title={visual.label}
+                                        />
+                                        {visual.label}
                                     </span>
-                                ))}
-                            </div>
-                        )}
+                                );
+                            })}
+                        </div>
                         <p className={`${response.is_read ? 'italic' : ''} text-[var(--tn-muted)] line-height-editorial mb-6 whitespace-pre-wrap`}>{response.content}</p>
                         <div className="flex justify-between items-center border-t border-[var(--tn-outline)]/10 pt-4">
                             {response.is_read ? (
