@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { fetchPostResponses } from '@/app/post/[id]/actions';
+import { useFormStatus } from 'react-dom';
+import { fetchPostResponses, markResponseFeedback } from '@/app/post/[id]/actions';
 import { Loader2, Plus } from 'lucide-react';
 
 type ResponseItem = {
@@ -10,8 +11,36 @@ type ResponseItem = {
     created_at: string;
     is_read: boolean;
     author_id: string;
+    feedback_type?: 'util' | 'reveladora' | null;
+    feedback_at?: string | null;
+    author_total_points?: number;
+    author_current_level?: string;
+    author_streak_days?: number;
+    author_active_badges?: string[];
     author_name?: string | null;
     author_avatar_url?: string | null;
+}
+
+function FeedbackActionButton({ label, tone }: Readonly<{ label: string; tone: 'util' | 'reveladora' }>) {
+    const { pending } = useFormStatus();
+
+    const className = tone === 'util'
+        ? 'bg-[#e8f5e9] text-[#3e6f47] hover:bg-[#d9efdc]'
+        : 'bg-[#fff3d9] text-[#8a6720] hover:bg-[#ffe8bc]';
+
+    return (
+        <button
+            type="submit"
+            disabled={pending}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-[0.12em] transition-colors disabled:opacity-50 ${className}`}
+        >
+            {pending ? 'Guardando...' : label}
+        </button>
+    );
+}
+
+function formatBadgeLabel(key: string) {
+    return key.replaceAll('_', ' ');
 }
 
 function formatResponseDate(dateInput: string) {
@@ -27,11 +56,11 @@ export default function LoadMoreResponses({
     postId,
     initialResponses,
     totalCount
-}: {
+}: Readonly<{
     postId: string;
     initialResponses: ResponseItem[];
     totalCount: number;
-}) {
+}>) {
     const [responses, setResponses] = useState(initialResponses);
     const [loading, setLoading] = useState(false);
     const [offset, setOffset] = useState(10);
@@ -83,7 +112,10 @@ export default function LoadMoreResponses({
                                 )}
                                 <div>
                                     <h4 className="font-bold text-[var(--tn-text)]">{response.author_name || 'Voz de la comunidad'}</h4>
-                                    <p className="text-xs text-[var(--tn-muted)]">Perspectiva compartida</p>
+                                    <p className="text-xs text-[var(--tn-muted)]">
+                                        {response.author_current_level || 'Semilla'} · {response.author_total_points || 0} pts
+                                        {response.author_streak_days ? ` · racha ${response.author_streak_days}d` : ''}
+                                    </p>
                                 </div>
                             </div>
                             {response.is_read ? (
@@ -97,6 +129,18 @@ export default function LoadMoreResponses({
                                 </span>
                             )}
                         </div>
+                        {response.author_active_badges && response.author_active_badges.length > 0 && (
+                            <div className="mb-4 flex flex-wrap gap-2">
+                                {response.author_active_badges.map((badgeKey) => (
+                                    <span
+                                        key={`${response.id}-${badgeKey}`}
+                                        className="px-2.5 py-1 rounded-full bg-[#f3ece6] text-[#6d584f] text-[10px] font-bold uppercase tracking-[0.14em]"
+                                    >
+                                        {formatBadgeLabel(badgeKey)}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
                         <p className={`${response.is_read ? 'italic' : ''} text-[var(--tn-muted)] line-height-editorial mb-6 whitespace-pre-wrap`}>{response.content}</p>
                         <div className="flex justify-between items-center border-t border-[var(--tn-outline)]/10 pt-4">
                             {response.is_read ? (
@@ -113,6 +157,28 @@ export default function LoadMoreResponses({
                                     <span className="text-sm font-medium">Marcar como leido</span>
                                 </button>
                             )}
+                            <div className="flex items-center gap-2">
+                                {response.feedback_type ? (
+                                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.12em] ${response.feedback_type === 'util' ? 'bg-[#def4e2] text-[#2f5e3b]' : 'bg-[#ffe8b8] text-[#7e5e18]'}`}>
+                                        {response.feedback_type === 'util' ? 'Valorada: util' : 'Valorada: reveladora'}
+                                    </span>
+                                ) : (
+                                    <>
+                                        <form action={markResponseFeedback}>
+                                            <input type="hidden" name="postId" value={postId} />
+                                            <input type="hidden" name="responseId" value={response.id} />
+                                            <input type="hidden" name="feedbackType" value="util" />
+                                            <FeedbackActionButton label="Marcar util" tone="util" />
+                                        </form>
+                                        <form action={markResponseFeedback}>
+                                            <input type="hidden" name="postId" value={postId} />
+                                            <input type="hidden" name="responseId" value={response.id} />
+                                            <input type="hidden" name="feedbackType" value="reveladora" />
+                                            <FeedbackActionButton label="Marcar reveladora" tone="reveladora" />
+                                        </form>
+                                    </>
+                                )}
+                            </div>
                         </div>
                     </div>
                 ))}

@@ -4,6 +4,13 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
+type ResponseFeedbackType = 'util' | 'reveladora'
+
+function parseFeedbackType(value: string | null): ResponseFeedbackType {
+    if (value === 'util' || value === 'reveladora') return value
+    throw new Error('Tipo de valoracion invalido')
+}
+
 function parseTags(rawTags: string | undefined) {
     if (!rawTags) return [] as string[]
 
@@ -12,7 +19,7 @@ function parseTags(rawTags: string | undefined) {
         const normalized = piece
             .trim()
             .replace(/^#+/, '')
-            .replace(/\s+/g, '')
+            .replaceAll(/\s+/g, '')
             .toLowerCase()
 
         if (!normalized) continue
@@ -75,6 +82,46 @@ export async function closePost(formData: FormData) {
     if (error) throw new Error(error.message);
 
     revalidatePath(`/post/${postId}`);
+}
+
+export async function markResponseFeedback(formData: FormData) {
+    const supabase = await createClient();
+    const postId = formData.get('postId') as string;
+    const responseId = formData.get('responseId') as string;
+    const feedbackType = parseFeedbackType((formData.get('feedbackType') as string | null) || null);
+
+    if (!postId || !responseId) {
+        throw new Error('Datos de valoracion incompletos');
+    }
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Debes iniciar sesion');
+
+    const { data, error } = await supabase.rpc('apply_response_feedback', {
+        p_response_id: responseId,
+        p_feedback_type: feedbackType,
+    });
+
+    if (error) {
+        if (error.message.includes('forbidden')) {
+            throw new Error('Solo el autor de la necesidad puede valorar respuestas');
+        }
+        if (error.message.includes('already_feedbacked')) {
+            throw new Error('Esta respuesta ya fue valorada');
+        }
+        throw new Error(error.message);
+    }
+
+    const updated = Array.isArray(data) ? data[0] : null;
+    const responseAuthorId = updated?.response_author_id as string | undefined;
+
+    revalidatePath(`/post/${postId}`);
+    revalidatePath('/comunidad');
+    revalidatePath('/dashboard');
+    revalidatePath('/notificaciones');
+    if (responseAuthorId) {
+        revalidatePath(`/perfil/${responseAuthorId}`);
+    }
 }
 
 export async function updatePost(formData: FormData) {
@@ -152,13 +199,46 @@ export async function fetchPostResponses(postId: string, limit: number, offset: 
         return safeResponses;
     }
 
+    const { data: stats, error: statsError } = await supabase
+        .from('user_gamification_stats')
+        .select('user_id, total_points, current_level, current_streak_days')
+        .in('user_id', authorIds);
+
+    if (statsError) {
+        console.error('Error fetching response author gamification stats', statsError);
+    }
+
+    const { data: badges, error: badgesError } = await supabase
+        .from('user_badges')
+        .select('user_id, badge_key')
+        .in('user_id', authorIds)
+        .eq('status', 'active')
+        .order('earned_at', { ascending: false });
+
+    if (badgesError) {
+        console.error('Error fetching response author badges', badgesError);
+    }
+
     const profilesById = new Map((profiles || []).map((p) => [p.id, p]));
+    const statsById = new Map((stats || []).map((item) => [item.user_id, item]));
+    const badgesById = new Map<string, string[]>();
+    for (const badge of badges || []) {
+        const current = badgesById.get(badge.user_id) || [];
+        if (current.length < 3) current.push(badge.badge_key);
+        badgesById.set(badge.user_id, current);
+    }
+
     return safeResponses.map((response) => {
         const profile = profilesById.get(response.author_id);
+        const statsForAuthor = statsById.get(response.author_id);
         return {
             ...response,
             author_name: profile?.display_name || null,
             author_avatar_url: profile?.avatar_url || null,
+            author_total_points: statsForAuthor?.total_points || 0,
+            author_current_level: statsForAuthor?.current_level || 'Semilla',
+            author_streak_days: statsForAuthor?.current_streak_days || 0,
+            author_active_badges: badgesById.get(response.author_id) || [],
         };
     });
 }

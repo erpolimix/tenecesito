@@ -30,7 +30,7 @@ function getTimeAgoEs(dateInput: string) {
     return `Publicado hace ${diffYears} año${diffYears === 1 ? '' : 's'}`;
 }
 
-export default async function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function PostDetailPage({ params }: Readonly<{ params: Promise<{ id: string }> }>) {
     const supabase = await createClient();
     const { id: postId } = await params;
     const { data: { user } } = await supabase.auth.getUser();
@@ -48,13 +48,13 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
     const showUrgentBadge = isUrgentActive(postWithAuthor);
     const realTags = Array.isArray(postWithAuthor.tags)
         ? postWithAuthor.tags
-            .map((tag: unknown) => String(tag).trim().replace(/^#+/, '').replace(/\s+/g, ''))
+            .map((tag: unknown) => String(tag).trim().replace(/^#+/, '').replaceAll(/\s+/g, ''))
             .filter((tag: string) => tag.length > 0)
             .slice(0, 8)
         : [];
     const tagsToDisplay = realTags.length > 0
         ? realTags
-        : [cat?.name?.replace(/\s+/g, '') || 'comunidad'];
+        : [cat?.name?.replaceAll(/\s+/g, '') || 'comunidad'];
 
     if (isAuthor) {
         const { error: markReadError } = await supabase
@@ -89,17 +89,51 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 .select('id, display_name, avatar_url')
                 .in('id', authorIds);
 
+            const { data: stats, error: statsError } = await supabase
+                .from('user_gamification_stats')
+                .select('user_id, total_points, current_level, current_streak_days')
+                .in('user_id', authorIds);
+
+            if (statsError) {
+                console.error('Error fetching initial response author stats', statsError);
+            }
+
+            const { data: badges, error: badgesError } = await supabase
+                .from('user_badges')
+                .select('user_id, badge_key')
+                .in('user_id', authorIds)
+                .eq('status', 'active')
+                .order('earned_at', { ascending: false });
+
+            if (badgesError) {
+                console.error('Error fetching initial response author badges', badgesError);
+            }
+
             if (profilesError) {
                 console.error('Error fetching initial response authors', profilesError);
                 initialResponses = safeResponses;
             } else {
                 const profilesById = new Map((profiles || []).map((p) => [p.id, p]));
+                const statsById = new Map((stats || []).map((item) => [item.user_id, item]));
+                const badgesById = new Map<string, string[]>();
+
+                for (const badge of badges || []) {
+                    const current = badgesById.get(badge.user_id) || [];
+                    if (current.length < 3) current.push(badge.badge_key);
+                    badgesById.set(badge.user_id, current);
+                }
+
                 initialResponses = safeResponses.map((response) => {
                     const profile = profilesById.get(response.author_id);
+                    const statsForAuthor = statsById.get(response.author_id);
                     return {
                         ...response,
                         author_name: profile?.display_name || null,
                         author_avatar_url: profile?.avatar_url || null,
+                        author_total_points: statsForAuthor?.total_points || 0,
+                        author_current_level: statsForAuthor?.current_level || 'Semilla',
+                        author_streak_days: statsForAuthor?.current_streak_days || 0,
+                        author_active_badges: badgesById.get(response.author_id) || [],
                     };
                 });
             }
