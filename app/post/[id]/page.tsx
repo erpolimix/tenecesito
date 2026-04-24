@@ -35,7 +35,7 @@ export default async function PostDetailPage({
     searchParams,
 }: Readonly<{
     params: Promise<{ id: string }>;
-    searchParams?: Promise<{ feedback?: string }>;
+    searchParams?: Promise<{ feedback?: string; detalle?: string }>;
 }>) {
     const supabase = await createClient();
     const { id: postId } = await params;
@@ -161,6 +161,7 @@ export default async function PostDetailPage({
         ok: 'Valoracion guardada correctamente.',
         'sin-permiso': 'Solo el autor de la necesidad puede valorar respuestas.',
         'ya-valorada': 'Esta respuesta ya fue valorada previamente.',
+        'post-ya-valorado': 'Ya elegiste una perspectiva para esta necesidad. No puedes valorar mas respuestas.',
         'datos-invalidos': 'No se pudo procesar la valoracion por datos incompletos.',
         'tipo-invalido': 'El tipo de valoracion recibido no es valido.',
         'migracion-pendiente': 'Falta aplicar la migracion de gamificacion en la base de datos.',
@@ -169,6 +170,7 @@ export default async function PostDetailPage({
     };
 
     const feedbackCode = resolvedSearchParams.feedback || null;
+    const feedbackDetail = resolvedSearchParams.detalle || null;
     const feedbackMessage = feedbackCode ? feedbackMessageByCode[feedbackCode] : null;
     const feedbackIsError = Boolean(feedbackCode && feedbackCode !== 'ok');
 
@@ -183,7 +185,10 @@ export default async function PostDetailPage({
 
             {feedbackMessage && (
                 <div className={`mb-8 rounded-2xl border px-4 py-3 text-sm font-semibold ${feedbackIsError ? 'border-[#f3ccc1] bg-[#fff3ef] text-[#7c3f2f]' : 'border-[#cfe5d2] bg-[#eef8ef] text-[#2f5e3b]'}`}>
-                    {feedbackMessage}
+                    <p>{feedbackMessage}</p>
+                    {feedbackIsError && feedbackDetail && (
+                        <p className="mt-1 text-xs font-mono opacity-75">detalle: {feedbackDetail}</p>
+                    )}
                 </div>
             )}
 

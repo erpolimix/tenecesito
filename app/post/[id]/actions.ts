@@ -10,6 +10,7 @@ function getFeedbackErrorStatus(error: { code?: string | null; message?: string 
     const message = error.message || ''
     if (message.includes('forbidden')) return 'sin-permiso'
     if (message.includes('already_feedbacked')) return 'ya-valorada'
+    if (message.includes('post_feedback_already_chosen')) return 'post-ya-valorado'
     if (
         error.code === 'PGRST202' ||
         message.includes('Could not find the function') ||
@@ -129,6 +130,13 @@ export async function markResponseFeedback(formData: FormData) {
         redirect(`/login?next=${encodeURIComponent(nextPath)}`);
     }
 
+    console.info('markResponseFeedback:start', {
+        postId,
+        responseId,
+        feedbackType,
+        actorUserId: user.id,
+    });
+
     const { data, error } = await supabase.rpc('apply_response_feedback', {
         p_response_id: responseId,
         p_feedback_type: feedbackType,
@@ -147,6 +155,13 @@ export async function markResponseFeedback(formData: FormData) {
 
         redirect(getFeedbackRedirectPath(postId, getFeedbackErrorStatus(error)));
     }
+
+    console.info('markResponseFeedback:success', {
+        postId,
+        responseId,
+        feedbackType,
+        rpcRows: Array.isArray(data) ? data.length : 0,
+    });
 
     const updated = Array.isArray(data) ? data[0] : null;
     const responseAuthorId = updated?.response_author_id as string | undefined;

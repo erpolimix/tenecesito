@@ -110,6 +110,7 @@ export default function LoadMoreResponses({
     const [loading, setLoading] = useState(false);
     const [offset, setOffset] = useState(10);
     const [hasMore, setHasMore] = useState(totalCount > initialResponses.length);
+    const feedbackAlreadyChosen = responses.some((response) => Boolean(response.feedback_type));
 
     const handleLoadMore = async () => {
         setLoading(true);
@@ -137,7 +138,41 @@ export default function LoadMoreResponses({
             </div>
 
             <div className="space-y-6">
-                {responses.map((response) => (
+                {responses.map((response) => {
+                    let feedbackControls: React.ReactNode = null;
+
+                    if (response.feedback_type) {
+                        feedbackControls = (
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.12em] ${response.feedback_type === 'util' ? 'bg-[#def4e2] text-[#2f5e3b]' : 'bg-[#ffe8b8] text-[#7e5e18]'}`}>
+                                {response.feedback_type === 'util' ? 'Valorada: util' : 'Valorada: reveladora'}
+                            </span>
+                        );
+                    } else if (feedbackAlreadyChosen) {
+                        feedbackControls = (
+                            <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.12em] bg-[#ece5df] text-[#6d5a52]">
+                                Ya elegiste una perspectiva
+                            </span>
+                        );
+                    } else {
+                        feedbackControls = (
+                            <>
+                                <form action={markResponseFeedback}>
+                                    <input type="hidden" name="postId" value={postId} />
+                                    <input type="hidden" name="responseId" value={response.id} />
+                                    <input type="hidden" name="feedbackType" value="util" />
+                                    <FeedbackActionButton label="Marcar util" tone="util" />
+                                </form>
+                                <form action={markResponseFeedback}>
+                                    <input type="hidden" name="postId" value={postId} />
+                                    <input type="hidden" name="responseId" value={response.id} />
+                                    <input type="hidden" name="feedbackType" value="reveladora" />
+                                    <FeedbackActionButton label="Marcar reveladora" tone="reveladora" />
+                                </form>
+                            </>
+                        );
+                    }
+
+                    return (
                     <div
                         key={response.id}
                         className={`${response.is_read ? 'bg-[#f5f3f1]/80 opacity-80' : 'bg-white border-l-4 border-[var(--tn-primary)] shadow-[0_12px_40px_rgba(27,28,27,0.06)]'} rounded-lg p-6 transition-all hover:translate-x-1`}
@@ -220,31 +255,11 @@ export default function LoadMoreResponses({
                                     <span className="text-sm font-medium">Marcar como leido</span>
                                 </button>
                             )}
-                            <div className="flex items-center gap-2">
-                                {response.feedback_type ? (
-                                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.12em] ${response.feedback_type === 'util' ? 'bg-[#def4e2] text-[#2f5e3b]' : 'bg-[#ffe8b8] text-[#7e5e18]'}`}>
-                                        {response.feedback_type === 'util' ? 'Valorada: util' : 'Valorada: reveladora'}
-                                    </span>
-                                ) : (
-                                    <>
-                                        <form action={markResponseFeedback}>
-                                            <input type="hidden" name="postId" value={postId} />
-                                            <input type="hidden" name="responseId" value={response.id} />
-                                            <input type="hidden" name="feedbackType" value="util" />
-                                            <FeedbackActionButton label="Marcar util" tone="util" />
-                                        </form>
-                                        <form action={markResponseFeedback}>
-                                            <input type="hidden" name="postId" value={postId} />
-                                            <input type="hidden" name="responseId" value={response.id} />
-                                            <input type="hidden" name="feedbackType" value="reveladora" />
-                                            <FeedbackActionButton label="Marcar reveladora" tone="reveladora" />
-                                        </form>
-                                    </>
-                                )}
-                            </div>
+                            <div className="flex items-center gap-2">{feedbackControls}</div>
                         </div>
                     </div>
-                ))}
+                    );
+                })}
             </div>
 
             {hasMore && (
