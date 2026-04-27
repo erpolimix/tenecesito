@@ -2,6 +2,7 @@ import './globals.css';
 import AmbientBackground from '@/components/AmbientBackground';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
+import ScrollToTopOnRouteChange from '@/components/ScrollToTopOnRouteChange';
 import { Newsreader, Playfair_Display, Plus_Jakarta_Sans } from 'next/font/google';
 
 const newsreader = Newsreader({
@@ -37,6 +38,7 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning className={`${newsreader.variable} ${plusJakartaSans.variable} ${playfairDisplay.variable}`}>
       <body className="flex flex-col min-h-screen text-[var(--tn-text)] selection:bg-[var(--tn-primary)]/25 selection:text-[var(--tn-text)]" suppressHydrationWarning>
         <AmbientBackground />
+        <ScrollToTopOnRouteChange />
         <div className="relative flex flex-col flex-1" style={{ zIndex: 1, isolation: 'isolate' }}>
           <Navbar />
           <main className="flex-grow w-full">
