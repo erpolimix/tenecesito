@@ -22,6 +22,20 @@ function getFeedbackErrorStatus(error: { code?: string | null; message?: string 
     return 'error-servidor'
 }
 
+function getFeedbackErrorDetail(error: { code?: string | null; message?: string | null }) {
+    const message = (error.message || '').toLowerCase()
+    const code = error.code || 'sin-codigo'
+
+    if (message.includes('post_feedback_already_chosen')) return `${code}:post_feedback_already_chosen`
+    if (message.includes('already_feedbacked')) return `${code}:already_feedbacked`
+    if (message.includes('forbidden')) return `${code}:forbidden`
+    if (message.includes('could not find the function') || message.includes('no function matches')) return `${code}:rpc_missing`
+    if (message.includes('foreign key constraint')) return `${code}:foreign_key`
+    if (message.includes('permission denied')) return `${code}:permission_denied`
+    if (message.includes('violates unique constraint')) return `${code}:unique_constraint`
+    return `${code}:unknown`
+}
+
 function getFeedbackRedirectPath(postId: string, status: string, extra?: string) {
     const basePath = postId ? `/post/${postId}` : '/feed'
     const params = new URLSearchParams({ feedback: status })
@@ -153,7 +167,7 @@ export async function markResponseFeedback(formData: FormData) {
             feedbackType,
         });
 
-        redirect(getFeedbackRedirectPath(postId, getFeedbackErrorStatus(error)));
+        redirect(getFeedbackRedirectPath(postId, getFeedbackErrorStatus(error), getFeedbackErrorDetail(error)));
     }
 
     console.info('markResponseFeedback:success', {
