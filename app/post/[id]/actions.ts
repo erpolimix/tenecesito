@@ -324,7 +324,7 @@ export async function fetchPostResponses(postId: string, limit: number, offset: 
     }
 
     const { data: stats, error: statsError } = await supabase
-        .from('user_gamification_stats')
+        .from('public_gamification_profiles')
         .select('user_id, total_points, current_level, current_streak_days')
         .in('user_id', authorIds);
 
@@ -333,7 +333,7 @@ export async function fetchPostResponses(postId: string, limit: number, offset: 
     }
 
     const { data: badges, error: badgesError } = await supabase
-        .from('user_badges')
+        .from('public_user_badges')
         .select('user_id, badge_key')
         .in('user_id', authorIds)
         .eq('status', 'active')

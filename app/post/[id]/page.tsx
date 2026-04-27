@@ -11,6 +11,44 @@ import PostRealtimeBridge from '@/components/PostRealtimeBridge';
 import UnreadResponsesNotifier from '@/components/UnreadResponsesNotifier';
 import { attachAuthorProfiles } from '@/lib/post-authors';
 
+type ResponseRow = {
+    id: string;
+    post_id: string;
+    author_id: string;
+    created_at: string;
+    content: string;
+    is_read: boolean;
+};
+
+type ResponseProfileRow = {
+    id: string;
+    display_name?: string | null;
+    avatar_url?: string | null;
+};
+
+type PublicGamificationProfileRow = {
+    user_id: string;
+    total_points: number;
+    current_level: string;
+    current_streak_days: number;
+};
+
+type PublicBadgeRow = {
+    user_id: string;
+    badge_key: string;
+};
+
+const FEEDBACK_MESSAGE_BY_CODE: Record<string, string> = {
+    ok: 'Valoracion guardada correctamente.',
+    'sin-permiso': 'Solo el autor de la necesidad puede valorar respuestas.',
+    'ya-valorada': 'Esta respuesta ya fue valorada previamente.',
+    'datos-invalidos': 'No se pudo procesar la valoracion por datos incompletos.',
+    'tipo-invalido': 'El tipo de valoracion recibido no es valido.',
+    'migracion-pendiente': 'Falta aplicar la migracion de gamificacion en la base de datos.',
+    'perfil-faltante': 'Falta sincronizar el perfil de uno de los usuarios implicados.',
+    'error-servidor': 'No se pudo guardar la valoracion por un error interno.',
+};
+
 function getTimeAgoEs(dateInput: string) {
     const now = new Date();
     const date = new Date(dateInput);
@@ -28,6 +66,146 @@ function getTimeAgoEs(dateInput: string) {
     if (diffMonths < 12) return `Publicado hace ${diffMonths} mes${diffMonths === 1 ? '' : 'es'}`;
     const diffYears = Math.floor(diffDays / 365);
     return `Publicado hace ${diffYears} año${diffYears === 1 ? '' : 's'}`;
+}
+
+function getTagsToDisplay(tags: unknown, fallbackCategoryName?: string) {
+    const realTags = Array.isArray(tags)
+        ? tags
+            .map((tag: unknown) => String(tag).trim().replace(/^#+/, '').replaceAll(/\s+/g, ''))
+            .filter((tag: string) => tag.length > 0)
+            .slice(0, 8)
+        : [];
+
+    if (realTags.length > 0) {
+        return realTags;
+    }
+
+    return [fallbackCategoryName?.replaceAll(/\s+/g, '') || 'comunidad'];
+}
+
+async function markResponsesAsReadIfAuthor(
+    supabase: Awaited<ReturnType<typeof createClient>>,
+    isAuthor: boolean,
+    postId: string,
+) {
+    if (!isAuthor) return;
+
+    const { error: markReadError } = await supabase
+        .from('responses')
+        .update({ is_read: true })
+        .eq('post_id', postId)
+        .eq('is_read', false);
+
+    if (markReadError) {
+        console.error('Error marking responses as read on post detail', markReadError);
+    }
+}
+
+async function hasUserResponded(
+    supabase: Awaited<ReturnType<typeof createClient>>,
+    userId: string | undefined,
+    isAuthor: boolean,
+    postId: string,
+) {
+    if (!userId || isAuthor) return false;
+
+    const { data: myResp } = await supabase
+        .from('responses')
+        .select('id')
+        .eq('post_id', postId)
+        .eq('author_id', userId)
+        .maybeSingle();
+
+    return Boolean(myResp);
+}
+
+function getFeedbackState(searchParams: { feedback?: string; detalle?: string }) {
+    const feedbackCode = searchParams.feedback || null;
+    const feedbackDetail = searchParams.detalle || null;
+    return {
+        feedbackCode,
+        feedbackDetail,
+        feedbackMessage: feedbackCode ? FEEDBACK_MESSAGE_BY_CODE[feedbackCode] : null,
+        feedbackIsError: Boolean(feedbackCode && feedbackCode !== 'ok'),
+    };
+}
+
+async function loadInitialResponses(
+    supabase: Awaited<ReturnType<typeof createClient>>,
+    postId: string,
+) {
+    const { count } = await supabase.from('responses').select('*', { count: 'exact', head: true }).eq('post_id', postId);
+    const totalResponsesCount = count || 0;
+
+    const { data: resps } = await supabase
+        .from('responses')
+        .select('*')
+        .eq('post_id', postId)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+    const safeResponses = (resps || []) as ResponseRow[];
+    const authorIds = Array.from(new Set(safeResponses.map((response) => response.author_id).filter(Boolean)));
+
+    if (authorIds.length === 0) {
+        return { totalResponsesCount, initialResponses: safeResponses };
+    }
+
+    const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, display_name, avatar_url')
+        .in('id', authorIds);
+
+    const { data: stats, error: statsError } = await supabase
+        .from('public_gamification_profiles')
+        .select('user_id, total_points, current_level, current_streak_days')
+        .in('user_id', authorIds);
+
+    if (statsError) {
+        console.error('Error fetching initial response author stats', statsError);
+    }
+
+    const { data: badges, error: badgesError } = await supabase
+        .from('public_user_badges')
+        .select('user_id, badge_key')
+        .in('user_id', authorIds)
+        .eq('status', 'active')
+        .order('earned_at', { ascending: false });
+
+    if (badgesError) {
+        console.error('Error fetching initial response author badges', badgesError);
+    }
+
+    if (profilesError) {
+        console.error('Error fetching initial response authors', profilesError);
+        return { totalResponsesCount, initialResponses: safeResponses };
+    }
+
+    const profilesById = new Map(((profiles || []) as ResponseProfileRow[]).map((profile) => [profile.id, profile]));
+    const statsById = new Map(((stats || []) as PublicGamificationProfileRow[]).map((item) => [item.user_id, item]));
+    const badgesById = new Map<string, string[]>();
+
+    for (const badge of (badges || []) as PublicBadgeRow[]) {
+        const current = badgesById.get(badge.user_id) || [];
+        if (current.length < 3) current.push(badge.badge_key);
+        badgesById.set(badge.user_id, current);
+    }
+
+    const initialResponses = safeResponses.map((response) => {
+        const profile = profilesById.get(response.author_id);
+        const statsForAuthor = statsById.get(response.author_id);
+        return {
+            ...response,
+            author_name: profile?.display_name || null,
+            author_avatar_url: profile?.avatar_url || null,
+            author_total_points: statsForAuthor?.total_points || 0,
+            author_current_level: statsForAuthor?.current_level || 'Semilla',
+            author_streak_days: statsForAuthor?.current_streak_days || 0,
+            author_active_badges: badgesById.get(response.author_id) || [],
+        };
+    });
+
+    return { totalResponsesCount, initialResponses };
 }
 
 export default async function PostDetailPage({
@@ -53,125 +231,22 @@ export default async function PostDetailPage({
     const cat = CATEGORIES.find(c => c.id === postWithAuthor.category_id);
     const isAuthor = user && postWithAuthor.author_id === user.id;
     const showUrgentBadge = isUrgentActive(postWithAuthor);
-    const realTags = Array.isArray(postWithAuthor.tags)
-        ? postWithAuthor.tags
-            .map((tag: unknown) => String(tag).trim().replace(/^#+/, '').replaceAll(/\s+/g, ''))
-            .filter((tag: string) => tag.length > 0)
-            .slice(0, 8)
-        : [];
-    const tagsToDisplay = realTags.length > 0
-        ? realTags
-        : [cat?.name?.replaceAll(/\s+/g, '') || 'comunidad'];
+    const tagsToDisplay = getTagsToDisplay(postWithAuthor.tags, cat?.name);
 
-    if (isAuthor) {
-        const { error: markReadError } = await supabase
-            .from('responses')
-            .update({ is_read: true })
-            .eq('post_id', postId)
-            .eq('is_read', false);
-
-        if (markReadError) {
-            console.error('Error marking responses as read on post detail', markReadError);
-        }
-    }
+    await markResponsesAsReadIfAuthor(supabase, Boolean(isAuthor), postId);
 
     let initialResponses = [];
     let totalResponsesCount = 0;
     if (isAuthor) {
-        const { count } = await supabase.from('responses').select('*', { count: 'exact', head: true }).eq('post_id', postId);
-        totalResponsesCount = count || 0;
-
-        const { data: resps } = await supabase
-            .from('responses')
-            .select('*')
-            .eq('post_id', postId)
-            .order('created_at', { ascending: false })
-            .limit(10);
-        const safeResponses = resps || [];
-        const authorIds = Array.from(new Set(safeResponses.map((r) => r.author_id).filter(Boolean)));
-
-        if (authorIds.length > 0) {
-            const { data: profiles, error: profilesError } = await supabase
-                .from('profiles')
-                .select('id, display_name, avatar_url')
-                .in('id', authorIds);
-
-            const { data: stats, error: statsError } = await supabase
-                .from('user_gamification_stats')
-                .select('user_id, total_points, current_level, current_streak_days')
-                .in('user_id', authorIds);
-
-            if (statsError) {
-                console.error('Error fetching initial response author stats', statsError);
-            }
-
-            const { data: badges, error: badgesError } = await supabase
-                .from('user_badges')
-                .select('user_id, badge_key')
-                .in('user_id', authorIds)
-                .eq('status', 'active')
-                .order('earned_at', { ascending: false });
-
-            if (badgesError) {
-                console.error('Error fetching initial response author badges', badgesError);
-            }
-
-            if (profilesError) {
-                console.error('Error fetching initial response authors', profilesError);
-                initialResponses = safeResponses;
-            } else {
-                const profilesById = new Map((profiles || []).map((p) => [p.id, p]));
-                const statsById = new Map((stats || []).map((item) => [item.user_id, item]));
-                const badgesById = new Map<string, string[]>();
-
-                for (const badge of badges || []) {
-                    const current = badgesById.get(badge.user_id) || [];
-                    if (current.length < 3) current.push(badge.badge_key);
-                    badgesById.set(badge.user_id, current);
-                }
-
-                initialResponses = safeResponses.map((response) => {
-                    const profile = profilesById.get(response.author_id);
-                    const statsForAuthor = statsById.get(response.author_id);
-                    return {
-                        ...response,
-                        author_name: profile?.display_name || null,
-                        author_avatar_url: profile?.avatar_url || null,
-                        author_total_points: statsForAuthor?.total_points || 0,
-                        author_current_level: statsForAuthor?.current_level || 'Semilla',
-                        author_streak_days: statsForAuthor?.current_streak_days || 0,
-                        author_active_badges: badgesById.get(response.author_id) || [],
-                    };
-                });
-            }
-        } else {
-            initialResponses = safeResponses;
-        }
+        const loadedResponses = await loadInitialResponses(supabase, postId);
+        initialResponses = loadedResponses.initialResponses;
+        totalResponsesCount = loadedResponses.totalResponsesCount;
     }
 
-    let hasResponded = false;
-    if (user && !isAuthor) {
-        const { data: myResp } = await supabase.from('responses').select('id').eq('post_id', postId).eq('author_id', user.id).maybeSingle();
-        if (myResp) hasResponded = true;
-    }
+    const hasResponded = await hasUserResponded(supabase, user?.id, Boolean(isAuthor), postId);
 
     const canRespond = user && !isAuthor && !hasResponded && !postWithAuthor.is_closed;
-
-    const feedbackMessageByCode: Record<string, string> = {
-        ok: 'Valoracion guardada correctamente.',
-        'sin-permiso': 'Solo el autor de la necesidad puede valorar respuestas.',
-        'ya-valorada': 'Esta respuesta ya fue valorada previamente.',
-        'datos-invalidos': 'No se pudo procesar la valoracion por datos incompletos.',
-        'tipo-invalido': 'El tipo de valoracion recibido no es valido.',
-        'migracion-pendiente': 'Falta aplicar la migracion de gamificacion en la base de datos.',
-        'perfil-faltante': 'Falta sincronizar el perfil de uno de los usuarios implicados.',
-        'error-servidor': 'No se pudo guardar la valoracion por un error interno.',
-    };
-
-    const feedbackCode = resolvedSearchParams.feedback || null;
-    const feedbackDetail = resolvedSearchParams.detalle || null;
-    const feedbackMessage = feedbackCode ? feedbackMessageByCode[feedbackCode] : null;
-    const feedbackIsError = Boolean(feedbackCode && feedbackCode !== 'ok');
+    const { feedbackDetail, feedbackMessage, feedbackIsError } = getFeedbackState(resolvedSearchParams);
 
     return (
         <>

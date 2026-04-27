@@ -64,21 +64,16 @@ function levelProgressPercent(totalPoints: number, level: string) {
 export default async function PerfilPage({ params }: Readonly<{ params: Promise<{ id: string }> }>) {
     const { id } = await params;
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    const isOwnProfile = user?.id === id;
 
     const [
         { data: profile },
         { data: statsRaw },
-        { data: eventsRaw },
         { data: specialistsRaw },
     ] = await Promise.all([
         supabase.from('profiles').select('id, display_name, avatar_url').eq('id', id).single(),
-        supabase.from('user_gamification_stats').select('total_points, current_level, current_streak_days, useful_count, revealing_count').eq('user_id', id).single(),
-        supabase
-            .from('user_gamification_events')
-            .select('id, feedback_type, points, occurred_at, post_id')
-            .eq('user_id', id)
-            .order('occurred_at', { ascending: false })
-            .limit(8),
+        supabase.from('public_gamification_profiles').select('total_points, current_level, current_streak_days, useful_count, revealing_count').eq('user_id', id).maybeSingle(),
         supabase
             .from('category_specialists')
             .select('category_id, user_id')
@@ -94,8 +89,18 @@ export default async function PerfilPage({ params }: Readonly<{ params: Promise<
         : `Usuario ${id.slice(0, 6)}`;
 
     const stats = statsRaw as GamificationStatsRow | null;
-    const events = (eventsRaw || []) as GamificationEventRow[];
     const specialists = (specialistsRaw || []) as CategorySpecialistRow[];
+
+    let events: GamificationEventRow[] = [];
+    if (isOwnProfile) {
+        const { data: ownEventsRaw } = await supabase
+            .from('user_gamification_events')
+            .select('id, feedback_type, points, occurred_at, post_id')
+            .eq('user_id', id)
+            .order('occurred_at', { ascending: false })
+            .limit(8);
+        events = (ownEventsRaw || []) as GamificationEventRow[];
+    }
 
     const specialistCategoryIds = new Set(specialists.map((s) => s.category_id));
 
@@ -198,7 +203,7 @@ export default async function PerfilPage({ params }: Readonly<{ params: Promise<
             )}
 
             {/* Actividad reciente */}
-            {events.length > 0 && (
+            {isOwnProfile && events.length > 0 && (
                 <section>
                     <h2 className="font-editorial text-3xl text-[var(--tn-text)] mb-5">Actividad reciente</h2>
                     <div className="space-y-3">
@@ -236,7 +241,7 @@ export default async function PerfilPage({ params }: Readonly<{ params: Promise<
                 </section>
             )}
 
-            {!stats && events.length === 0 && (
+            {!stats && (!isOwnProfile || events.length === 0) && (
                 <p className="text-center text-[var(--tn-muted)] mt-16">Este usuario todavía no tiene actividad de consejero.</p>
             )}
 
