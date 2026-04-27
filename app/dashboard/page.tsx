@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Inbox, MessageSquare, ArrowRight, FileText, MessageCircleMore } from 'lucide-react'
+import { Inbox, MessageSquare, ArrowRight, FileText, MessageCircleMore, Trophy, Flame, Sparkles, Target } from 'lucide-react'
 import { markPostResponsesAsRead, markAllAsRead } from './actions'
 import { CATEGORIES } from '@/lib/constants'
 import { isUrgentActive } from '@/lib/urgency'
@@ -14,6 +14,29 @@ type DashboardResponse = {
     content: string;
     is_read: boolean;
 };
+
+type GamificationStatsRow = {
+    total_points: number;
+    current_level: string;
+    current_streak_days: number;
+    useful_count: number;
+    revealing_count: number;
+};
+
+type GamificationEventRow = {
+    id: number;
+    feedback_type: 'util' | 'reveladora';
+    points: number;
+    occurred_at: string;
+    post_id: string;
+};
+
+const LEVEL_MILESTONES = [
+    { label: 'Guia', min: 10 },
+    { label: 'Referente', min: 30 },
+    { label: 'Sabio', min: 60 },
+    { label: 'Faro', min: 120 },
+];
 
 function getTimeAgoEs(dateString?: string) {
     if (!dateString) return 'Hace un momento'
@@ -43,11 +66,23 @@ function excerpt(text: string | null | undefined, max = 160) {
     return `${text.slice(0, max).trim()}...`
 }
 
+function nextMilestone(totalPoints: number) {
+    const next = LEVEL_MILESTONES.find((milestone) => totalPoints < milestone.min);
+    if (!next) {
+        return { label: 'Maestria', remaining: 0, target: totalPoints };
+    }
+    return {
+        label: next.label,
+        remaining: Math.max(0, next.min - totalPoints),
+        target: next.min,
+    };
+}
+
 export default async function DashboardPage({
     searchParams,
-}: {
+}: Readonly<{
     searchParams: Promise<{ status?: string }>
-}) {
+}>) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -55,16 +90,65 @@ export default async function DashboardPage({
         redirect('/login')
     }
 
-    const { data: posts } = await supabase
-        .from('posts')
-        .select(`
-            *,
-            responses (*)
-        `)
-        .eq('author_id', user.id)
-        .order('created_at', { ascending: false })
+    const [
+        { data: posts },
+        { data: myGamificationStats, error: gamificationStatsError },
+        { data: recentGamificationEvents, error: recentEventsError },
+    ] = await Promise.all([
+        supabase
+            .from('posts')
+            .select(`
+                *,
+                responses (*)
+            `)
+            .eq('author_id', user.id)
+            .order('created_at', { ascending: false }),
+        supabase
+            .from('user_gamification_stats')
+            .select('total_points, current_level, current_streak_days, useful_count, revealing_count')
+            .eq('user_id', user.id)
+            .maybeSingle(),
+        supabase
+            .from('user_gamification_events')
+            .select('id, feedback_type, points, occurred_at, post_id')
+            .eq('user_id', user.id)
+            .order('occurred_at', { ascending: false })
+            .limit(5),
+    ])
+
+    if (gamificationStatsError) {
+        console.error('Error fetching dashboard gamification stats', gamificationStatsError)
+    }
+    if (recentEventsError) {
+        console.error('Error fetching dashboard recent gamification events', recentEventsError)
+    }
 
     const myPosts = posts || []
+    const stats = (myGamificationStats as GamificationStatsRow | null) || null
+    const totalPoints = stats?.total_points || 0
+    const currentLevel = stats?.current_level || 'Semilla'
+    const currentStreakDays = stats?.current_streak_days || 0
+    const usefulCount = stats?.useful_count || 0
+    const revealingCount = stats?.revealing_count || 0
+    const milestone = nextMilestone(totalPoints)
+
+    const recentEvents = (recentGamificationEvents as GamificationEventRow[] | null) || []
+    const recentEventPostIds = Array.from(new Set(recentEvents.map((event) => event.post_id)))
+
+    let recentEventPostById = new Map<string, { id: string; title: string; category_id: string | null }>()
+    if (recentEventPostIds.length > 0) {
+        const { data: recentEventPosts, error: recentEventPostsError } = await supabase
+            .from('posts')
+            .select('id, title, category_id')
+            .in('id', recentEventPostIds)
+
+        if (recentEventPostsError) {
+            console.error('Error fetching dashboard recent event posts', recentEventPostsError)
+        } else {
+            recentEventPostById = new Map((recentEventPosts || []).map((post) => [post.id, post]))
+        }
+    }
+
     const myPostIds = myPosts.map((post) => post.id)
     const params = await searchParams
     const selectedStatus = params.status === 'closed' ? 'closed' : 'active'
@@ -105,6 +189,72 @@ export default async function DashboardPage({
                 <p className="mt-5 text-base md:text-lg text-[var(--tn-muted)] leading-relaxed">
                     Revisa respuestas nuevas, prioriza tus necesidades activas y gestiona el estado de cada publicación.
                 </p>
+            </section>
+
+            <section className="mb-12 rounded-[24px] border border-[#ecd8cf] bg-[#fffaf6] p-6 md:p-8">
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <p className="text-[11px] uppercase tracking-[0.18em] text-[var(--tn-muted)] font-semibold">Tu impacto</p>
+                        <h2 className="font-editorial text-3xl md:text-4xl text-[var(--tn-primary)] mt-1">Progreso como consejero</h2>
+                    </div>
+                    <div className="text-sm text-[#6d5a52] font-medium">
+                        {milestone.remaining > 0
+                            ? `Te faltan ${milestone.remaining} puntos para ${milestone.label}`
+                            : 'Has alcanzado el nivel maximo actual'}
+                    </div>
+                </div>
+
+                <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                    <div className="rounded-2xl bg-white border border-[#f0e2d8] p-4">
+                        <p className="text-xs uppercase tracking-[0.12em] text-[#8a766c] font-semibold flex items-center gap-2"><Trophy size={14} /> Puntos</p>
+                        <p className="font-editorial text-4xl text-[#8f4e36] mt-2">{totalPoints}</p>
+                        <p className="text-xs text-[#8a766c] mt-2">Utiles: {usefulCount} · Reveladoras: {revealingCount}</p>
+                    </div>
+
+                    <div className="rounded-2xl bg-white border border-[#f0e2d8] p-4">
+                        <p className="text-xs uppercase tracking-[0.12em] text-[#8a766c] font-semibold flex items-center gap-2"><Sparkles size={14} /> Nivel</p>
+                        <p className="font-editorial text-4xl text-[#8f4e36] mt-2">{currentLevel}</p>
+                        <p className="text-xs text-[#8a766c] mt-2">Siguiente hito: {milestone.label}</p>
+                    </div>
+
+                    <div className="rounded-2xl bg-white border border-[#f0e2d8] p-4">
+                        <p className="text-xs uppercase tracking-[0.12em] text-[#8a766c] font-semibold flex items-center gap-2"><Flame size={14} /> Racha</p>
+                        <p className="font-editorial text-4xl text-[#8f4e36] mt-2">{currentStreakDays}d</p>
+                        <p className="text-xs text-[#8a766c] mt-2">Mantiene constancia de ayuda</p>
+                    </div>
+
+                    <div className="rounded-2xl bg-white border border-[#f0e2d8] p-4">
+                        <p className="text-xs uppercase tracking-[0.12em] text-[#8a766c] font-semibold flex items-center gap-2"><Target size={14} /> Hito</p>
+                        <p className="font-editorial text-4xl text-[#8f4e36] mt-2">{milestone.target}</p>
+                        <p className="text-xs text-[#8a766c] mt-2">Meta del nivel {milestone.label}</p>
+                    </div>
+                </div>
+
+                <div className="mt-7 rounded-2xl bg-white border border-[#f0e2d8] p-4 md:p-5">
+                    <h3 className="text-sm font-bold uppercase tracking-[0.12em] text-[#8a766c]">Logros recientes</h3>
+                    {recentEvents.length === 0 ? (
+                        <p className="mt-3 text-sm text-[#7d6a62]">Aun no hay valoraciones recibidas. Cuando te marquen como util o reveladora, apareceran aqui.</p>
+                    ) : (
+                        <ul className="mt-3 space-y-2">
+                            {recentEvents.map((event) => {
+                                const eventPost = recentEventPostById.get(event.post_id)
+                                const eventCategory = CATEGORIES.find((category) => category.id === eventPost?.category_id)
+                                return (
+                                    <li key={event.id} className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between text-sm">
+                                        <div className="text-[#4b3a33]">
+                                            <span className="font-semibold">+{event.points} pts</span>{' '}
+                                            por valoracion{' '}
+                                            <span className="font-semibold">{event.feedback_type === 'util' ? 'util' : 'reveladora'}</span>
+                                            {eventCategory ? ` en ${eventCategory.name}` : ''}
+                                            {eventPost?.title ? ` · ${excerpt(eventPost.title, 55)}` : ''}
+                                        </div>
+                                        <span className="text-xs text-[#8a766c]">{getTimeAgoEs(event.occurred_at)}</span>
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    )}
+                </div>
             </section>
 
             <section className="-mx-4 overflow-x-auto px-4 pb-2 hide-scrollbar md:mx-0 md:px-0 md:overflow-visible md:pb-0 mb-12">
@@ -175,8 +325,9 @@ export default async function DashboardPage({
                     {visiblePosts.map((post) => {
                         const unreadResponses = post.responses?.filter((r: DashboardResponse) => !r.is_read) || []
                         const cat = CATEGORIES.find(c => c.id === post.category_id)
+                        const pluralSuffix = unreadResponses.length === 1 ? '' : 's'
                         const responseCountLabel = unreadResponses.length > 0
-                            ? `${unreadResponses.length} respuesta${unreadResponses.length === 1 ? '' : 's'} nueva${unreadResponses.length === 1 ? '' : 's'}`
+                            ? `${unreadResponses.length} respuesta${pluralSuffix} nueva${pluralSuffix}`
                             : 'Sin respuestas nuevas'
                         
                         return (

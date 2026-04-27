@@ -20,6 +20,13 @@ type ProfileRow = {
     avatar_url?: string | null;
 };
 
+type WeeklyCounselorRankingRow = {
+    user_id: string;
+    weekly_points: number;
+    feedback_count: number;
+    reveladora_count: number;
+};
+
 function excerpt(text?: string, max = 150) {
     if (!text) return '';
     if (text.length <= max) return text;
@@ -48,8 +55,7 @@ export default async function ComunidadPage() {
         { count: totalShared },
         { count: totalAttended },
         { data: postsWithInteraction, error: postsError },
-        { data: postAuthors, error: postAuthorsError },
-        { data: responseAuthors, error: responseAuthorsError },
+        { data: weeklyCounselorRanking, error: weeklyRankingError },
     ] = await Promise.all([
         supabase.from('posts').select('*', { count: 'exact', head: true }),
         supabase.from('posts').select('*', { count: 'exact', head: true }).eq('is_closed', true),
@@ -58,18 +64,17 @@ export default async function ComunidadPage() {
             .select('id, title, content, category_id, is_closed, author_id, created_at, responses(count)')
             .order('created_at', { ascending: false })
             .limit(120),
-        supabase.from('posts').select('author_id').limit(1500),
-        supabase.from('responses').select('author_id').limit(3000),
+        supabase
+            .from('weekly_counselor_ranking')
+            .select('user_id, weekly_points, feedback_count, reveladora_count')
+            .limit(8),
     ]);
 
     if (postsError) {
         console.error('Error fetching community highlighted posts', postsError);
     }
-    if (postAuthorsError) {
-        console.error('Error fetching community post authors', postAuthorsError);
-    }
-    if (responseAuthorsError) {
-        console.error('Error fetching community response authors', responseAuthorsError);
+    if (weeklyRankingError) {
+        console.error('Error fetching weekly counselor ranking', weeklyRankingError);
     }
 
     const safePosts = await attachAuthorProfiles(supabase, (postsWithInteraction || []) as PostRow[]);
@@ -86,20 +91,19 @@ export default async function ComunidadPage() {
         .sort((a, b) => b.interactionCount - a.interactionCount)
         .slice(0, 6);
 
-    const activityByUser = new Map<string, number>();
-    for (const row of postAuthors || []) {
-        if (!row.author_id) continue;
-        activityByUser.set(row.author_id, (activityByUser.get(row.author_id) || 0) + 1);
-    }
-    for (const row of responseAuthors || []) {
-        if (!row.author_id) continue;
-        activityByUser.set(row.author_id, (activityByUser.get(row.author_id) || 0) + 1);
-    }
-
-    const topUsers = Array.from(activityByUser.entries())
-        .sort((a, b) => b[1] - a[1])
+    const topUsers = ((weeklyCounselorRanking || []) as WeeklyCounselorRankingRow[])
+        .sort((a, b) => {
+            if (b.weekly_points !== a.weekly_points) return b.weekly_points - a.weekly_points;
+            if (b.reveladora_count !== a.reveladora_count) return b.reveladora_count - a.reveladora_count;
+            return b.feedback_count - a.feedback_count;
+        })
         .slice(0, 6)
-        .map(([id, score]) => ({ id, score }));
+        .map((row) => ({
+            id: row.user_id,
+            weeklyPoints: row.weekly_points,
+            feedbackCount: row.feedback_count,
+            reveladoraCount: row.reveladora_count,
+        }));
 
     const profileIds = topUsers.map((u) => u.id);
     let profilesById = new Map<string, ProfileRow>();
@@ -207,7 +211,7 @@ export default async function ComunidadPage() {
 
             <section className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 <div className="lg:col-span-2">
-                    <h2 className="font-editorial text-4xl text-[var(--tn-text)] mb-6">Usuarios con mas actividad</h2>
+                    <h2 className="font-editorial text-4xl text-[var(--tn-text)] mb-6">Ranking semanal de consejeros</h2>
                     <div className="-mx-5 overflow-x-auto px-5 pb-2 hide-scrollbar lg:mx-0 lg:px-0 lg:overflow-visible lg:pb-0">
                     <div className="flex gap-4 lg:block lg:space-y-4">
                         {topUsers.length > 0 ? topUsers.map((user) => {
@@ -225,12 +229,14 @@ export default async function ComunidadPage() {
                                     )}
                                     <div className="min-w-0">
                                         <p className="font-semibold text-[var(--tn-text)] truncate">{name}</p>
-                                        <p className="text-xs text-[var(--tn-muted)]">{user.score} aportes totales</p>
+                                        <p className="text-xs text-[var(--tn-muted)]">
+                                            {user.weeklyPoints} pts · {user.feedbackCount} valoraciones · {user.reveladoraCount} reveladoras
+                                        </p>
                                     </div>
                                 </div>
                             );
                         }) : (
-                            <div className="bg-white/75 border border-[var(--tn-outline)]/25 rounded-xl p-5 text-sm text-[var(--tn-muted)]">Sin actividad suficiente todavia.</div>
+                            <div className="bg-white/75 border border-[var(--tn-outline)]/25 rounded-xl p-5 text-sm text-[var(--tn-muted)]">Sin valoraciones semanales suficientes todavia.</div>
                         )}
                     </div>
                     </div>
