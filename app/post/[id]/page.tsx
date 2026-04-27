@@ -38,6 +38,15 @@ type PublicBadgeRow = {
     badge_key: string;
 };
 
+type InitialResponseItem = ResponseRow & {
+    author_name?: string | null;
+    author_avatar_url?: string | null;
+    author_total_points?: number;
+    author_current_level?: string;
+    author_streak_days?: number;
+    author_active_badges?: string[];
+};
+
 const FEEDBACK_MESSAGE_BY_CODE: Record<string, string> = {
     ok: 'Valoracion guardada correctamente.',
     'sin-permiso': 'Solo el autor de la necesidad puede valorar respuestas.',
@@ -235,7 +244,7 @@ export default async function PostDetailPage({
 
     await markResponsesAsReadIfAuthor(supabase, Boolean(isAuthor), postId);
 
-    let initialResponses = [];
+    let initialResponses: InitialResponseItem[] = [];
     let totalResponsesCount = 0;
     if (isAuthor) {
         const loadedResponses = await loadInitialResponses(supabase, postId);
