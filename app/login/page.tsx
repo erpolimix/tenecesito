@@ -14,16 +14,16 @@ export default function LoginPage() {
     await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-            redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${globalThis.location.origin}/auth/callback`,
         },
     })
   }
 
   return (
     <div className="bg-[var(--tn-bg)] text-[var(--tn-text)] animate-in fade-in duration-300 min-h-[calc(100vh-5rem)]">
-      <main className="max-w-6xl mx-auto px-4 py-12 md:py-16 min-h-[calc(100vh-5rem)] flex items-center">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center w-full">
-          <section className="max-w-2xl">
+      <main className="max-w-6xl mx-auto px-4 py-8 md:py-16 min-h-[calc(100vh-5rem)] flex items-start lg:items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 md:gap-10 items-start lg:items-center w-full">
+          <section className="max-w-2xl order-2 lg:order-1">
             <p className="text-xs uppercase tracking-[0.2em] text-stone-400 font-bold mb-3">Acceso</p>
             <h2 className="font-editorial text-5xl md:text-7xl text-[#5d3d2e] leading-[1.02] tracking-tight">
               Entra en tu espacio para pedir ayuda con calma.
@@ -46,11 +46,11 @@ export default function LoginPage() {
             </div>
           </section>
 
-          <section className="bg-white rounded-[32px] border border-[#efe2d8] p-6 md:p-8 tn-card-shadow-strong">
-            <div className="space-y-8">
+          <section className="bg-white rounded-[32px] border border-[#efe2d8] p-5 md:p-8 tn-card-shadow-strong order-1 lg:order-2">
+            <div className="space-y-5 md:space-y-8">
               <div>
                 <p className="text-xs uppercase tracking-[0.18em] text-stone-400 font-bold">Continuar</p>
-                <h3 className="font-editorial text-4xl md:text-5xl text-[var(--tn-text)] mt-3 leading-[1.05]">Accede para publicar o responder necesidades</h3>
+                <h3 className="font-editorial text-3xl md:text-5xl text-[var(--tn-text)] mt-3 leading-[1.05]">Accede para publicar o responder necesidades</h3>
               </div>
 
               <button
@@ -66,7 +66,7 @@ export default function LoginPage() {
               <span className="font-semibold text-lg">Continuar con Google</span>
               </button>
 
-              <div className="rounded-2xl bg-[#fcf8f4] border border-[#efe2d8] p-5">
+              <div className="rounded-2xl bg-[#fcf8f4] border border-[#efe2d8] p-5 hidden md:block">
                 <p className="text-xs uppercase tracking-[0.16em] text-[var(--tn-muted)] font-bold">Qué ocurre al acceder</p>
                 <ul className="mt-4 space-y-3 text-sm text-[var(--tn-muted)] leading-[1.6]">
                   <li>Se crea o actualiza tu sesión con Google.</li>

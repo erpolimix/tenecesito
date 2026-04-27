@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
-export default function MobileCreateFab({ href, label }: { href: string; label: string }) {
+export default function MobileCreateFab({ href, label }: Readonly<{ href: string; label: string }>) {
     const pathname = usePathname();
 
-    if (pathname === '/create') {
+    if (pathname === '/create' || pathname === '/login' || pathname.startsWith('/auth')) {
         return null;
     }
 
