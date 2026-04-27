@@ -5,16 +5,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { enforceCriticalRateLimit } from '@/lib/security/rate-limit'
 import { verifyTurnstileToken } from '@/lib/security/turnstile'
-
-export type LoginActionState = {
-  error: string | null
-  shouldStartOAuth: boolean
-}
-
-export const INITIAL_LOGIN_ACTION_STATE: LoginActionState = {
-  error: null,
-  shouldStartOAuth: false,
-}
+import type { LoginActionState } from './state'
 
 export async function requestGoogleLogin(
   _previousState: LoginActionState,

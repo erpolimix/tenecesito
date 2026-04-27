@@ -5,7 +5,8 @@ import { createBrowserClient } from '@supabase/ssr'
 import { Lock, EyeOff } from 'lucide-react'
 import PendingSubmitButton from '@/components/PendingSubmitButton';
 import TurnstileWidget from '@/components/TurnstileWidget';
-import { INITIAL_LOGIN_ACTION_STATE, requestGoogleLogin } from './actions';
+import { requestGoogleLogin } from './actions';
+import { INITIAL_LOGIN_ACTION_STATE } from './state';
 
 function GoogleIcon() {
   return (
