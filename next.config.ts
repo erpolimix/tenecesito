@@ -4,6 +4,7 @@ const contentSecurityPolicy = [
   "default-src 'self'",
   "base-uri 'self'",
   "frame-ancestors 'none'",
+  "frame-src 'self' https://challenges.cloudflare.com",
   "object-src 'none'",
   "form-action 'self'",
   "img-src 'self' data: blob: https:",

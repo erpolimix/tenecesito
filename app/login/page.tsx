@@ -1,7 +1,11 @@
 'use client';
 
+import { useActionState, useEffect, useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr'
 import { Lock, EyeOff } from 'lucide-react'
+import PendingSubmitButton from '@/components/PendingSubmitButton';
+import TurnstileWidget from '@/components/TurnstileWidget';
+import { INITIAL_LOGIN_ACTION_STATE, requestGoogleLogin } from './actions';
 
 function GoogleIcon() {
   return (
@@ -15,20 +19,38 @@ function GoogleIcon() {
 }
 
 export default function LoginPage() {
-    
-  const handleGoogleLogin = async () => {
+  const [oauthError, setOauthError] = useState<string | null>(null)
+  const [loginState, loginAction] = useActionState(requestGoogleLogin, INITIAL_LOGIN_ACTION_STATE)
+
+  useEffect(() => {
+    if (!loginState.shouldStartOAuth) {
+      return
+    }
+
+    const handleGoogleLogin = async () => {
+      setOauthError(null)
+
     const supabase = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )
     
-    await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
         redirectTo: `${globalThis.location.origin}/auth/callback`,
         },
     })
-  }
+
+      if (error) {
+        setOauthError('No se pudo iniciar el acceso con Google. Inténtalo de nuevo.')
+      }
+    }
+
+    void handleGoogleLogin()
+  }, [loginState.shouldStartOAuth])
+
+  const activeError = loginState.error || oauthError
 
   return (
     <div className="bg-[var(--tn-bg)] text-[var(--tn-text)] animate-in fade-in duration-300 min-h-[calc(100vh-5rem)]">
@@ -64,13 +86,22 @@ export default function LoginPage() {
                 <h3 className="font-editorial text-3xl md:text-5xl text-[var(--tn-text)] mt-3 leading-[1.05]">Accede para publicar o responder necesidades</h3>
               </div>
 
-              <button
-                onClick={handleGoogleLogin}
-                className="w-full flex items-center justify-center gap-4 bg-[#fcf8f4] hover:bg-[#f7efe9] active:scale-[0.98] transition-all py-5 px-6 rounded-2xl group border border-[#efe2d8]"
-              >
-              <GoogleIcon />
-              <span className="font-semibold text-lg">Continuar con Google</span>
-              </button>
+              {activeError && (
+                <div className="rounded-2xl border border-[#f1c7bb] bg-[#fff2ed] px-4 py-3 text-sm text-[#8f2f18]" role="alert">
+                  {activeError}
+                </div>
+              )}
+
+              <form action={loginAction} className="space-y-4">
+                <TurnstileWidget action="login" className="min-h-[65px]" />
+                <PendingSubmitButton
+                  pendingText="Verificando..."
+                  className="w-full flex items-center justify-center gap-4 bg-[#fcf8f4] hover:bg-[#f7efe9] active:scale-[0.98] transition-all py-5 px-6 rounded-2xl group border border-[#efe2d8]"
+                >
+                  <GoogleIcon />
+                  <span className="font-semibold text-lg">Continuar con Google</span>
+                </PendingSubmitButton>
+              </form>
 
               <div className="rounded-2xl bg-[#fcf8f4] border border-[#efe2d8] p-5 hidden md:block">
                 <p className="text-xs uppercase tracking-[0.16em] text-[var(--tn-muted)] font-bold">Qué ocurre al acceder</p>
@@ -86,13 +117,16 @@ export default function LoginPage() {
       </main>
 
       <div className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-[#efe2d8] bg-[#fffaf6]/95 backdrop-blur px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.85rem)]">
-        <button
-          onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-3 bg-[#5d3d2e] hover:bg-[#4d3024] active:scale-[0.98] transition-all py-4 px-5 rounded-2xl text-white shadow-lg"
-        >
-          <GoogleIcon />
-          <span className="font-semibold text-base">Continuar con Google</span>
-        </button>
+        <form action={loginAction} className="space-y-3">
+          <TurnstileWidget action="login" className="min-h-[65px]" />
+          <PendingSubmitButton
+            pendingText="Verificando..."
+            className="w-full flex items-center justify-center gap-3 bg-[#5d3d2e] hover:bg-[#4d3024] active:scale-[0.98] transition-all py-4 px-5 rounded-2xl text-white shadow-lg"
+          >
+            <GoogleIcon />
+            <span className="font-semibold text-base">Continuar con Google</span>
+          </PendingSubmitButton>
+        </form>
       </div>
     </div>
   )

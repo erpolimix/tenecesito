@@ -7,6 +7,7 @@ import { CATEGORIES } from '@/lib/constants';
 import { NORMAL_PRIORITY, URGENT_PRIORITY } from '@/lib/urgency';
 import { createPost } from './actions';
 import PendingSubmitButton from '@/components/PendingSubmitButton';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 export default function CreatePage() {
     const router = useRouter();
@@ -42,7 +43,8 @@ export default function CreatePage() {
                 <span className="inline-flex px-4 py-1 rounded-full bg-[var(--tn-surface)] text-[var(--tn-muted)] text-xs font-semibold uppercase tracking-[0.18em] mb-5">Nuevo Registro</span>
                 <h2 className="font-editorial text-5xl md:text-6xl font-bold tracking-tight leading-[0.95] mb-4 break-words text-[var(--tn-primary)]">
                     Comparte lo que
-                    <span className="italic text-[var(--tn-primary-soft)]"> estás sintiendo.</span>
+                    {' '}
+                    <span className="italic text-[var(--tn-primary-soft)]">estás sintiendo.</span>
                 </h2>
                 <p className="text-[var(--tn-muted)] mb-8 max-w-xl">
                     Este espacio es para expresarte con claridad y recibir perspectivas de la comunidad.
@@ -56,7 +58,7 @@ export default function CreatePage() {
                     )}
 
                     <div>
-                        <label className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Categoría</label>
+                        <p className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Categoría</p>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {CATEGORIES.map(cat => (
                                 <button
@@ -75,11 +77,12 @@ export default function CreatePage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3 flex justify-between">
+                        <label htmlFor="create-title" className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3 flex justify-between">
                             <span>Título</span>
                             <span className="text-[var(--tn-outline)]">{title.length}/120</span>
                         </label>
                         <input
+                            id="create-title"
                             type="text"
                             name="title"
                             maxLength={120}
@@ -92,8 +95,9 @@ export default function CreatePage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Cuéntanos con detalle</label>
+                        <label htmlFor="create-content" className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Cuéntanos con detalle</label>
                         <textarea
+                            id="create-content"
                             name="content"
                             required
                             minLength={20}
@@ -105,11 +109,12 @@ export default function CreatePage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3 flex justify-between">
+                        <label htmlFor="create-tags" className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3 flex justify-between">
                             <span>Tags</span>
                             <span className="text-[var(--tn-outline)]">Hasta 8, separados por coma</span>
                         </label>
                         <input
+                            id="create-tags"
                             type="text"
                             name="tags"
                             placeholder="#duelo, #carrera, #transicion"
@@ -121,7 +126,7 @@ export default function CreatePage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Prioridad</label>
+                        <p className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Prioridad</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <button
                                 type="button"
@@ -147,6 +152,8 @@ export default function CreatePage() {
                             Tu publicación puede mantenerse anónima. Moderamos para mantener un espacio seguro.
                         </p>
                     </div>
+
+                    <TurnstileWidget action="create-post" className="min-h-[65px]" />
 
                     <div className="pt-2 flex justify-end">
                         <PendingSubmitButton

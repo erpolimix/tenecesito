@@ -9,6 +9,8 @@ import {
     hasRecentUrgentCreation,
 } from '@/lib/urgency'
 import { revalidatePath } from 'next/cache'
+import { enforceCriticalRateLimit } from '@/lib/security/rate-limit'
+import { verifyTurnstileToken } from '@/lib/security/turnstile'
 
 const MIN_TITLE_LENGTH = 8
 const MAX_TITLE_LENGTH = 120
@@ -108,6 +110,9 @@ export async function createPost(formData: FormData): Promise<CreatePostResult> 
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { ok: false, error: 'Debes iniciar sesión para publicar' };
+
+    await enforceCriticalRateLimit(supabase, 'create_post', user.id)
+    await verifyTurnstileToken(formData, 'create-post')
 
     const cooldownError = await getCreateCooldownError(supabase, user.id)
     if (cooldownError) return { ok: false, error: cooldownError }
