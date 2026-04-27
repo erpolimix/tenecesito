@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
-export default function NavbarUnreadCounter({ initialCount, userId }: { initialCount: number; userId: string }) {
+export default function NavbarUnreadCounter({ initialCount, userId }: Readonly<{ initialCount: number; userId: string }>) {
     const [unreadCount, setUnreadCount] = useState(initialCount);
     const pathname = usePathname();
     const supabase = useMemo(() => createClient(), []);
@@ -50,10 +50,10 @@ export default function NavbarUnreadCounter({ initialCount, userId }: { initialC
             void recountUnread();
         };
 
-        window.addEventListener('tn:unread-responses-changed', handleUnreadChanged);
+        globalThis.addEventListener('tn:unread-responses-changed', handleUnreadChanged);
 
         return () => {
-            window.removeEventListener('tn:unread-responses-changed', handleUnreadChanged);
+            globalThis.removeEventListener('tn:unread-responses-changed', handleUnreadChanged);
         };
     }, [recountUnread]);
 
@@ -92,7 +92,7 @@ export default function NavbarUnreadCounter({ initialCount, userId }: { initialC
 
     return (
         <Link
-            href="/dashboard"
+            href="/notificaciones"
             className="relative flex items-center justify-center w-10 h-10 rounded-full border border-[#eadfd6] bg-[#fffaf6] text-[var(--tn-text)] hover:border-[#d4b7a7] hover:bg-white transition-colors"
         >
             <Bell size={18} strokeWidth={2.5} />
