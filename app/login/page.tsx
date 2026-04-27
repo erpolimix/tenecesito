@@ -106,7 +106,7 @@ export default function LoginPage() {
 
               <div className="rounded-2xl bg-[#fcf8f4] border border-[#efe2d8] p-4 md:hidden">
                 <p className="text-sm text-[var(--tn-muted)] leading-[1.6]">
-                  En móvil, continúa con el acceso fijo de la parte inferior para mantener la pantalla limpia y accesible.
+                  En móvil, continúa con el acceso fijo de la parte inferior.
                 </p>
               </div>
 
