@@ -93,7 +93,7 @@ export default function LoginPage() {
                 </div>
               )}
 
-              <form action={loginAction} className="space-y-4">
+              <form action={loginAction} className="hidden space-y-4 md:block">
                 <TurnstileWidget action="login" className="min-h-[65px]" />
                 <PendingSubmitButton
                   pendingText="Verificando..."
@@ -103,6 +103,12 @@ export default function LoginPage() {
                   <span className="font-semibold text-lg">Continuar con Google</span>
                 </PendingSubmitButton>
               </form>
+
+              <div className="rounded-2xl bg-[#fcf8f4] border border-[#efe2d8] p-4 md:hidden">
+                <p className="text-sm text-[var(--tn-muted)] leading-[1.6]">
+                  En móvil, continúa con el acceso fijo de la parte inferior para mantener la pantalla limpia y accesible.
+                </p>
+              </div>
 
               <div className="rounded-2xl bg-[#fcf8f4] border border-[#efe2d8] p-5 hidden md:block">
                 <p className="text-xs uppercase tracking-[0.16em] text-[var(--tn-muted)] font-bold">Qué ocurre al acceder</p>
@@ -119,7 +125,7 @@ export default function LoginPage() {
 
       <div className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-[#efe2d8] bg-[#fffaf6]/95 backdrop-blur px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.85rem)]">
         <form action={loginAction} className="space-y-3">
-          <TurnstileWidget action="login" className="min-h-[65px]" />
+          <TurnstileWidget action="login" className="min-h-[65px]" helperText={null} />
           <PendingSubmitButton
             pendingText="Verificando..."
             className="w-full flex items-center justify-center gap-3 bg-[#5d3d2e] hover:bg-[#4d3024] active:scale-[0.98] transition-all py-4 px-5 rounded-2xl text-white shadow-lg"

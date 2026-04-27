@@ -27,6 +27,7 @@ type TurnstileWidgetProps = Readonly<{
     action: 'login' | 'create-post'
     className?: string
     inputName?: string
+    helperText?: string | null
 }>
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
@@ -43,6 +44,7 @@ export default function TurnstileWidget({
     action,
     className,
     inputName = TURNSTILE_TOKEN_FIELD,
+    helperText = 'Protección anti-bot activa para este envío.',
 }: TurnstileWidgetProps) {
     const widgetContainerId = useId().replaceAll(':', '')
     const widgetIdRef = useRef<string | null>(null)
@@ -91,7 +93,7 @@ export default function TurnstileWidget({
             />
             <input type="hidden" name={inputName} value={token} />
             <div id={widgetContainerId} className={className} />
-            <p className="text-xs text-[var(--tn-muted)]">Protección anti-bot activa para este envío.</p>
+            {helperText && <p className="text-xs text-[var(--tn-muted)]">{helperText}</p>}
         </div>
     )
 }
