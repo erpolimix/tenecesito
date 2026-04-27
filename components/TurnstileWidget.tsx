@@ -2,7 +2,7 @@
 
 import Script from 'next/script'
 import { useEffect, useId, useRef, useState } from 'react'
-import { TURNSTILE_TOKEN_FIELD } from '@/lib/security/turnstile'
+import { TURNSTILE_TOKEN_FIELD } from '@/lib/security/turnstile.shared'
 
 declare global {
     interface Window {

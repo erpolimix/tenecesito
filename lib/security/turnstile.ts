@@ -1,8 +1,6 @@
+import 'server-only'
 import { getClientIp } from '@/lib/security/request'
-
-export const TURNSTILE_TOKEN_FIELD = 'turnstileToken'
-
-export type BotProtectionAction = 'login' | 'create-post'
+import { TURNSTILE_TOKEN_FIELD, type BotProtectionAction } from '@/lib/security/turnstile.shared'
 
 type TurnstileVerificationResponse = {
     success: boolean
