@@ -54,12 +54,12 @@ export default function InfinitePostList({
     categoryId,
     urgency,
     showClosed,
-}: { 
+}: Readonly<{ 
     initialPosts: FeedPost[], 
     categoryId?: string,
     urgency?: string,
     showClosed?: boolean,
-}) {
+}>) {
     const [posts, setPosts] = useState(initialPosts);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(initialPosts.length >= 9);
@@ -187,6 +187,31 @@ export default function InfinitePostList({
                     : 'bg-[#e7ece8] text-[#4f6353]';
                 const statusLabel = post.is_closed ? 'Cerrado' : 'Abierto';
                 const timeAgo = getTimeAgoEs(post.created_at);
+                let actionElement: React.ReactNode;
+
+                if (post.is_closed) {
+                    actionElement = (
+                        <span className="px-6 py-2 rounded-full text-sm font-semibold bg-stone-100 text-stone-400 border border-stone-200">
+                            Cerrada
+                        </span>
+                    );
+                } else if (post.hasResponded) {
+                    actionElement = (
+                        <span className="px-6 py-2 rounded-full text-sm font-semibold bg-[#f5f3f1] text-[#7d6a62] border border-[#e7ddd5]">
+                            Ya respondiste
+                        </span>
+                    );
+                } else {
+                    actionElement = (
+                        <Link
+                            href={`/post/${post.id}`}
+                            className="bg-[#231d1a] text-white px-7 py-2.5 rounded-full text-sm font-semibold hover:bg-[var(--tn-primary)] transition-colors inline-flex items-center gap-2 shadow-sm"
+                        >
+                            <MessageSquare size={15} />
+                            Apoyar
+                        </Link>
+                    );
+                }
 
                 return (
                     <article
@@ -246,23 +271,7 @@ export default function InfinitePostList({
                                     <p className="text-xs font-bold text-[var(--tn-primary)]">{responseCount} perspectiva{responseCount === 1 ? '' : 's'}</p>
                                     <p className="text-[10px] text-stone-400">compartida{responseCount === 1 ? '' : 's'}</p>
                                 </div>
-                                {post.is_closed ? (
-                                    <span className="px-6 py-2 rounded-full text-sm font-semibold bg-stone-100 text-stone-400 border border-stone-200">
-                                        Cerrada
-                                    </span>
-                                ) : post.hasResponded ? (
-                                    <span className="px-6 py-2 rounded-full text-sm font-semibold bg-[#f5f3f1] text-[#7d6a62] border border-[#e7ddd5]">
-                                        Ya respondiste
-                                    </span>
-                                ) : (
-                                    <Link
-                                        href={`/post/${post.id}`}
-                                        className="bg-[#231d1a] text-white px-7 py-2.5 rounded-full text-sm font-semibold hover:bg-[var(--tn-primary)] transition-colors inline-flex items-center gap-2 shadow-sm"
-                                    >
-                                        <MessageSquare size={15} />
-                                        Apoyar
-                                    </Link>
-                                )}
+                                {actionElement}
                             </div>
                         </div>
                     </article>

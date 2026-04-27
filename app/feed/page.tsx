@@ -35,6 +35,70 @@ async function attachResponseState<T extends { id: string }>(
     }));
 }
 
+async function fetchInitialFeedPosts(
+    supabase: Awaited<ReturnType<typeof createClient>>,
+    userId: string | undefined,
+    categoryId: string | undefined,
+    showUrgentOnly: boolean,
+    showClosed: boolean,
+    nowIso: string,
+) {
+    if (showUrgentOnly) {
+        let urgentQuery = supabase
+            .from('posts')
+            .select('*, responses(count)')
+            .eq('priority_level', URGENT_PRIORITY)
+            .gt('urgent_until', nowIso)
+            .eq('is_closed', false)
+            .order('created_at', { ascending: false })
+            .limit(9);
+
+        if (userId) {
+            urgentQuery = urgentQuery.neq('author_id', userId);
+        }
+
+        if (categoryId) {
+            urgentQuery = urgentQuery.eq('category_id', categoryId);
+        }
+
+        const { data: posts } = await urgentQuery;
+        return posts || [];
+    }
+
+    let urgentQuery = supabase
+        .from('posts')
+        .select('*, responses(count)')
+        .eq('priority_level', URGENT_PRIORITY)
+        .gt('urgent_until', nowIso)
+        .eq('is_closed', false)
+        .order('created_at', { ascending: false })
+        .limit(9);
+
+    let regularQuery = supabase
+        .from('posts')
+        .select('*, responses(count)')
+        .or(`priority_level.neq.${URGENT_PRIORITY},urgent_until.is.null,urgent_until.lte.${nowIso},is_closed.eq.true`)
+        .order('created_at', { ascending: false })
+        .limit(9);
+
+    if (!showClosed) {
+        regularQuery = regularQuery.eq('is_closed', false);
+    }
+
+    if (userId) {
+        urgentQuery = urgentQuery.neq('author_id', userId);
+        regularQuery = regularQuery.neq('author_id', userId);
+    }
+
+    if (categoryId) {
+        urgentQuery = urgentQuery.eq('category_id', categoryId);
+        regularQuery = regularQuery.eq('category_id', categoryId);
+    }
+
+    const [{ data: urgentPosts }, { data: regularPosts }] = await Promise.all([urgentQuery, regularQuery]);
+    return [...(urgentPosts || []), ...(regularPosts || [])].slice(0, 9);
+}
+
 function buildFeedHref(categoryId?: string, showUrgentOnly?: boolean, showClosed?: boolean) {
     const params = new URLSearchParams();
 
@@ -54,7 +118,7 @@ function buildFeedHref(categoryId?: string, showUrgentOnly?: boolean, showClosed
     return queryString ? `/feed?${queryString}` : '/feed';
 }
 
-export default async function FeedPage({ searchParams }: { searchParams: Promise<{ category?: string; urgency?: string; closed?: string }> }) {
+export default async function FeedPage({ searchParams }: Readonly<{ searchParams: Promise<{ category?: string; urgency?: string; closed?: string }> }>) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     
@@ -64,62 +128,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
     const showClosed = params.closed === '1';
     const nowIso = new Date().toISOString();
 
-    let filteredPosts = [];
-
-    if (showUrgentOnly) {
-        let urgentQuery = supabase
-            .from('posts')
-            .select('*, responses(count)')
-            .eq('priority_level', URGENT_PRIORITY)
-            .gt('urgent_until', nowIso)
-            .eq('is_closed', false)
-            .order('created_at', { ascending: false })
-            .limit(9);
-
-        if (user?.id) {
-            urgentQuery = urgentQuery.neq('author_id', user.id);
-        }
-
-        if (categoryId) {
-            urgentQuery = urgentQuery.eq('category_id', categoryId);
-        }
-
-        const { data: posts } = await urgentQuery;
-        filteredPosts = posts || [];
-    } else {
-        let urgentQuery = supabase
-            .from('posts')
-            .select('*, responses(count)')
-            .eq('priority_level', URGENT_PRIORITY)
-            .gt('urgent_until', nowIso)
-            .eq('is_closed', false)
-            .order('created_at', { ascending: false })
-            .limit(9);
-
-        let regularQuery = supabase
-            .from('posts')
-            .select('*, responses(count)')
-            .or(`priority_level.neq.${URGENT_PRIORITY},urgent_until.is.null,urgent_until.lte.${nowIso},is_closed.eq.true`)
-            .order('created_at', { ascending: false })
-            .limit(9);
-
-        if (!showClosed) {
-            regularQuery = regularQuery.eq('is_closed', false);
-        }
-
-        if (user?.id) {
-            urgentQuery = urgentQuery.neq('author_id', user.id);
-            regularQuery = regularQuery.neq('author_id', user.id);
-        }
-
-        if (categoryId) {
-            urgentQuery = urgentQuery.eq('category_id', categoryId);
-            regularQuery = regularQuery.eq('category_id', categoryId);
-        }
-
-        const [{ data: urgentPosts }, { data: regularPosts }] = await Promise.all([urgentQuery, regularQuery]);
-        filteredPosts = [...(urgentPosts || []), ...(regularPosts || [])].slice(0, 9);
-    }
+    let filteredPosts = await fetchInitialFeedPosts(supabase, user?.id, categoryId, showUrgentOnly, showClosed, nowIso);
 
     const postsWithAuthors = await attachAuthorProfiles(supabase, filteredPosts || []);
     filteredPosts = await attachResponseState(supabase, postsWithAuthors, user?.id);
@@ -179,7 +188,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                                         <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                                     </svg>
                                 )}
-                            </span>
+                            </span>{' '}
                             Mostrar cerradas
                         </Link>
                         </div>
