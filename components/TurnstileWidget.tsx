@@ -31,6 +31,14 @@ type TurnstileWidgetProps = Readonly<{
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 
+function getTurnstileApi() {
+    if (globalThis.window === undefined) {
+        return undefined
+    }
+
+    return (globalThis as typeof globalThis & { window: Window }).window.turnstile
+}
+
 export default function TurnstileWidget({
     action,
     className,
@@ -42,7 +50,9 @@ export default function TurnstileWidget({
     const [token, setToken] = useState('')
 
     useEffect(() => {
-        if (!SITE_KEY || !scriptReady || !globalThis.turnstile) {
+        const turnstile = getTurnstileApi()
+
+        if (!SITE_KEY || !scriptReady || !turnstile) {
             return
         }
 
@@ -51,7 +61,7 @@ export default function TurnstileWidget({
             return
         }
 
-        widgetIdRef.current = globalThis.turnstile.render(container, {
+        widgetIdRef.current = turnstile.render(container, {
             sitekey: SITE_KEY,
             action,
             theme: 'light',
@@ -61,8 +71,8 @@ export default function TurnstileWidget({
         })
 
         return () => {
-            if (widgetIdRef.current && globalThis.turnstile) {
-                globalThis.turnstile.remove(widgetIdRef.current)
+            if (widgetIdRef.current) {
+                turnstile.remove(widgetIdRef.current)
                 widgetIdRef.current = null
             }
         }
