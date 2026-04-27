@@ -19,7 +19,15 @@ type RateLimitResultRow = {
     retry_after_seconds: number
 }
 
-const RATE_LIMIT_RULES = {
+export type CriticalActionName =
+    | 'login_google_start'
+    | 'create_post'
+    | 'respond_post'
+    | 'mark_response_feedback'
+    | 'update_post'
+    | 'close_post'
+
+const RATE_LIMIT_RULES: Record<CriticalActionName, RateLimitRule> = {
     login_google_start: {
         message: 'Demasiados intentos de acceso',
         ip: { maxHits: 8, windowSeconds: 300 },
@@ -49,9 +57,7 @@ const RATE_LIMIT_RULES = {
         ip: { maxHits: 10, windowSeconds: 300 },
         user: { maxHits: 6, windowSeconds: 300 },
     },
-} satisfies Record<string, RateLimitRule>
-
-export type CriticalActionName = keyof typeof RATE_LIMIT_RULES
+}
 
 function hashSubject(actionName: CriticalActionName, scope: 'ip' | 'user', rawValue: string) {
     const pepper = process.env.RATE_LIMIT_PEPPER || ''
