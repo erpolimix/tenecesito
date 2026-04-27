@@ -4,6 +4,20 @@ import { createClient } from '@/lib/supabase/server'
 import { attachAuthorProfiles } from '@/lib/post-authors'
 import { URGENT_PRIORITY } from '@/lib/urgency'
 
+const DEFAULT_FEED_PAGE_SIZE = 9
+const MAX_FEED_PAGE_SIZE = 24
+const MAX_FEED_OFFSET = 500
+
+function normalizeLimit(limit: number) {
+    if (!Number.isFinite(limit)) return DEFAULT_FEED_PAGE_SIZE
+    return Math.min(MAX_FEED_PAGE_SIZE, Math.max(1, Math.floor(limit)))
+}
+
+function normalizeOffset(offset: number) {
+    if (!Number.isFinite(offset)) return 0
+    return Math.min(MAX_FEED_OFFSET, Math.max(0, Math.floor(offset)))
+}
+
 function uniquePostsById<T extends { id: string }>(posts: T[]) {
     const seenIds = new Set<string>()
     const uniquePosts: T[] = []
@@ -21,6 +35,8 @@ export async function fetchFeedPosts(limit: number, offset: number, categoryId?:
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     const nowIso = new Date().toISOString()
+    const safeLimit = normalizeLimit(limit)
+    const safeOffset = normalizeOffset(offset)
 
     if (urgency === URGENT_PRIORITY) {
         let urgentQuery = supabase
@@ -30,7 +46,7 @@ export async function fetchFeedPosts(limit: number, offset: number, categoryId?:
             .gt('urgent_until', nowIso)
             .eq('is_closed', false)
             .order('created_at', { ascending: false })
-            .range(offset, offset + limit - 1)
+            .range(safeOffset, safeOffset + safeLimit - 1)
 
         if (user?.id) {
             urgentQuery = urgentQuery.neq('author_id', user.id)
@@ -74,14 +90,14 @@ export async function fetchFeedPosts(limit: number, offset: number, categoryId?:
     }
 
     const urgentCount = urgentPosts?.length || 0
-    const urgentSlice = (urgentPosts || []).slice(offset, offset + limit)
+    const urgentSlice = (urgentPosts || []).slice(safeOffset, safeOffset + safeLimit)
 
-    if (urgentSlice.length >= limit) {
+    if (urgentSlice.length >= safeLimit) {
         return urgentSlice
     }
 
-    const remaining = limit - urgentSlice.length
-    const regularOffset = Math.max(0, offset - urgentCount)
+    const remaining = safeLimit - urgentSlice.length
+    const regularOffset = Math.max(0, safeOffset - urgentCount)
     let regularQuery = supabase
         .from('posts')
         .select('*, responses(count)')

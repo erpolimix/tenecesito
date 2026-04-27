@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { CATEGORIES } from '@/lib/constants'
 import {
     NORMAL_PRIORITY,
     URGENT_PRIORITY,
@@ -8,6 +9,68 @@ import {
     hasRecentUrgentCreation,
 } from '@/lib/urgency'
 import { revalidatePath } from 'next/cache'
+
+const MIN_TITLE_LENGTH = 8
+const MAX_TITLE_LENGTH = 120
+const MIN_POST_CONTENT_LENGTH = 20
+const MAX_POST_CONTENT_LENGTH = 5000
+const CREATE_POST_COOLDOWN_MS = 30_000
+const VALID_CATEGORY_IDS = new Set(CATEGORIES.map((category) => category.id))
+
+function isWithinCooldown(dateString: string | null | undefined, cooldownMs: number) {
+    if (!dateString) return false
+    const createdAt = new Date(dateString).getTime()
+    if (Number.isNaN(createdAt)) return false
+    return Date.now() - createdAt < cooldownMs
+}
+
+function validateCreatePostInput(title: string | undefined, content: string | undefined, categoryId: string) {
+    if (!title || title.length < MIN_TITLE_LENGTH) {
+        return 'El título debe tener al menos 8 caracteres'
+    }
+
+    if (title.length > MAX_TITLE_LENGTH) {
+        return 'El título no puede superar los 120 caracteres'
+    }
+
+    if (!content || content.length < MIN_POST_CONTENT_LENGTH) {
+        return 'El contenido debe tener al menos 20 caracteres'
+    }
+
+    if (content.length > MAX_POST_CONTENT_LENGTH) {
+        return 'El contenido no puede superar los 5000 caracteres'
+    }
+
+    if (!categoryId) {
+        return 'Debes seleccionar una categoría'
+    }
+
+    if (!VALID_CATEGORY_IDS.has(categoryId)) {
+        return 'La categoría seleccionada no es válida'
+    }
+
+    return null
+}
+
+async function getCreateCooldownError(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
+    const { data: latestPost, error: latestPostError } = await supabase
+        .from('posts')
+        .select('created_at')
+        .eq('author_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+    if (latestPostError) {
+        return 'No se pudo validar el ritmo de publicación. Inténtalo de nuevo.'
+    }
+
+    if (isWithinCooldown(latestPost?.created_at, CREATE_POST_COOLDOWN_MS)) {
+        return 'Espera unos segundos antes de publicar otra necesidad'
+    }
+
+    return null
+}
 
 function parseTags(rawTags: string | undefined) {
     if (!rawTags) return [] as string[]
@@ -17,7 +80,7 @@ function parseTags(rawTags: string | undefined) {
         const normalized = piece
             .trim()
             .replace(/^#+/, '')
-            .replace(/\s+/g, '')
+            .replaceAll(/\s+/g, '')
             .toLowerCase()
 
         if (!normalized) continue
@@ -46,17 +109,11 @@ export async function createPost(formData: FormData): Promise<CreatePostResult> 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { ok: false, error: 'Debes iniciar sesión para publicar' };
 
-    if (!title || title.length < 8) {
-        return { ok: false, error: 'El título debe tener al menos 8 caracteres' }
-    }
+    const cooldownError = await getCreateCooldownError(supabase, user.id)
+    if (cooldownError) return { ok: false, error: cooldownError }
 
-    if (!content || content.length < 20) {
-        return { ok: false, error: 'El contenido debe tener al menos 20 caracteres' }
-    }
-
-    if (!categoryId) {
-        return { ok: false, error: 'Debes seleccionar una categoría' }
-    }
+    const inputError = validateCreatePostInput(title, content, categoryId)
+    if (inputError) return { ok: false, error: inputError }
 
     const priorityLevel = requestedPriority === URGENT_PRIORITY ? URGENT_PRIORITY : NORMAL_PRIORITY;
     let urgentUntil: string | null = null;

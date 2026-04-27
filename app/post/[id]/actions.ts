@@ -1,10 +1,40 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { CATEGORIES } from '@/lib/constants'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 type ResponseFeedbackType = 'util' | 'reveladora'
+
+const MIN_RESPONSE_CONTENT_LENGTH = 10
+const MAX_RESPONSE_CONTENT_LENGTH = 3000
+const MIN_TITLE_LENGTH = 8
+const MAX_TITLE_LENGTH = 120
+const MIN_POST_CONTENT_LENGTH = 20
+const MAX_POST_CONTENT_LENGTH = 5000
+const RESPONSE_COOLDOWN_MS = 15_000
+const DEFAULT_RESPONSE_PAGE_SIZE = 10
+const MAX_RESPONSE_PAGE_SIZE = 20
+const MAX_RESPONSE_OFFSET = 500
+const VALID_CATEGORY_IDS = new Set(CATEGORIES.map((category) => category.id))
+
+function normalizeLimit(limit: number) {
+    if (!Number.isFinite(limit)) return DEFAULT_RESPONSE_PAGE_SIZE
+    return Math.min(MAX_RESPONSE_PAGE_SIZE, Math.max(1, Math.floor(limit)))
+}
+
+function normalizeOffset(offset: number) {
+    if (!Number.isFinite(offset)) return 0
+    return Math.min(MAX_RESPONSE_OFFSET, Math.max(0, Math.floor(offset)))
+}
+
+function isWithinCooldown(dateString: string | null | undefined, cooldownMs: number) {
+    if (!dateString) return false
+    const createdAt = new Date(dateString).getTime()
+    if (Number.isNaN(createdAt)) return false
+    return Date.now() - createdAt < cooldownMs
+}
 
 function getFeedbackErrorStatus(error: { code?: string | null; message?: string | null }) {
     const message = error.message || ''
@@ -73,8 +103,29 @@ export async function respondToPost(formData: FormData) {
     const content = (formData.get('content') as string)?.trim();
     const postId = formData.get('postId') as string;
 
+    if (!postId) throw new Error('La publicación no existe');
+    if (!content || content.length < MIN_RESPONSE_CONTENT_LENGTH) {
+        throw new Error('La respuesta debe tener al menos 10 caracteres');
+    }
+    if (content.length > MAX_RESPONSE_CONTENT_LENGTH) {
+        throw new Error('La respuesta no puede superar los 3000 caracteres');
+    }
+
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Debes iniciar sesión');
+
+    const { data: latestResponse, error: latestResponseError } = await supabase
+        .from('responses')
+        .select('created_at')
+        .eq('author_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+    if (latestResponseError) throw new Error('No se pudo validar el ritmo de respuesta');
+    if (isWithinCooldown(latestResponse?.created_at, RESPONSE_COOLDOWN_MS)) {
+        throw new Error('Espera unos segundos antes de enviar otra respuesta');
+    }
 
     const { data: post, error: postError } = await supabase
         .from('posts')
@@ -110,6 +161,8 @@ export async function respondToPost(formData: FormData) {
 export async function closePost(formData: FormData) {
     const supabase = await createClient();
     const postId = formData.get('postId') as string;
+
+    if (!postId) throw new Error('Publicación inválida');
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Debes iniciar sesión');
@@ -200,9 +253,12 @@ export async function updatePost(formData: FormData) {
     const tags = parseTags(tagsRaw || undefined);
 
     if (!postId) throw new Error('Publicación inválida');
-    if (!title || title.length < 8) throw new Error('El título debe tener al menos 8 caracteres');
-    if (!content || content.length < 20) throw new Error('El contenido debe tener al menos 20 caracteres');
+    if (!title || title.length < MIN_TITLE_LENGTH) throw new Error('El título debe tener al menos 8 caracteres');
+    if (title.length > MAX_TITLE_LENGTH) throw new Error('El título no puede superar los 120 caracteres');
+    if (!content || content.length < MIN_POST_CONTENT_LENGTH) throw new Error('El contenido debe tener al menos 20 caracteres');
+    if (content.length > MAX_POST_CONTENT_LENGTH) throw new Error('El contenido no puede superar los 5000 caracteres');
     if (!categoryId) throw new Error('Debes seleccionar una categoría');
+    if (!VALID_CATEGORY_IDS.has(categoryId)) throw new Error('La categoría seleccionada no es válida');
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Debes iniciar sesión');
@@ -238,13 +294,15 @@ export async function updatePost(formData: FormData) {
 
 export async function fetchPostResponses(postId: string, limit: number, offset: number) {
     const supabase = await createClient();
+    const safeLimit = normalizeLimit(limit);
+    const safeOffset = normalizeOffset(offset);
     
     const { data: responses, error } = await supabase
         .from('responses')
         .select('*')
         .eq('post_id', postId)
         .order('created_at', { ascending: false })
-        .range(offset, offset + limit - 1);
+        .range(safeOffset, safeOffset + safeLimit - 1);
 
     if (error) {
         console.error("Error fetching responses", error);

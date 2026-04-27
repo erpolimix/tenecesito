@@ -1,11 +1,24 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+function getSafeNextPath(nextParam: string | null) {
+  if (!nextParam) return '/'
+  if (!nextParam.startsWith('/')) return '/'
+  if (nextParam.startsWith('//')) return '/'
+
+  try {
+    const parsed = new URL(nextParam, 'http://localhost')
+    if (parsed.origin !== 'http://localhost') return '/'
+    return `${parsed.pathname}${parsed.search}${parsed.hash}`
+  } catch {
+    return '/'
+  }
+}
+
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  // if "next" is in param, use it as the redirect URL
-  const next = searchParams.get('next') ?? '/'
+  const next = getSafeNextPath(searchParams.get('next'))
 
   if (code) {
     const supabase = await createClient()
