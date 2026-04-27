@@ -10,7 +10,6 @@ function getFeedbackErrorStatus(error: { code?: string | null; message?: string 
     const message = error.message || ''
     if (message.includes('forbidden')) return 'sin-permiso'
     if (message.includes('already_feedbacked')) return 'ya-valorada'
-    if (message.includes('post_feedback_already_chosen')) return 'post-ya-valorado'
     if (
         error.code === 'PGRST202' ||
         message.includes('Could not find the function') ||
@@ -26,7 +25,8 @@ function getFeedbackErrorDetail(error: { code?: string | null; message?: string 
     const message = (error.message || '').toLowerCase()
     const code = error.code || 'sin-codigo'
 
-    if (message.includes('post_feedback_already_chosen')) return `${code}:post_feedback_already_chosen`
+    if (code === '42702') return `${code}:ambiguous_column`
+
     if (message.includes('already_feedbacked')) return `${code}:already_feedbacked`
     if (message.includes('forbidden')) return `${code}:forbidden`
     if (message.includes('could not find the function') || message.includes('no function matches')) return `${code}:rpc_missing`

@@ -161,7 +161,6 @@ export default async function PostDetailPage({
         ok: 'Valoracion guardada correctamente.',
         'sin-permiso': 'Solo el autor de la necesidad puede valorar respuestas.',
         'ya-valorada': 'Esta respuesta ya fue valorada previamente.',
-        'post-ya-valorado': 'Ya elegiste una perspectiva para esta necesidad. No puedes valorar mas respuestas.',
         'datos-invalidos': 'No se pudo procesar la valoracion por datos incompletos.',
         'tipo-invalido': 'El tipo de valoracion recibido no es valido.',
         'migracion-pendiente': 'Falta aplicar la migracion de gamificacion en la base de datos.',

@@ -110,7 +110,6 @@ export default function LoadMoreResponses({
     const [loading, setLoading] = useState(false);
     const [offset, setOffset] = useState(10);
     const [hasMore, setHasMore] = useState(totalCount > initialResponses.length);
-    const feedbackAlreadyChosen = responses.some((response) => Boolean(response.feedback_type));
 
     const handleLoadMore = async () => {
         setLoading(true);
@@ -145,12 +144,6 @@ export default function LoadMoreResponses({
                         feedbackControls = (
                             <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.12em] ${response.feedback_type === 'util' ? 'bg-[#def4e2] text-[#2f5e3b]' : 'bg-[#ffe8b8] text-[#7e5e18]'}`}>
                                 {response.feedback_type === 'util' ? 'Valorada: util' : 'Valorada: reveladora'}
-                            </span>
-                        );
-                    } else if (feedbackAlreadyChosen) {
-                        feedbackControls = (
-                            <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.12em] bg-[#ece5df] text-[#6d5a52]">
-                                Ya elegiste una perspectiva
                             </span>
                         );
                     } else {
