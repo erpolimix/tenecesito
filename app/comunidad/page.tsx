@@ -27,6 +27,13 @@ type WeeklyCounselorRankingRow = {
     reveladora_count: number;
 };
 
+type CategorySpecialistRow = {
+    category_id: string;
+    user_id: string;
+    reveladora_count: number;
+    total_feedback_count: number;
+};
+
 function excerpt(text?: string, max = 150) {
     if (!text) return '';
     if (text.length <= max) return text;
@@ -56,6 +63,7 @@ export default async function ComunidadPage() {
         { count: totalAttended },
         { data: postsWithInteraction, error: postsError },
         { data: weeklyCounselorRanking, error: weeklyRankingError },
+        { data: categorySpecialistsRaw, error: specialistsError },
     ] = await Promise.all([
         supabase.from('posts').select('*', { count: 'exact', head: true }),
         supabase.from('posts').select('*', { count: 'exact', head: true }).eq('is_closed', true),
@@ -68,6 +76,9 @@ export default async function ComunidadPage() {
             .from('weekly_counselor_ranking')
             .select('user_id, weekly_points, feedback_count, reveladora_count')
             .limit(8),
+        supabase
+            .from('category_specialists')
+            .select('category_id, user_id, reveladora_count, total_feedback_count'),
     ]);
 
     if (postsError) {
@@ -75,6 +86,9 @@ export default async function ComunidadPage() {
     }
     if (weeklyRankingError) {
         console.error('Error fetching weekly counselor ranking', weeklyRankingError);
+    }
+    if (specialistsError) {
+        console.error('Error fetching category specialists', specialistsError);
     }
 
     const safePosts = await attachAuthorProfiles(supabase, (postsWithInteraction || []) as PostRow[]);
@@ -105,7 +119,12 @@ export default async function ComunidadPage() {
             reveladoraCount: row.reveladora_count,
         }));
 
-    const profileIds = topUsers.map((u) => u.id);
+    const categorySpecialists = (categorySpecialistsRaw || []) as CategorySpecialistRow[];
+
+    const profileIds = [
+        ...topUsers.map((u) => u.id),
+        ...categorySpecialists.map((s) => s.user_id),
+    ].filter((id, idx, arr) => arr.indexOf(id) === idx);
     let profilesById = new Map<string, ProfileRow>();
 
     if (profileIds.length > 0) {
@@ -219,7 +238,7 @@ export default async function ComunidadPage() {
                             const name = safeAuthorName(profile, user.id);
                             const avatarUrl = profile?.avatar_url;
                             return (
-                                <div key={user.id} className="min-w-[74vw] bg-[#f5f3f1] border border-[var(--tn-outline)]/20 rounded-xl p-4 flex items-center gap-3 lg:min-w-0">
+                                <Link key={user.id} href={`/perfil/${user.id}`} className="min-w-[74vw] bg-[#f5f3f1] border border-[var(--tn-outline)]/20 rounded-xl p-4 flex items-center gap-3 lg:min-w-0 hover:bg-white transition-colors">
                                     {avatarUrl ? (
                                         <img src={avatarUrl} alt={`Avatar de ${name}`} className="w-11 h-11 rounded-full object-cover" />
                                     ) : (
@@ -233,7 +252,7 @@ export default async function ComunidadPage() {
                                             {user.weeklyPoints} pts · {user.feedbackCount} valoraciones · {user.reveladoraCount} reveladoras
                                         </p>
                                     </div>
-                                </div>
+                                </Link>
                             );
                         }) : (
                             <div className="bg-white/75 border border-[var(--tn-outline)]/25 rounded-xl p-5 text-sm text-[var(--tn-muted)]">Sin valoraciones semanales suficientes todavia.</div>
@@ -287,6 +306,49 @@ export default async function ComunidadPage() {
                     </div>
                 </div>
             </section>
+
+            {categorySpecialists.length > 0 && (
+                <section>
+                    <h2 className="font-editorial text-4xl text-[var(--tn-text)] mb-2">Especialistas por area</h2>
+                    <p className="text-[var(--tn-muted)] mb-8">Quienes mas perspectivas reveladoras han aportado en cada categoria.</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {CATEGORIES.map((cat) => {
+                            const specialist = categorySpecialists.find((s) => s.category_id === cat.id);
+                            if (!specialist) {
+                                return (
+                                    <div key={cat.id} className="rounded-xl border border-[var(--tn-outline)]/20 p-5 bg-[#f5f3f1] opacity-50">
+                                        <p className={`text-xs uppercase tracking-[0.15em] font-semibold mb-3 ${cat.softText}`}>{cat.name}</p>
+                                        <p className="text-sm text-[var(--tn-muted)] italic">Sin especialista todavia</p>
+                                    </div>
+                                );
+                            }
+                            const profile = profilesById.get(specialist.user_id);
+                            const name = safeAuthorName(profile, specialist.user_id);
+                            const avatarUrl = profile?.avatar_url;
+                            return (
+                                <Link key={cat.id} href={`/perfil/${specialist.user_id}`} className={`rounded-xl border p-5 ${cat.softBg} border-[var(--tn-outline)]/20 hover:-translate-y-1 transition-transform`}>
+                                    <p className={`text-xs uppercase tracking-[0.15em] font-semibold mb-4 ${cat.softText}`}>{cat.name}</p>
+                                    <div className="flex items-center gap-3">
+                                        {avatarUrl ? (
+                                            <img src={avatarUrl} alt={`Avatar de ${name}`} className="w-10 h-10 rounded-full object-cover shrink-0" />
+                                        ) : (
+                                            <div className={`w-10 h-10 rounded-full ${cat.bg} flex items-center justify-center font-bold shrink-0`}>
+                                                {name.charAt(0).toUpperCase()}
+                                            </div>
+                                        )}
+                                        <div className="min-w-0">
+                                            <p className="font-semibold text-[var(--tn-text)] truncate text-sm">{name}</p>
+                                            <p className={`text-xs mt-0.5 ${cat.softText}`}>
+                                                {specialist.reveladora_count} reveladoras · {specialist.total_feedback_count} valoraciones
+                                            </p>
+                                        </div>
+                                    </div>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </section>
+            )}
         </main>
     );
 }

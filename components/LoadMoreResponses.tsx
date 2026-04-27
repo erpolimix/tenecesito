@@ -184,7 +184,13 @@ export default function LoadMoreResponses({
                                     </div>
                                 )}
                                 <div>
-                                    <h4 className="font-bold text-[var(--tn-text)]">{response.author_name || 'Voz de la comunidad'}</h4>
+                                    {response.author_id ? (
+                                        <a href={`/perfil/${response.author_id}`} className="font-bold text-[var(--tn-text)] hover:text-[var(--tn-primary)] transition-colors">
+                                            {response.author_name || 'Voz de la comunidad'}
+                                        </a>
+                                    ) : (
+                                        <h4 className="font-bold text-[var(--tn-text)]">{response.author_name || 'Voz de la comunidad'}</h4>
+                                    )}
                                     <p className="text-xs text-[var(--tn-muted)]">
                                         {response.author_current_level || 'Semilla'} · {response.author_total_points || 0} pts
                                         {response.author_streak_days ? ` · racha ${response.author_streak_days}d` : ''}
