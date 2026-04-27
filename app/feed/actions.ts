@@ -31,6 +31,34 @@ function uniquePostsById<T extends { id: string }>(posts: T[]) {
     return uniquePosts
 }
 
+async function attachResponseState<T extends { id: string }>(
+    supabase: Awaited<ReturnType<typeof createClient>>,
+    posts: T[],
+    userId?: string,
+) {
+    if (!userId || posts.length === 0) {
+        return posts.map((post) => ({ ...post, hasResponded: false }))
+    }
+
+    const postIds = posts.map((post) => post.id)
+    const { data: responses, error } = await supabase
+        .from('responses')
+        .select('post_id')
+        .eq('author_id', userId)
+        .in('post_id', postIds)
+
+    if (error) {
+        console.error('Error fetching feed response state', error)
+        return posts.map((post) => ({ ...post, hasResponded: false }))
+    }
+
+    const respondedPostIds = new Set((responses || []).map((response) => response.post_id))
+    return posts.map((post) => ({
+        ...post,
+        hasResponded: respondedPostIds.has(post.id),
+    }))
+}
+
 export async function fetchFeedPosts(limit: number, offset: number, categoryId?: string, urgency?: string, showClosed?: boolean) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -63,7 +91,8 @@ export async function fetchFeedPosts(limit: number, offset: number, categoryId?:
             return []
         }
 
-        return await attachAuthorProfiles(supabase, posts || [])
+        const postsWithAuthors = await attachAuthorProfiles(supabase, posts || [])
+        return await attachResponseState(supabase, postsWithAuthors, user?.id)
     }
 
     let urgentQuery = supabase
@@ -124,5 +153,6 @@ export async function fetchFeedPosts(limit: number, offset: number, categoryId?:
         return []
     }
 
-    return await attachAuthorProfiles(supabase, uniquePostsById([...(urgentSlice || []), ...((regularPosts || []))]))
+    const postsWithAuthors = await attachAuthorProfiles(supabase, uniquePostsById([...(urgentSlice || []), ...((regularPosts || []))]))
+    return await attachResponseState(supabase, postsWithAuthors, user?.id)
 }

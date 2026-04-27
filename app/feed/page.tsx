@@ -7,6 +7,34 @@ import { URGENT_PRIORITY } from '@/lib/urgency';
 import { createClient } from '@/lib/supabase/server';
 import InfinitePostList from '@/components/InfinitePostList';
 
+async function attachResponseState<T extends { id: string }>(
+    supabase: Awaited<ReturnType<typeof createClient>>,
+    posts: T[],
+    userId?: string,
+) {
+    if (!userId || posts.length === 0) {
+        return posts.map((post) => ({ ...post, hasResponded: false }));
+    }
+
+    const postIds = posts.map((post) => post.id);
+    const { data: responses, error } = await supabase
+        .from('responses')
+        .select('post_id')
+        .eq('author_id', userId)
+        .in('post_id', postIds);
+
+    if (error) {
+        console.error('Error fetching initial feed response state', error);
+        return posts.map((post) => ({ ...post, hasResponded: false }));
+    }
+
+    const respondedPostIds = new Set((responses || []).map((response) => response.post_id));
+    return posts.map((post) => ({
+        ...post,
+        hasResponded: respondedPostIds.has(post.id),
+    }));
+}
+
 function buildFeedHref(categoryId?: string, showUrgentOnly?: boolean, showClosed?: boolean) {
     const params = new URLSearchParams();
 
@@ -93,7 +121,8 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
         filteredPosts = [...(urgentPosts || []), ...(regularPosts || [])].slice(0, 9);
     }
 
-    filteredPosts = await attachAuthorProfiles(supabase, filteredPosts || []);
+    const postsWithAuthors = await attachAuthorProfiles(supabase, filteredPosts || []);
+    filteredPosts = await attachResponseState(supabase, postsWithAuthors, user?.id);
 
     return (
         <div className="animate-in fade-in duration-300 max-w-6xl mx-auto px-4 pb-20 pt-8 md:px-6 md:pt-10">

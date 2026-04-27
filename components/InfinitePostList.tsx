@@ -20,6 +20,7 @@ type FeedPost = {
     is_closed?: boolean;
     priority_level?: string | null;
     urgent_until?: string | null;
+    hasResponded?: boolean;
     responses?: Array<{ count: number }>;
 }
 
@@ -248,6 +249,10 @@ export default function InfinitePostList({
                                 {post.is_closed ? (
                                     <span className="px-6 py-2 rounded-full text-sm font-semibold bg-stone-100 text-stone-400 border border-stone-200">
                                         Cerrada
+                                    </span>
+                                ) : post.hasResponded ? (
+                                    <span className="px-6 py-2 rounded-full text-sm font-semibold bg-[#f5f3f1] text-[#7d6a62] border border-[#e7ddd5]">
+                                        Ya respondiste
                                     </span>
                                 ) : (
                                     <Link
