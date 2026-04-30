@@ -8,7 +8,7 @@ const contentSecurityPolicy = [
   "frame-ancestors 'none'",
   "frame-src 'self' https://challenges.cloudflare.com",
   "object-src 'none'",
-  "form-action 'self'",
+  "form-action 'self' https://*.vercel.app https://accounts.google.com https://*.google.com",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://fonts.gstatic.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
@@ -45,7 +45,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()'
+            value: 'camera=(), microphone=(), geolocation=(), xr-spatial-tracking=()'
           },
         ],
       },
