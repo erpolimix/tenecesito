@@ -10,6 +10,12 @@ import type { LoginActionState } from './state'
 
 const LOGIN_START_ERROR = 'No se pudo iniciar el acceso con Google. Inténtalo de nuevo.'
 
+function isNextRedirectError(error: unknown) {
+  if (!error || typeof error !== 'object') return false
+  const digest = 'digest' in error ? error.digest : undefined
+  return typeof digest === 'string' && digest.startsWith('NEXT_REDIRECT')
+}
+
 function getSafeNextValue(rawValue: FormDataEntryValue | null) {
   if (typeof rawValue !== 'string') return null
   if (!rawValue.startsWith('/')) return null
@@ -59,6 +65,10 @@ export async function requestGoogleLogin(
 
     redirect(data.url)
   } catch (error) {
+    if (isNextRedirectError(error)) {
+      throw error
+    }
+
     return {
       error: error instanceof Error && error.message ? error.message : LOGIN_START_ERROR,
       shouldStartOAuth: false,
