@@ -1,9 +1,12 @@
 'use client';
 
+import { useActionState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Lock, EyeOff } from 'lucide-react'
 import PendingSubmitButton from '@/components/PendingSubmitButton';
 import TurnstileWidget from '@/components/TurnstileWidget';
+import { requestGoogleLogin } from './actions';
+import { INITIAL_LOGIN_ACTION_STATE } from './state';
 
 function GoogleIcon() {
   return (
@@ -18,8 +21,9 @@ function GoogleIcon() {
 
 export default function LoginPage() {
   const searchParams = useSearchParams()
+  const [loginState, loginAction] = useActionState(requestGoogleLogin, INITIAL_LOGIN_ACTION_STATE)
   const next = searchParams.get('next') || ''
-  const activeError = searchParams.get('error')
+  const activeError = loginState.error || searchParams.get('error')
 
   return (
     <div className="bg-[var(--tn-bg)] text-[var(--tn-text)] animate-in fade-in duration-300 min-h-[calc(100vh-5rem)]">
@@ -61,7 +65,7 @@ export default function LoginPage() {
                 </div>
               )}
 
-              <form action="/auth/google" method="post" className="hidden space-y-4 md:block">
+              <form action={loginAction} className="hidden space-y-4 md:block">
                 <input type="hidden" name="next" value={next} />
                 <TurnstileWidget action="login" className="min-h-[65px]" />
                 <PendingSubmitButton
@@ -93,7 +97,7 @@ export default function LoginPage() {
       </main>
 
       <div className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-[#efe2d8] bg-[#fffaf6]/95 backdrop-blur px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.85rem)]">
-        <form action="/auth/google" method="post" className="space-y-3">
+        <form action={loginAction} className="space-y-3">
           <input type="hidden" name="next" value={next} />
           <TurnstileWidget action="login" className="min-h-[65px]" helperText={null} />
           <PendingSubmitButton
