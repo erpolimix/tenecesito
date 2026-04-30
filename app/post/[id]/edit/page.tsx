@@ -5,8 +5,9 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { updatePost } from '../actions'
 import PendingSubmitButton from '@/components/PendingSubmitButton'
+import TurnstileWidget from '@/components/TurnstileWidget'
 
-export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EditPostPage({ params }: Readonly<{ params: Promise<{ id: string }> }>) {
     const supabase = await createClient()
     const { id: postId } = await params
 
@@ -50,8 +51,9 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
                         <input type="hidden" name="postId" value={postId} />
 
                         <div>
-                            <label className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Categoría</label>
+                            <label htmlFor="edit-post-category" className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Categoría</label>
                             <select
+                                id="edit-post-category"
                                 name="categoryId"
                                 defaultValue={post.category_id}
                                 className="w-full p-4 bg-white border border-[var(--tn-outline)]/35 rounded-2xl text-base focus:outline-none focus:border-[var(--tn-primary)] transition-colors"
@@ -63,8 +65,9 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Título</label>
+                            <label htmlFor="edit-post-title" className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Título</label>
                             <input
+                                id="edit-post-title"
                                 type="text"
                                 name="title"
                                 defaultValue={post.title}
@@ -76,8 +79,9 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Contenido</label>
+                            <label htmlFor="edit-post-content" className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Contenido</label>
                             <textarea
+                                id="edit-post-content"
                                 name="content"
                                 defaultValue={post.content}
                                 required
@@ -87,8 +91,9 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Tags</label>
+                            <label htmlFor="edit-post-tags" className="block text-sm font-semibold uppercase tracking-[0.16em] text-[var(--tn-muted)] mb-3">Tags</label>
                             <input
+                                id="edit-post-tags"
                                 type="text"
                                 name="tags"
                                 defaultValue={tagsValue}
@@ -97,6 +102,12 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
                             />
                             <p className="mt-2 text-xs text-[var(--tn-muted)]">Hasta 8 tags separados por coma. Puedes incluir o no el símbolo #.</p>
                         </div>
+
+                        <TurnstileWidget
+                            action="update-post"
+                            className="min-h-[65px]"
+                            helperText="Verificamos esta edición para reducir cambios automatizados."
+                        />
 
                         <div className="pt-2 flex justify-end">
                             <PendingSubmitButton

@@ -8,6 +8,7 @@ import LoadMoreResponses from '@/components/LoadMoreResponses';
 import PendingSubmitButton from '@/components/PendingSubmitButton';
 import UrgencyBadge from '@/components/UrgencyBadge';
 import PostRealtimeBridge from '@/components/PostRealtimeBridge';
+import TurnstileWidget from '@/components/TurnstileWidget';
 import UnreadResponsesNotifier from '@/components/UnreadResponsesNotifier';
 import { attachAuthorProfiles } from '@/lib/post-authors';
 
@@ -363,6 +364,14 @@ export default async function PostDetailPage({
                             className="w-full p-6 bg-[#fcf8f4] border border-[#efe2d8] rounded-2xl min-h-[160px] resize-y text-lg focus:outline-none focus:border-[var(--tn-primary)] transition-colors mb-6"
                         />
 
+                        <div className="mb-6">
+                            <TurnstileWidget
+                                action="respond-post"
+                                className="min-h-[65px]"
+                                helperText="Verificamos este envio para reducir respuestas automatizadas."
+                            />
+                        </div>
+
                         <div className="flex justify-end">
                             <PendingSubmitButton
                                 pendingText="Enviando..."
@@ -399,9 +408,14 @@ export default async function PostDetailPage({
 
         {isAuthor && !postWithAuthor.is_closed && (
             <div className="fixed bottom-0 left-0 w-full p-6 flex justify-center pointer-events-none z-50">
-                <div className="bg-[color:rgba(255,255,255,0.8)] backdrop-blur-2xl px-6 py-4 rounded-full shadow-[0_-12px_40px_rgba(27,28,27,0.08)] flex items-center gap-4 pointer-events-auto border border-[var(--tn-outline)]/10">
-                    <form action={closePost}>
+                <div className="bg-[color:rgba(255,255,255,0.88)] backdrop-blur-2xl px-4 py-4 rounded-[2rem] shadow-[0_-12px_40px_rgba(27,28,27,0.08)] flex flex-col gap-4 pointer-events-auto border border-[var(--tn-outline)]/10 md:flex-row md:items-center">
+                    <form action={closePost} className="space-y-3">
                         <input type="hidden" name="postId" value={postId} />
+                        <TurnstileWidget
+                            action="close-post"
+                            className="min-h-[65px]"
+                            helperText={null}
+                        />
                         <PendingSubmitButton
                             pendingText="Cerrando..."
                             className="flex items-center gap-2 bg-[#f4d6d3] text-[#8e332c] hover:bg-[#eaa39b] hover:text-white transition-all px-8 py-3 rounded-full active:scale-95 duration-200 font-bold text-sm tracking-tight"
@@ -411,11 +425,11 @@ export default async function PostDetailPage({
                         </PendingSubmitButton>
                     </form>
 
-                    <div className="h-6 w-px bg-[var(--tn-outline)]/30" />
+                    <div className="hidden h-6 w-px bg-[var(--tn-outline)]/30 md:block" />
 
                     <Link
                         href={`/post/${postId}/edit`}
-                        className="p-3 bg-[#e3e2e0] text-[#54433e] rounded-full hover:bg-[var(--tn-primary)] hover:text-white transition-all"
+                        className="self-center p-3 bg-[#e3e2e0] text-[#54433e] rounded-full hover:bg-[var(--tn-primary)] hover:text-white transition-all"
                         aria-label="Editar publicación"
                     >
                         <Edit3 size={18} />

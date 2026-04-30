@@ -5,6 +5,7 @@ import { CATEGORIES } from '@/lib/constants'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { enforceCriticalRateLimit } from '@/lib/security/rate-limit'
+import { verifyTurnstileToken } from '@/lib/security/turnstile'
 
 type ResponseFeedbackType = 'util' | 'reveladora'
 
@@ -115,6 +116,7 @@ export async function respondToPost(formData: FormData) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Debes iniciar sesión');
 
+    await verifyTurnstileToken(formData, 'respond-post')
     await enforceCriticalRateLimit(supabase, 'respond_post', user.id)
 
     const { data: latestResponse, error: latestResponseError } = await supabase
@@ -170,6 +172,7 @@ export async function closePost(formData: FormData) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Debes iniciar sesión');
 
+    await verifyTurnstileToken(formData, 'close-post')
     await enforceCriticalRateLimit(supabase, 'close_post', user.id)
 
     const { error } = await supabase.from('posts').update({ is_closed: true }).eq('id', postId).eq('author_id', user.id);
@@ -270,6 +273,7 @@ export async function updatePost(formData: FormData) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Debes iniciar sesión');
 
+    await verifyTurnstileToken(formData, 'update-post')
     await enforceCriticalRateLimit(supabase, 'update_post', user.id)
 
     const { data: post, error: postError } = await supabase

@@ -1,12 +1,9 @@
 'use client';
 
-import { useActionState, useEffect, useState } from 'react';
-import { createBrowserClient } from '@supabase/ssr'
+import { useSearchParams } from 'next/navigation';
 import { Lock, EyeOff } from 'lucide-react'
 import PendingSubmitButton from '@/components/PendingSubmitButton';
 import TurnstileWidget from '@/components/TurnstileWidget';
-import { requestGoogleLogin } from './actions';
-import { INITIAL_LOGIN_ACTION_STATE } from './state';
 
 function GoogleIcon() {
   return (
@@ -20,38 +17,9 @@ function GoogleIcon() {
 }
 
 export default function LoginPage() {
-  const [oauthError, setOauthError] = useState<string | null>(null)
-  const [loginState, loginAction] = useActionState(requestGoogleLogin, INITIAL_LOGIN_ACTION_STATE)
-
-  useEffect(() => {
-    if (!loginState.shouldStartOAuth) {
-      return
-    }
-
-    const handleGoogleLogin = async () => {
-      setOauthError(null)
-
-    const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
-    
-    const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-        redirectTo: `${globalThis.location.origin}/auth/callback`,
-        },
-    })
-
-      if (error) {
-        setOauthError('No se pudo iniciar el acceso con Google. Inténtalo de nuevo.')
-      }
-    }
-
-    void handleGoogleLogin()
-  }, [loginState.shouldStartOAuth])
-
-  const activeError = loginState.error || oauthError
+  const searchParams = useSearchParams()
+  const next = searchParams.get('next') || ''
+  const activeError = searchParams.get('error')
 
   return (
     <div className="bg-[var(--tn-bg)] text-[var(--tn-text)] animate-in fade-in duration-300 min-h-[calc(100vh-5rem)]">
@@ -93,7 +61,8 @@ export default function LoginPage() {
                 </div>
               )}
 
-              <form action={loginAction} className="hidden space-y-4 md:block">
+              <form action="/auth/google" method="post" className="hidden space-y-4 md:block">
+                <input type="hidden" name="next" value={next} />
                 <TurnstileWidget action="login" className="min-h-[65px]" />
                 <PendingSubmitButton
                   pendingText="Verificando..."
@@ -124,7 +93,8 @@ export default function LoginPage() {
       </main>
 
       <div className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-[#efe2d8] bg-[#fffaf6]/95 backdrop-blur px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.85rem)]">
-        <form action={loginAction} className="space-y-3">
+        <form action="/auth/google" method="post" className="space-y-3">
+          <input type="hidden" name="next" value={next} />
           <TurnstileWidget action="login" className="min-h-[65px]" helperText={null} />
           <PendingSubmitButton
             pendingText="Verificando..."

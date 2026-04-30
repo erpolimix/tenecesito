@@ -8,20 +8,25 @@ type TurnstileVerificationResponse = {
     'error-codes'?: string[]
 }
 
-function isTurnstileConfigured() {
-    return Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || process.env.TURNSTILE_SECRET_KEY)
+function isProductionEnvironment() {
+    return process.env.NODE_ENV === 'production'
+}
+
+function getTurnstileConfig() {
+    return {
+        secretKey: process.env.TURNSTILE_SECRET_KEY,
+        siteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+    }
 }
 
 export async function verifyTurnstileToken(formData: FormData, expectedAction: BotProtectionAction) {
-    if (!isTurnstileConfigured()) {
-        return
-    }
-
-    const secretKey = process.env.TURNSTILE_SECRET_KEY
-    const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
-
+    const { secretKey, siteKey } = getTurnstileConfig()
     if (!secretKey || !siteKey) {
-        throw new Error('La protección anti-bot no está configurada correctamente')
+        if (isProductionEnvironment()) {
+            throw new Error('La protección anti-bot no está disponible temporalmente. Inténtalo más tarde.')
+        }
+
+        return
     }
 
     const token = formData.get(TURNSTILE_TOKEN_FIELD)

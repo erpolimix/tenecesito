@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const isProduction = process.env.NODE_ENV === 'production'
+
 const contentSecurityPolicy = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -10,7 +12,7 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://fonts.gstatic.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https:",
+  `script-src 'self' 'unsafe-inline' https:${isProduction ? '' : " 'unsafe-eval'"}`,
   "connect-src 'self' https: wss:",
   "upgrade-insecure-requests",
 ].join('; ')
@@ -36,6 +38,10 @@ const nextConfig: NextConfig = {
           {
             key: 'X-Frame-Options',
             value: 'DENY',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains',
           },
           {
             key: 'Permissions-Policy',

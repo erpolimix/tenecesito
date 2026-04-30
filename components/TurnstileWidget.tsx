@@ -24,7 +24,7 @@ declare global {
 }
 
 type TurnstileWidgetProps = Readonly<{
-    action: 'login' | 'create-post'
+    action: 'login' | 'create-post' | 'respond-post' | 'update-post' | 'close-post'
     className?: string
     inputName?: string
     helperText?: string | null
